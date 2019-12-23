@@ -1,0 +1,317 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.1 (swiftlang-1100.0.270.13 clang-1100.0.33.7)
+// swift-module-flags: -target x86_64-apple-ios9.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendBirdCalls
+import CommonCrypto
+import CoreFoundation
+import Foundation
+import PushKit
+import Security
+@_exported import SendBirdCalls
+import Swift
+import UIKit
+import WebRTC
+import zlib
+@objc(SBCDirectCallUser) public class DirectCallUser : SendBirdCalls.User {
+  @objc final public let role: SendBirdCalls.DirectCall.UserRole
+  @objc deinit
+}
+extension DirectCall {
+  @objc dynamic public func accept(callOptions: SendBirdCalls.CallOptions)
+  @objc dynamic public func end()
+  @objc dynamic public func muteMicrophone()
+  @objc dynamic public func unmuteMicrophone()
+}
+@objc public protocol SBCLogReceiver : AnyObject {
+  @objc(logMessage:) func log(message: Swift.String)
+}
+@objc public class SBCLogger : ObjectiveC.NSObject {
+  @objc public static func add(receiver: SendBirdCalls.SBCLogReceiver)
+  @objc public static func remove(receiver: SendBirdCalls.SBCLogReceiver)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(SBCAuthenticateParams) public class AuthenticateParams : ObjectiveC.NSObject {
+  @objc public var userId: Swift.String
+  @objc public var accessToken: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public var pushToken: Foundation.Data? {
+    get
+    }
+  @objc public var unique: Swift.Bool {
+    get
+    }
+  @objc public init(userId: Swift.String, accessToken: Swift.String? = nil, pushToken: Foundation.Data? = nil, unique: Swift.Bool)
+  @objc convenience public init(userId: Swift.String, accessToken: Swift.String?)
+  @objc convenience public init(userId: Swift.String, pushToken: Foundation.Data?, unique: Swift.Bool)
+  @objc public func setPush(token: Foundation.Data?, withUniqueness unique: Swift.Bool = false)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(SBCDirectCallLog) public class DirectCallLog : ObjectiveC.NSObject, Swift.Decodable {
+  @objc final public let callId: Swift.String
+  @objc public var startedAt: Swift.Int64 {
+    get
+    }
+  @objc public var endedAt: Swift.Int64 {
+    get
+    }
+  @objc public var duration: Swift.Int64 {
+    @objc get
+  }
+  public var endedBy: SendBirdCalls.DirectCallUser? {
+    get
+  }
+  @objc public var caller: SendBirdCalls.DirectCallUser? {
+    @objc get
+  }
+  @objc public var callee: SendBirdCalls.DirectCallUser? {
+    @objc get
+  }
+  @objc public var endResult: SendBirdCalls.EndResult {
+    get
+    }
+  @objc public var myRole: SendBirdCalls.DirectCall.UserRole {
+    get
+    }
+  @objc public var isVideoCall: Swift.Bool {
+    get
+    }
+  required public init(from decoder: Swift.Decoder) throws
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(SBCDirectCallLogListQuery) public class DirectCallLogListQuery : ObjectiveC.NSObject {
+  @objc public enum UserRoleFilter : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case caller, callee, all
+    public init(stringValue: Swift.String?)
+    public typealias RawValue = Swift.Int
+    public init?(rawValue: Swift.Int)
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public var isLoading: Swift.Bool {
+    get
+    }
+  @objc public var hasNext: Swift.Bool {
+    get
+    }
+  @objc public var myRole: SendBirdCalls.DirectCallLogListQuery.UserRoleFilter {
+    get
+    }
+  public var endResults: [SendBirdCalls.EndResult] {
+    get
+    }
+  @objc public var endResultsArray: Foundation.NSArray {
+    @objc get
+  }
+  @objc public var limit: Swift.Int32 {
+    get
+    }
+  @objc public func next(completionHandler: @escaping SendBirdCalls.CallLogsResultHandler)
+  @objc(SBCDirectCallLogListQueryParams) public class Params : ObjectiveC.NSObject {
+    @objc public var myRole: SendBirdCalls.DirectCallLogListQuery.UserRoleFilter
+    public var endResults: [SendBirdCalls.EndResult]
+    @objc public var endResultsArray: Foundation.NSArray {
+      @objc get
+    }
+    @objc public func add(endResult: SendBirdCalls.EndResult)
+    @objc public func remove(endResult: SendBirdCalls.EndResult)
+    @objc public var limit: Swift.Int32 {
+      @objc get
+      @objc set
+    }
+    @objc override dynamic public init()
+    @objc deinit
+  }
+  @objc override dynamic public init()
+  @objc deinit
+}
+public typealias AuthenticateHandler = (SendBirdCalls.User?, SendBirdCalls.SBCError?) -> Swift.Void
+public typealias DirectCallHandler = (SendBirdCalls.DirectCall?, SendBirdCalls.SBCError?) -> Swift.Void
+public typealias ErrorHandler = (SendBirdCalls.SBCError?) -> Swift.Void
+public typealias VoidHandler = () -> Swift.Void
+public typealias CallLogsResultHandler = ([SendBirdCalls.DirectCallLog]?, SendBirdCalls.SBCError?) -> Swift.Void
+public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
+@objc(SBCUser) public class User : ObjectiveC.NSObject, Swift.Codable {
+  @objc final public let userId: Swift.String
+  @objc public var nickname: Swift.String? {
+    get
+    }
+  @objc public var profileURL: Swift.String? {
+    get
+    }
+  @objc public var metadata: [Swift.String : Swift.String]? {
+    get
+    }
+  @objc public var isActive: Swift.Bool {
+    get
+    }
+  required public init(from decoder: Swift.Decoder) throws
+  @objc override dynamic public init()
+  @objc deinit
+  public func encode(to encoder: Swift.Encoder) throws
+}
+@objc public class SBCError : Foundation.NSError {
+  @objc(SBCErrorCode) public enum ErrorCode : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    public typealias RawValue = Swift.Int
+    case dialCanceled = 1800100
+    case dialMyself = 1800101
+    case httpRequestFailed = 1800200
+    case wsResponseTimeout = 1800203
+    case wsConnectionLost = 1800204
+    case invalidResponse = 1800205
+    case queryInProgress = 1800206
+    case internalServer = 1800207
+    case malformedData = 1800208
+    case invalidParameter = 1800300
+    case invalidParameterType = 1800301
+    case notInitializedSendBirdCall = 1800302
+    case notAuthenticated = 1800303
+    public init?(rawValue: Swift.Int)
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc(SBCSendBirdCallDelegate) public protocol SendBirdCallDelegate : AnyObject {
+  @objc func didEnterRinging(_ call: SendBirdCalls.DirectCall)
+}
+@objc(SBCDirectCallDelegate) public protocol DirectCallDelegate : AnyObject {
+  @objc optional func didEstablish(_ call: SendBirdCalls.DirectCall)
+  @objc optional func didConnect(_ call: SendBirdCalls.DirectCall)
+  @objc optional func didRemoteAudioSettingsChange(_ call: SendBirdCalls.DirectCall)
+  @objc optional func didEnd(_ call: SendBirdCalls.DirectCall)
+}
+@objc(SBCDirectCall) public class DirectCall : ObjectiveC.NSObject {
+  @objc(SBCDirectCallUserRole) public enum UserRole : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case caller, callee
+    public init(stringValue: Swift.String?)
+    public typealias RawValue = Swift.Int
+    public init?(rawValue: Swift.Int)
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public var callId: Swift.String {
+    get
+    }
+  @objc public var caller: SendBirdCalls.DirectCallUser? {
+    get
+    }
+  @objc public var callee: SendBirdCalls.DirectCallUser? {
+    get
+    }
+  @objc public var remoteUser: SendBirdCalls.DirectCallUser? {
+    @objc get
+  }
+  @objc public var localUser: SendBirdCalls.DirectCallUser? {
+    @objc get
+  }
+  @objc public var myRole: SendBirdCalls.DirectCall.UserRole {
+    get
+    }
+  public var endedBy: SendBirdCalls.DirectCallUser? {
+    get
+  }
+  @objc public var endResult: SendBirdCalls.EndResult {
+    @objc get
+  }
+  @objc public var isEnded: Swift.Bool {
+    @objc get
+  }
+  @objc public var startedAt: Swift.Int64 {
+    @objc get
+  }
+  @objc public var endedAt: Swift.Int64 {
+    @objc get
+  }
+  @objc public var duration: Swift.Int64 {
+    @objc get
+  }
+  @objc public var isRemoteAudioEnabled: Swift.Bool {
+    @objc get
+  }
+  @objc public var isLocalAudioEnabled: Swift.Bool {
+    @objc get
+  }
+  @objc public var isVideoCall: Swift.Bool {
+    get
+    }
+  @objc weak public var delegate: SendBirdCalls.DirectCallDelegate?
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension DirectCall {
+  @objc dynamic public var callUUID: Foundation.UUID? {
+    @objc get
+  }
+}
+@objc(SBCCallOptions) public class CallOptions : ObjectiveC.NSObject {
+  @objc public var isVideoCall: Swift.Bool
+  @objc public var isAudioEnabled: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc convenience public init(isVideoCall: Swift.Bool = false, isAudioEnabled: Swift.Bool = true)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(SBCSendBirdCall) public class SendBirdCall : ObjectiveC.NSObject {
+  @objc public static var appId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public static func configure(appId: Swift.String) -> Swift.Bool
+  @objc public static var sdkVersion: Swift.String {
+    @objc get
+  }
+  @objc public static func executeOn(queue: Dispatch.DispatchQueue)
+  @objc public static func addDelegate(_ delegate: SendBirdCalls.SendBirdCallDelegate, identifier: Swift.String)
+  @objc public static func removeDelegate(identifier: Swift.String)
+  @objc public static func removeAllDelegates()
+  @objc public static func getCall(forCallId callId: Swift.String) -> SendBirdCalls.DirectCall?
+  @objc public static var currentUser: SendBirdCalls.User? {
+    @objc get
+  }
+  @objc public static func authenticate(params: SendBirdCalls.AuthenticateParams, completionHandler: @escaping SendBirdCalls.AuthenticateHandler)
+  @objc public static func deauthenticate(pushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
+  @discardableResult
+  @objc public static func dial(to calleeId: Swift.String, callOptions: SendBirdCalls.CallOptions = CallOptions(), completionHandler: @escaping SendBirdCalls.DirectCallHandler) -> SendBirdCalls.DirectCall?
+  @objc public static func pushRegistry(_ registry: PushKit.PKPushRegistry, didReceiveIncomingPushWith payload: PushKit.PKPushPayload, for type: PushKit.PKPushType, completionHandler: SendBirdCalls.PushRegistryHandler?)
+  @objc public static func register(pushToken: Foundation.Data?, unique: Swift.Bool = false, completionHandler: SendBirdCalls.ErrorHandler?)
+  @objc public static func unregister(pushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
+  @objc public static func unregisterAllPushTokens(completionHandler: SendBirdCalls.ErrorHandler?)
+  @objc public static func createDirectCallLogListQuery(with params: SendBirdCalls.DirectCallLogListQuery.Params) -> SendBirdCalls.DirectCallLogListQuery?
+  @objc deinit
+}
+@objc extension SendBirdCall {
+  @objc public static func getCall(forUUID callUUID: Foundation.UUID) -> SendBirdCalls.DirectCall?
+}
+@objc(SBCEndResult) public enum EndResult : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+  case completed
+  case canceled
+  case declined
+  case otherDeviceAccepted
+  case timedOut
+  case connectionLost
+  case noAnswer
+  case dialFailed
+  case acceptFailed
+  case unknown
+  public typealias RawValue = Swift.String
+  public var rawValue: SendBirdCalls.EndResult.RawValue {
+    get
+  }
+  public init(rawValue: Swift.String)
+}
+extension SendBirdCalls.DirectCallLogListQuery.UserRoleFilter : Swift.Equatable {}
+extension SendBirdCalls.DirectCallLogListQuery.UserRoleFilter : Swift.Hashable {}
+extension SendBirdCalls.SBCError.ErrorCode : Swift.Equatable {}
+extension SendBirdCalls.SBCError.ErrorCode : Swift.Hashable {}
+extension SendBirdCalls.DirectCall.UserRole : Swift.Hashable {}
+extension SendBirdCalls.EndResult : Swift.Hashable {}
