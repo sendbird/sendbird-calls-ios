@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "SendBirdCalls"
-  s.version      = "0.6.2"
+  s.version      = "0.6.3"
   s.summary      = "real-time calls based on SendBird SDK"
   s.description  = "SendBirdCalls enables real-time calls between users registered within a SendBird application"
   s.homepage     = "https://sendbird.com"

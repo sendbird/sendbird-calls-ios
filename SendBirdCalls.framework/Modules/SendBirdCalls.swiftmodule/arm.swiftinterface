@@ -60,8 +60,8 @@ extension DirectCall {
   @objc public var duration: Swift.Int64 {
     @objc get
   }
-  public var endedBy: SendBirdCalls.DirectCallUser? {
-    get
+  @objc public var endedBy: SendBirdCalls.DirectCallUser? {
+    @objc get
   }
   @objc public var caller: SendBirdCalls.DirectCallUser? {
     @objc get
@@ -183,9 +183,9 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
 }
 @objc(SBCDirectCallDelegate) public protocol DirectCallDelegate : AnyObject {
   @objc optional func didEstablish(_ call: SendBirdCalls.DirectCall)
-  @objc optional func didConnect(_ call: SendBirdCalls.DirectCall)
+  @objc func didConnect(_ call: SendBirdCalls.DirectCall)
   @objc optional func didRemoteAudioSettingsChange(_ call: SendBirdCalls.DirectCall)
-  @objc optional func didEnd(_ call: SendBirdCalls.DirectCall)
+  @objc func didEnd(_ call: SendBirdCalls.DirectCall)
 }
 @objc(SBCDirectCall) public class DirectCall : ObjectiveC.NSObject {
   @objc(SBCDirectCallUserRole) public enum UserRole : Swift.Int, Swift.RawRepresentable, Swift.Codable {
@@ -266,6 +266,7 @@ extension DirectCall {
     @objc get
     @objc set
   }
+  @discardableResult
   @objc public static func configure(appId: Swift.String) -> Swift.Bool
   @objc public static var sdkVersion: Swift.String {
     @objc get
@@ -293,6 +294,7 @@ extension DirectCall {
   @objc public static func getCall(forUUID callUUID: Foundation.UUID) -> SendBirdCalls.DirectCall?
 }
 @objc(SBCEndResult) public enum EndResult : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+  case none
   case completed
   case canceled
   case declined

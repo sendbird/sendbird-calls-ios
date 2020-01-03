@@ -226,7 +226,12 @@ SWIFT_CLASS_NAMED("CallOptions")
 @interface SBCCallOptions : NSObject
 /// If <code>false</code>, the call is for audio only.
 @property (nonatomic) BOOL isVideoCall;
+/// Gets value from <code>CallConstraints</code> and sets <code>CallConstraints.audio</code> when it has been changed.
 @property (nonatomic) BOOL isAudioEnabled;
+/// \param isVideoCall <code>Bool</code> object assigned <code>false</code> as a default value.
+///
+/// \param isAudioEnabled <code>Bool</code> object assigned <code>true</code> as a default value.
+///
 - (nonnull instancetype)initWithIsVideoCall:(BOOL)isVideoCall isAudioEnabled:(BOOL)isAudioEnabled;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
@@ -240,15 +245,29 @@ enum SBCEndResult : NSInteger;
 /// This class describes direct call.  It has an identifier as an unique key.
 SWIFT_CLASS_NAMED("DirectCall")
 @interface SBCDirectCall : NSObject
-/// Call Id of the Call
+/// Call ID of the call. The value has been got from <code>UUID</code>.
 @property (nonatomic, readonly, copy) NSString * _Nonnull callId;
-/// The caller’s object. It can be used for showing the caller’s name on the screen of the callee.
+/// The caller’s object.
+/// note:
+/// If you want to show caller’s name on the call screen, use <code>remoteUser</code> or <code>localUser</code> instead of <code>caller</code>
 @property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable caller;
-/// The callee’s object.  It can be used for showing the callee’s name on the screen of the caller.
+/// The callee’s object.
+/// note:
+/// If you want to show callee’s name on the call screen, use <code>remoteUser</code> or <code>localUser instead of </code>callee`
 @property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable callee;
-/// The DirectCallUser of remote user of the call.
+/// The remote user of the call.  If you’re a caller, the <code>remoteUser</code> is <code>callee</code> as its role status.
+/// \code
+/// guard let remoteUser = self.call.remoteUser else { return }
+/// self.remoteUserIdLabel.text = remoteUser.userId
+///
+/// \endcode
 @property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable remoteUser;
-/// The DirectCallUser of local user of the call.
+/// The local user of the call. It has same status of role as current user.
+/// \code
+/// guard let localUser = self.call.localUser else { return }
+/// self.localUserIdLabel.text = localUser.userId
+///
+/// \endcode
 @property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable localUser;
 /// The role of the current user.  This property has <code>UserRole.none</code>as an initial value.
 @property (nonatomic, readonly) enum SBCDirectCallUserRole myRole;
@@ -277,12 +296,30 @@ SWIFT_CLASS_NAMED("DirectCall")
 @property (nonatomic, readonly) BOOL isLocalAudioEnabled;
 /// Is the call Video Call.
 @property (nonatomic, readonly) BOOL isVideoCall;
+/// <code>DirectCallDelegate</code>
+/// \code
+/// call.delegate?.someMethod()
+///
+/// \endcode
 @property (nonatomic, weak) id <SBCDirectCallDelegate> _Nullable delegate;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
-/// <h2>User Role of Direct Call</h2>
+/// User Role of Direct Call
+/// <ul>
+///   <li>
+///     Cases:
+///     <ul>
+///       <li>
+///         caller: The user made the call.
+///       </li>
+///       <li>
+///         callee: Ther user received the call.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
   SBCDirectCallUserRoleCaller = 0,
   SBCDirectCallUserRoleCallee = 1,
@@ -323,17 +360,53 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+/// You can implement and invoke specific methods for each state of call.
+/// \code
+/// override func viewDidLoad() {
+///    // ...
+///    call.delegate = self
+/// }
+///
+/// // ...
+///
+/// \endcode
 SWIFT_PROTOCOL_NAMED("DirectCallDelegate")
 @protocol SBCDirectCallDelegate
 @optional
+/// Invoked when callee accepted, but WebRTC has not been connected yet.
 - (void)didEstablish:(SBCDirectCall * _Nonnull)call;
+@required
+/// Invoked when WebRTC has been connected. The caller and callee can have conversation with.
+/// \code
+/// func didConnect(_ call: DirectCall) {
+///    self.endButton.isEnabled = true
+/// }
+///
+/// \endcode
 - (void)didConnect:(SBCDirectCall * _Nonnull)call;
+@optional
+/// Invoked when remote audio has been changed.
+/// \code
+/// func didRemoteAudioSettingsChange(_ call: DirectCall) {
+///    guard call.isRemoteAudioEnabled == false else { return }
+///    self.remoteAudioStatusLabel.text = "Muted"
+/// }
+///
+/// \endcode
 - (void)didRemoteAudioSettingsChange:(SBCDirectCall * _Nonnull)call;
+@required
+/// Invoked when call has been ended.
+/// \code
+/// func didEnd(_ call: DirectCall) {
+///    self.dismiss(animated: true, completion: nil)
+/// }
+///
+/// \endcode
 - (void)didEnd:(SBCDirectCall * _Nonnull)call;
 @end
 
 
-/// Direct Call
+/// Direct Call Log
 SWIFT_CLASS_NAMED("DirectCallLog")
 @interface SBCDirectCallLog : NSObject
 /// Call Id of the Call
@@ -344,6 +417,8 @@ SWIFT_CLASS_NAMED("DirectCallLog")
 @property (nonatomic, readonly) int64_t endedAt;
 /// The duration of the Call. Int64 of miliseconds.
 @property (nonatomic, readonly) int64_t duration;
+/// DirectCallUser that ended the call.
+@property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable endedBy;
 /// The caller of the call.
 @property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable caller;
 /// The callee of the call.
@@ -401,7 +476,14 @@ SWIFT_CLASS_NAMED("User")
 @property (nonatomic, readonly, copy) NSString * _Nullable nickname;
 /// (Optional value) The profile image URL of the call user.
 @property (nonatomic, readonly, copy) NSString * _Nullable profileURL;
+/// (Optional value) The metadata.
 @property (nonatomic, readonly, copy) NSDictionary<NSString *, NSString *> * _Nullable metadata;
+/// The status of acitivity.  If it is <code>false</code>, the user is offline.
+/// <ul>
+///   <li>
+///     Default: <code>false</code>
+///   </li>
+/// </ul>
 @property (nonatomic, readonly) BOOL isActive;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
@@ -410,20 +492,22 @@ SWIFT_CLASS_NAMED("User")
 
 SWIFT_CLASS_NAMED("DirectCallUser")
 @interface SBCDirectCallUser : SBCUser
+/// Shows whether the user is caller or callee.
 @property (nonatomic, readonly) enum SBCDirectCallUserRole role;
 @end
 
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCEndResult, "EndResult", open) {
-  SBCEndResultCompleted = 0,
-  SBCEndResultCanceled = 1,
-  SBCEndResultDeclined = 2,
-  SBCEndResultOtherDeviceAccepted = 3,
-  SBCEndResultTimedOut = 4,
-  SBCEndResultConnectionLost = 5,
-  SBCEndResultNoAnswer = 6,
-  SBCEndResultDialFailed = 7,
-  SBCEndResultAcceptFailed = 8,
-  SBCEndResultUnknown = 9,
+  SBCEndResultNone = 0,
+  SBCEndResultCompleted = 1,
+  SBCEndResultCanceled = 2,
+  SBCEndResultDeclined = 3,
+  SBCEndResultOtherDeviceAccepted = 4,
+  SBCEndResultTimedOut = 5,
+  SBCEndResultConnectionLost = 6,
+  SBCEndResultNoAnswer = 7,
+  SBCEndResultDialFailed = 8,
+  SBCEndResultAcceptFailed = 9,
+  SBCEndResultUnknown = 10,
 };
 
 
@@ -455,13 +539,43 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 
 SWIFT_PROTOCOL("_TtP13SendBirdCalls14SBCLogReceiver_")
 @protocol SBCLogReceiver
+/// Shows up log with message. You have to implement this method to visualize logs in your app.
+/// \code
+/// var logs: [String] = []
+///
+/// func log(message: String) {
+///    self.logs.append(message)
+///    self.updateLogsView()
+/// }
+///
+/// func updateLogsView() {
+///    // ...
+/// }
+///
+/// \endcode
 - (void)logMessage:(NSString * _Nonnull)message;
 @end
 
 
 SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 @interface SBCLogger : NSObject
+/// Adds receiver to receive logs from SendBirdCall Logger
+/// \code
+/// override func viewDidLoad() {
+///    // ...
+///    
+///    SBCLogger.add(receiver: self)
+/// }
+///
+/// \endcode\param receiver The object inheritted<code>SBCLogReceiver</code> to receive logs
+///
 + (void)addWithReceiver:(id <SBCLogReceiver> _Nonnull)receiver;
+/// Removes receiver added before.
+/// \code
+/// SBCLogger.remove(receiver: self)
+///
+/// \endcode\param receiver The object inheritted<code>SBCLogReceiver</code>
+///
 + (void)removeWithReceiver:(id <SBCLogReceiver> _Nonnull)receiver;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -472,16 +586,38 @@ SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 
 SWIFT_CLASS_NAMED("SendBirdCall")
 @interface SBCSendBirdCall : NSObject
-/// The app id of your SendBird app
+/// The app id of your SendBird app. This property must be configured prior to using <code>SendBirdCall</code> methods.
+/// important:
+/// If you change the app ID, a previous configured app ID will be removed and all call will be canceled.
+/// \code
+/// SendBirdCall.appId = "YOUR_APP_ID"
+/// // If the app ID is different with configured app ID,
+/// // the configured app ID will be removed
+/// // and all calls will be canceled.
+///
+/// \endcode
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nullable appId;)
 + (NSString * _Nullable)appId SWIFT_WARN_UNUSED_RESULT;
 + (void)setAppId:(NSString * _Nullable)newValue;
 /// Configures the appId of your SendBird App.
-/// App Id <em>must</em> be configured prior to using any SendBirdCall functions
-/// \param appId String of your app id from your dashboard
+/// App ID <em>must</em> be configured prior to using any SendBirdCall functions
+/// \code
+/// SendBirdCall.configure(appId: "YOUR_APP_ID")
 ///
-+ (BOOL)configureWithAppId:(NSString * _Nonnull)appId SWIFT_WARN_UNUSED_RESULT;
+/// \endcode\param appId Your own app ID from your dashboard
+///
+///
+/// returns:
+/// (Discardable)<code>Bool</code> value. If the paramter has an empty string or equal previous app ID, it returns <code>false</code>.
+/// If the method configures app ID successfully, it returns <code>true</code>.
++ (BOOL)configureWithAppId:(NSString * _Nonnull)appId;
 /// SendBird SDK Version
+/// \code
+/// self.versionLabel.text = "SendBirdCalls v\(SendBirdCall.sdkVersion)"
+///
+/// // "SendBirdCalls v1.0.0"
+///
+/// \endcode
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull sdkVersion;)
 + (NSString * _Nonnull)sdkVersion SWIFT_WARN_UNUSED_RESULT;
 /// Specifies the queue that you want to use for callbacks and delegate methods
@@ -489,62 +625,131 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 ///
 + (void)executeOnQueue:(dispatch_queue_t _Nonnull)queue;
 /// Adds delegates to SendBirdCall for Call status changes
-/// \param delegate SendBirdCallDelegate that listens to SendBirdCall events
+/// \code
+/// SendBirdCall.addDelegate(self, identifier: "IDENTIFIER")
+///
+/// \endcode\param delegate SendBirdCallDelegate that listens to SendBirdCall events
 ///
 /// \param identifier Identifier for the specific delegate
 ///
 + (void)addDelegate:(id <SBCSendBirdCallDelegate> _Nonnull)delegate identifier:(NSString * _Nonnull)identifier;
-/// Remove delegate for the given identifier
+/// Remove delegate for the given identifier.
 /// \param identifier String identifier for the delegate. If SendBirdCall doesn’t have the given identifier, it will be ignored.
 ///
 + (void)removeDelegateWithIdentifier:(NSString * _Nonnull)identifier;
-/// Removes all delegate for SendBirdCall events
+/// Removes all delegate for SendBirdCall events.
 + (void)removeAllDelegates;
-/// Returns call for call id
-/// \param forCallId String call id.
+/// Returns call for call ID.
+/// \param forCallId Call ID.
 ///
 ///
 /// returns:
 ///
-/// An optional Direct Call with corresponding call id.
+/// <code>DirectCall</code> object with corresponding call ID. It can be <code>nil</code>.
 + (SBCDirectCall * _Nullable)getCallForCallId:(NSString * _Nonnull)callId SWIFT_WARN_UNUSED_RESULT;
-/// Returns the currently authenticated user
+/// Returns the currently authenticated user.
 ///
 /// returns:
 ///
-/// User that is currently authenticated. Returns nil if no user exists
+/// User that is currently authenticated. Returns nil if no user exists.
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _Nullable currentUser;)
 + (SBCUser * _Nullable)currentUser SWIFT_WARN_UNUSED_RESULT;
 /// Authenticates user with user ID and Access Token that you generated at SendBird Dashboard.
-/// \param params <code>AuthenticateParams</code> that contains User Id, Access Token, Push Token, and Unique
+/// \code
+/// let params = AuthenticateParams(userId: userId, accessToken: accessToken)
+///
+/// SendBirdCall.authenticate(params: params) { user, error in
+///     guard let user = user, error == nil else { return }
+///     // Authenticated Successfully
+/// }
+///
+/// \endcode\param params <code>AuthenticateParams</code> that contains User Id, Access Token, Push Token, and Unique
 ///
 /// \param completionHandler The handler to call when the authenication is complete.
 ///
 + (void)authenticateWithParams:(SBCAuthenticateParams * _Nonnull)params completionHandler:(void (^ _Nonnull)(SBCUser * _Nullable, SBCError * _Nullable))completionHandler;
-/// Deauthenticates current user and clears remaining processes
-/// \param pushToken Data of Push Token. Nullable. Doesn’t remove push token if the token is nil
+/// Deauthenticates current user and clears remaining processes.
+/// \code
+/// var myPushToken: Data?
+///
+/// // ...
+///
+/// SendBirdCall.deauthenticate(pushToken: myPushToken) { error in
+///    guard error == nil else { return }
+///    // ...
+/// }
+///
+/// \endcode\param pushToken Data of Push Token. Nullable. Doesn’t remove push token if the token is <code>nil</code>
 ///
 /// \param completionHandler Error Handler to be called after deauthenticate process is finished
 ///
 + (void)deauthenticateWithPushToken:(NSData * _Nullable)pushToken completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// Calls to user(callee) directly.
-/// \param calleeId The callee’s user ID
+/// Makes a call to user(callee) directly. (1:1 Call)
+/// \code
+/// SendBirdCall.dial(to: "Swan") { call, error in
+///    guard let call = call, error == nil else { return }
+///    // ...
+/// }
 ///
-/// \param callOptions It has <code>CallOptions()</code> as a default value.
+/// \endcode\param calleeId The callee’s user ID
+///
+/// \param callOptions It has <code>CallOptions()</code> as a default value. The default value will make audio call.
 ///
 ///
 /// returns:
-/// <code>DirectCall</code> object
+/// (Discardable) <code>DirectCall</code> object. If the method failed to make a call, it would return <code>nil</code>.
 + (SBCDirectCall * _Nullable)dialTo:(NSString * _Nonnull)calleeId callOptions:(SBCCallOptions * _Nonnull)callOptions completionHandler:(void (^ _Nonnull)(SBCDirectCall * _Nullable, SBCError * _Nullable))completionHandler;
+/// Handles incoming VoIP push with SendBirdCalls payload.
+/// \code
+/// func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, for type: PKPushType, completion: @escaping () -> Void) {
+///    SendBirdCall.pushRegistry(registry, didReceiveIncomingPushWith: payload, for: type) { uuid in
+///        guard let uuid = uuid else { return }
+///        // CXProvider has to report incoming call with uuid
+///     }
+/// }
+///
+/// \endcode\param registry <code>PKPushRegistry</code> object same as  <code>PKPushRegistryDelegate</code> registry.
+///
+/// \param payload <code>PKPushPayload</code> in incoming VoIP push notification.
+///
+/// \param type <code>PKPushType</code> of push(<code>VoIP</code>)
+///
+/// \param completionHandler This closure is invoked with <code>UUID</code> from the payload.
+///
 + (void)pushRegistry:(PKPushRegistry * _Nonnull)registry didReceiveIncomingPushWith:(PKPushPayload * _Nonnull)payload for:(PKPushType _Nonnull)type completionHandler:(void (^ _Nullable)(NSUUID * _Nullable))completionHandler;
+/// Registers token from VoIP push credential to SendBird Server.
+/// \code
+/// // PKPushRegistryDelegate
+///
+/// func pushRegistry(_ registry: PKPushRegistry, didUpdate pushCredentials: PKPushCredentials, for type: PKPushType) {
+///     SendBirdCall.register(pushToken: pushCredentials.token, unique: true) { error in
+///         guard let error = error else { return }
+///         // ...
+///     }
+/// }
+///
+/// \endcode\param pushToken <code>Data</code> object from <code>pushCredential.token</code>.  Refer to <code>PKPushRegistryDelegate</code>
+///
+/// \param unique If it is false, you can register more token for multi devices. It has <code>false</code> as a default value.
+///
 + (void)registerWithPushToken:(NSData * _Nullable)pushToken unique:(BOOL)unique completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// Unregisters a push token for current user.
-/// \param pushToken Optional Data for the push token that you want to unregister
+/// Unregisters a push token of specific device.
+/// \code
+/// var myPushToken: Data?
+///
+/// // ...
+///
+/// SendBirdCall.unregister(pushToken: myPushToken) { error in
+///    guard error == nil else { return }
+///    // Unregistered successfully
+/// }
+///
+/// \endcode\param pushToken Optional Data for the push token that you want to unregister
 ///
 /// \param completionHandler ErrorHandler that returns callback with error.
 ///
 + (void)unregisterWithPushToken:(NSData * _Nullable)pushToken completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// Unregister all push token registered to the current user
+/// Unregister all push token registered to the current user(multi device).
 /// \param completionHandler ErrorHandler that returns callback with error
 ///
 + (void)unregisterAllPushTokensWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
@@ -569,9 +774,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// Delegate for SendBirdCall
 SWIFT_PROTOCOL_NAMED("SendBirdCallDelegate")
 @protocol SBCSendBirdCallDelegate
-/// A callback when the current user received a start call from the caller.
-/// important:
-/// <code>SendBirdCall.dial()</code> method allows you to create new <code>DirectCall</code> object.
+/// Invoked when the current user received a incoming call.
 /// \param call <code>DirectCall</code> object,
 ///
 - (void)didEnterRinging:(SBCDirectCall * _Nonnull)call;
@@ -812,7 +1015,12 @@ SWIFT_CLASS_NAMED("CallOptions")
 @interface SBCCallOptions : NSObject
 /// If <code>false</code>, the call is for audio only.
 @property (nonatomic) BOOL isVideoCall;
+/// Gets value from <code>CallConstraints</code> and sets <code>CallConstraints.audio</code> when it has been changed.
 @property (nonatomic) BOOL isAudioEnabled;
+/// \param isVideoCall <code>Bool</code> object assigned <code>false</code> as a default value.
+///
+/// \param isAudioEnabled <code>Bool</code> object assigned <code>true</code> as a default value.
+///
 - (nonnull instancetype)initWithIsVideoCall:(BOOL)isVideoCall isAudioEnabled:(BOOL)isAudioEnabled;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
@@ -826,15 +1034,29 @@ enum SBCEndResult : NSInteger;
 /// This class describes direct call.  It has an identifier as an unique key.
 SWIFT_CLASS_NAMED("DirectCall")
 @interface SBCDirectCall : NSObject
-/// Call Id of the Call
+/// Call ID of the call. The value has been got from <code>UUID</code>.
 @property (nonatomic, readonly, copy) NSString * _Nonnull callId;
-/// The caller’s object. It can be used for showing the caller’s name on the screen of the callee.
+/// The caller’s object.
+/// note:
+/// If you want to show caller’s name on the call screen, use <code>remoteUser</code> or <code>localUser</code> instead of <code>caller</code>
 @property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable caller;
-/// The callee’s object.  It can be used for showing the callee’s name on the screen of the caller.
+/// The callee’s object.
+/// note:
+/// If you want to show callee’s name on the call screen, use <code>remoteUser</code> or <code>localUser instead of </code>callee`
 @property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable callee;
-/// The DirectCallUser of remote user of the call.
+/// The remote user of the call.  If you’re a caller, the <code>remoteUser</code> is <code>callee</code> as its role status.
+/// \code
+/// guard let remoteUser = self.call.remoteUser else { return }
+/// self.remoteUserIdLabel.text = remoteUser.userId
+///
+/// \endcode
 @property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable remoteUser;
-/// The DirectCallUser of local user of the call.
+/// The local user of the call. It has same status of role as current user.
+/// \code
+/// guard let localUser = self.call.localUser else { return }
+/// self.localUserIdLabel.text = localUser.userId
+///
+/// \endcode
 @property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable localUser;
 /// The role of the current user.  This property has <code>UserRole.none</code>as an initial value.
 @property (nonatomic, readonly) enum SBCDirectCallUserRole myRole;
@@ -863,12 +1085,30 @@ SWIFT_CLASS_NAMED("DirectCall")
 @property (nonatomic, readonly) BOOL isLocalAudioEnabled;
 /// Is the call Video Call.
 @property (nonatomic, readonly) BOOL isVideoCall;
+/// <code>DirectCallDelegate</code>
+/// \code
+/// call.delegate?.someMethod()
+///
+/// \endcode
 @property (nonatomic, weak) id <SBCDirectCallDelegate> _Nullable delegate;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
-/// <h2>User Role of Direct Call</h2>
+/// User Role of Direct Call
+/// <ul>
+///   <li>
+///     Cases:
+///     <ul>
+///       <li>
+///         caller: The user made the call.
+///       </li>
+///       <li>
+///         callee: Ther user received the call.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
   SBCDirectCallUserRoleCaller = 0,
   SBCDirectCallUserRoleCallee = 1,
@@ -909,17 +1149,53 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+/// You can implement and invoke specific methods for each state of call.
+/// \code
+/// override func viewDidLoad() {
+///    // ...
+///    call.delegate = self
+/// }
+///
+/// // ...
+///
+/// \endcode
 SWIFT_PROTOCOL_NAMED("DirectCallDelegate")
 @protocol SBCDirectCallDelegate
 @optional
+/// Invoked when callee accepted, but WebRTC has not been connected yet.
 - (void)didEstablish:(SBCDirectCall * _Nonnull)call;
+@required
+/// Invoked when WebRTC has been connected. The caller and callee can have conversation with.
+/// \code
+/// func didConnect(_ call: DirectCall) {
+///    self.endButton.isEnabled = true
+/// }
+///
+/// \endcode
 - (void)didConnect:(SBCDirectCall * _Nonnull)call;
+@optional
+/// Invoked when remote audio has been changed.
+/// \code
+/// func didRemoteAudioSettingsChange(_ call: DirectCall) {
+///    guard call.isRemoteAudioEnabled == false else { return }
+///    self.remoteAudioStatusLabel.text = "Muted"
+/// }
+///
+/// \endcode
 - (void)didRemoteAudioSettingsChange:(SBCDirectCall * _Nonnull)call;
+@required
+/// Invoked when call has been ended.
+/// \code
+/// func didEnd(_ call: DirectCall) {
+///    self.dismiss(animated: true, completion: nil)
+/// }
+///
+/// \endcode
 - (void)didEnd:(SBCDirectCall * _Nonnull)call;
 @end
 
 
-/// Direct Call
+/// Direct Call Log
 SWIFT_CLASS_NAMED("DirectCallLog")
 @interface SBCDirectCallLog : NSObject
 /// Call Id of the Call
@@ -930,6 +1206,8 @@ SWIFT_CLASS_NAMED("DirectCallLog")
 @property (nonatomic, readonly) int64_t endedAt;
 /// The duration of the Call. Int64 of miliseconds.
 @property (nonatomic, readonly) int64_t duration;
+/// DirectCallUser that ended the call.
+@property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable endedBy;
 /// The caller of the call.
 @property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable caller;
 /// The callee of the call.
@@ -987,7 +1265,14 @@ SWIFT_CLASS_NAMED("User")
 @property (nonatomic, readonly, copy) NSString * _Nullable nickname;
 /// (Optional value) The profile image URL of the call user.
 @property (nonatomic, readonly, copy) NSString * _Nullable profileURL;
+/// (Optional value) The metadata.
 @property (nonatomic, readonly, copy) NSDictionary<NSString *, NSString *> * _Nullable metadata;
+/// The status of acitivity.  If it is <code>false</code>, the user is offline.
+/// <ul>
+///   <li>
+///     Default: <code>false</code>
+///   </li>
+/// </ul>
 @property (nonatomic, readonly) BOOL isActive;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
@@ -996,20 +1281,22 @@ SWIFT_CLASS_NAMED("User")
 
 SWIFT_CLASS_NAMED("DirectCallUser")
 @interface SBCDirectCallUser : SBCUser
+/// Shows whether the user is caller or callee.
 @property (nonatomic, readonly) enum SBCDirectCallUserRole role;
 @end
 
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCEndResult, "EndResult", open) {
-  SBCEndResultCompleted = 0,
-  SBCEndResultCanceled = 1,
-  SBCEndResultDeclined = 2,
-  SBCEndResultOtherDeviceAccepted = 3,
-  SBCEndResultTimedOut = 4,
-  SBCEndResultConnectionLost = 5,
-  SBCEndResultNoAnswer = 6,
-  SBCEndResultDialFailed = 7,
-  SBCEndResultAcceptFailed = 8,
-  SBCEndResultUnknown = 9,
+  SBCEndResultNone = 0,
+  SBCEndResultCompleted = 1,
+  SBCEndResultCanceled = 2,
+  SBCEndResultDeclined = 3,
+  SBCEndResultOtherDeviceAccepted = 4,
+  SBCEndResultTimedOut = 5,
+  SBCEndResultConnectionLost = 6,
+  SBCEndResultNoAnswer = 7,
+  SBCEndResultDialFailed = 8,
+  SBCEndResultAcceptFailed = 9,
+  SBCEndResultUnknown = 10,
 };
 
 
@@ -1041,13 +1328,43 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 
 SWIFT_PROTOCOL("_TtP13SendBirdCalls14SBCLogReceiver_")
 @protocol SBCLogReceiver
+/// Shows up log with message. You have to implement this method to visualize logs in your app.
+/// \code
+/// var logs: [String] = []
+///
+/// func log(message: String) {
+///    self.logs.append(message)
+///    self.updateLogsView()
+/// }
+///
+/// func updateLogsView() {
+///    // ...
+/// }
+///
+/// \endcode
 - (void)logMessage:(NSString * _Nonnull)message;
 @end
 
 
 SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 @interface SBCLogger : NSObject
+/// Adds receiver to receive logs from SendBirdCall Logger
+/// \code
+/// override func viewDidLoad() {
+///    // ...
+///    
+///    SBCLogger.add(receiver: self)
+/// }
+///
+/// \endcode\param receiver The object inheritted<code>SBCLogReceiver</code> to receive logs
+///
 + (void)addWithReceiver:(id <SBCLogReceiver> _Nonnull)receiver;
+/// Removes receiver added before.
+/// \code
+/// SBCLogger.remove(receiver: self)
+///
+/// \endcode\param receiver The object inheritted<code>SBCLogReceiver</code>
+///
 + (void)removeWithReceiver:(id <SBCLogReceiver> _Nonnull)receiver;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -1058,16 +1375,38 @@ SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 
 SWIFT_CLASS_NAMED("SendBirdCall")
 @interface SBCSendBirdCall : NSObject
-/// The app id of your SendBird app
+/// The app id of your SendBird app. This property must be configured prior to using <code>SendBirdCall</code> methods.
+/// important:
+/// If you change the app ID, a previous configured app ID will be removed and all call will be canceled.
+/// \code
+/// SendBirdCall.appId = "YOUR_APP_ID"
+/// // If the app ID is different with configured app ID,
+/// // the configured app ID will be removed
+/// // and all calls will be canceled.
+///
+/// \endcode
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nullable appId;)
 + (NSString * _Nullable)appId SWIFT_WARN_UNUSED_RESULT;
 + (void)setAppId:(NSString * _Nullable)newValue;
 /// Configures the appId of your SendBird App.
-/// App Id <em>must</em> be configured prior to using any SendBirdCall functions
-/// \param appId String of your app id from your dashboard
+/// App ID <em>must</em> be configured prior to using any SendBirdCall functions
+/// \code
+/// SendBirdCall.configure(appId: "YOUR_APP_ID")
 ///
-+ (BOOL)configureWithAppId:(NSString * _Nonnull)appId SWIFT_WARN_UNUSED_RESULT;
+/// \endcode\param appId Your own app ID from your dashboard
+///
+///
+/// returns:
+/// (Discardable)<code>Bool</code> value. If the paramter has an empty string or equal previous app ID, it returns <code>false</code>.
+/// If the method configures app ID successfully, it returns <code>true</code>.
++ (BOOL)configureWithAppId:(NSString * _Nonnull)appId;
 /// SendBird SDK Version
+/// \code
+/// self.versionLabel.text = "SendBirdCalls v\(SendBirdCall.sdkVersion)"
+///
+/// // "SendBirdCalls v1.0.0"
+///
+/// \endcode
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull sdkVersion;)
 + (NSString * _Nonnull)sdkVersion SWIFT_WARN_UNUSED_RESULT;
 /// Specifies the queue that you want to use for callbacks and delegate methods
@@ -1075,62 +1414,131 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 ///
 + (void)executeOnQueue:(dispatch_queue_t _Nonnull)queue;
 /// Adds delegates to SendBirdCall for Call status changes
-/// \param delegate SendBirdCallDelegate that listens to SendBirdCall events
+/// \code
+/// SendBirdCall.addDelegate(self, identifier: "IDENTIFIER")
+///
+/// \endcode\param delegate SendBirdCallDelegate that listens to SendBirdCall events
 ///
 /// \param identifier Identifier for the specific delegate
 ///
 + (void)addDelegate:(id <SBCSendBirdCallDelegate> _Nonnull)delegate identifier:(NSString * _Nonnull)identifier;
-/// Remove delegate for the given identifier
+/// Remove delegate for the given identifier.
 /// \param identifier String identifier for the delegate. If SendBirdCall doesn’t have the given identifier, it will be ignored.
 ///
 + (void)removeDelegateWithIdentifier:(NSString * _Nonnull)identifier;
-/// Removes all delegate for SendBirdCall events
+/// Removes all delegate for SendBirdCall events.
 + (void)removeAllDelegates;
-/// Returns call for call id
-/// \param forCallId String call id.
+/// Returns call for call ID.
+/// \param forCallId Call ID.
 ///
 ///
 /// returns:
 ///
-/// An optional Direct Call with corresponding call id.
+/// <code>DirectCall</code> object with corresponding call ID. It can be <code>nil</code>.
 + (SBCDirectCall * _Nullable)getCallForCallId:(NSString * _Nonnull)callId SWIFT_WARN_UNUSED_RESULT;
-/// Returns the currently authenticated user
+/// Returns the currently authenticated user.
 ///
 /// returns:
 ///
-/// User that is currently authenticated. Returns nil if no user exists
+/// User that is currently authenticated. Returns nil if no user exists.
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _Nullable currentUser;)
 + (SBCUser * _Nullable)currentUser SWIFT_WARN_UNUSED_RESULT;
 /// Authenticates user with user ID and Access Token that you generated at SendBird Dashboard.
-/// \param params <code>AuthenticateParams</code> that contains User Id, Access Token, Push Token, and Unique
+/// \code
+/// let params = AuthenticateParams(userId: userId, accessToken: accessToken)
+///
+/// SendBirdCall.authenticate(params: params) { user, error in
+///     guard let user = user, error == nil else { return }
+///     // Authenticated Successfully
+/// }
+///
+/// \endcode\param params <code>AuthenticateParams</code> that contains User Id, Access Token, Push Token, and Unique
 ///
 /// \param completionHandler The handler to call when the authenication is complete.
 ///
 + (void)authenticateWithParams:(SBCAuthenticateParams * _Nonnull)params completionHandler:(void (^ _Nonnull)(SBCUser * _Nullable, SBCError * _Nullable))completionHandler;
-/// Deauthenticates current user and clears remaining processes
-/// \param pushToken Data of Push Token. Nullable. Doesn’t remove push token if the token is nil
+/// Deauthenticates current user and clears remaining processes.
+/// \code
+/// var myPushToken: Data?
+///
+/// // ...
+///
+/// SendBirdCall.deauthenticate(pushToken: myPushToken) { error in
+///    guard error == nil else { return }
+///    // ...
+/// }
+///
+/// \endcode\param pushToken Data of Push Token. Nullable. Doesn’t remove push token if the token is <code>nil</code>
 ///
 /// \param completionHandler Error Handler to be called after deauthenticate process is finished
 ///
 + (void)deauthenticateWithPushToken:(NSData * _Nullable)pushToken completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// Calls to user(callee) directly.
-/// \param calleeId The callee’s user ID
+/// Makes a call to user(callee) directly. (1:1 Call)
+/// \code
+/// SendBirdCall.dial(to: "Swan") { call, error in
+///    guard let call = call, error == nil else { return }
+///    // ...
+/// }
 ///
-/// \param callOptions It has <code>CallOptions()</code> as a default value.
+/// \endcode\param calleeId The callee’s user ID
+///
+/// \param callOptions It has <code>CallOptions()</code> as a default value. The default value will make audio call.
 ///
 ///
 /// returns:
-/// <code>DirectCall</code> object
+/// (Discardable) <code>DirectCall</code> object. If the method failed to make a call, it would return <code>nil</code>.
 + (SBCDirectCall * _Nullable)dialTo:(NSString * _Nonnull)calleeId callOptions:(SBCCallOptions * _Nonnull)callOptions completionHandler:(void (^ _Nonnull)(SBCDirectCall * _Nullable, SBCError * _Nullable))completionHandler;
+/// Handles incoming VoIP push with SendBirdCalls payload.
+/// \code
+/// func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, for type: PKPushType, completion: @escaping () -> Void) {
+///    SendBirdCall.pushRegistry(registry, didReceiveIncomingPushWith: payload, for: type) { uuid in
+///        guard let uuid = uuid else { return }
+///        // CXProvider has to report incoming call with uuid
+///     }
+/// }
+///
+/// \endcode\param registry <code>PKPushRegistry</code> object same as  <code>PKPushRegistryDelegate</code> registry.
+///
+/// \param payload <code>PKPushPayload</code> in incoming VoIP push notification.
+///
+/// \param type <code>PKPushType</code> of push(<code>VoIP</code>)
+///
+/// \param completionHandler This closure is invoked with <code>UUID</code> from the payload.
+///
 + (void)pushRegistry:(PKPushRegistry * _Nonnull)registry didReceiveIncomingPushWith:(PKPushPayload * _Nonnull)payload for:(PKPushType _Nonnull)type completionHandler:(void (^ _Nullable)(NSUUID * _Nullable))completionHandler;
+/// Registers token from VoIP push credential to SendBird Server.
+/// \code
+/// // PKPushRegistryDelegate
+///
+/// func pushRegistry(_ registry: PKPushRegistry, didUpdate pushCredentials: PKPushCredentials, for type: PKPushType) {
+///     SendBirdCall.register(pushToken: pushCredentials.token, unique: true) { error in
+///         guard let error = error else { return }
+///         // ...
+///     }
+/// }
+///
+/// \endcode\param pushToken <code>Data</code> object from <code>pushCredential.token</code>.  Refer to <code>PKPushRegistryDelegate</code>
+///
+/// \param unique If it is false, you can register more token for multi devices. It has <code>false</code> as a default value.
+///
 + (void)registerWithPushToken:(NSData * _Nullable)pushToken unique:(BOOL)unique completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// Unregisters a push token for current user.
-/// \param pushToken Optional Data for the push token that you want to unregister
+/// Unregisters a push token of specific device.
+/// \code
+/// var myPushToken: Data?
+///
+/// // ...
+///
+/// SendBirdCall.unregister(pushToken: myPushToken) { error in
+///    guard error == nil else { return }
+///    // Unregistered successfully
+/// }
+///
+/// \endcode\param pushToken Optional Data for the push token that you want to unregister
 ///
 /// \param completionHandler ErrorHandler that returns callback with error.
 ///
 + (void)unregisterWithPushToken:(NSData * _Nullable)pushToken completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// Unregister all push token registered to the current user
+/// Unregister all push token registered to the current user(multi device).
 /// \param completionHandler ErrorHandler that returns callback with error
 ///
 + (void)unregisterAllPushTokensWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
@@ -1155,9 +1563,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// Delegate for SendBirdCall
 SWIFT_PROTOCOL_NAMED("SendBirdCallDelegate")
 @protocol SBCSendBirdCallDelegate
-/// A callback when the current user received a start call from the caller.
-/// important:
-/// <code>SendBirdCall.dial()</code> method allows you to create new <code>DirectCall</code> object.
+/// Invoked when the current user received a incoming call.
 /// \param call <code>DirectCall</code> object,
 ///
 - (void)didEnterRinging:(SBCDirectCall * _Nonnull)call;
