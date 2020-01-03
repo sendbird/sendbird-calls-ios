@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "SendBirdCalls"
-  s.version      = "0.6.1"
+  s.version      = "0.6.2"
   s.summary      = "real-time calls based on SendBird SDK"
   s.description  = "SendBirdCalls enables real-time calls between users registered within a SendBird application"
   s.homepage     = "https://sendbird.com"
@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.license      = "Commercial"
   s.authors      		 = { "Young Hwang" => "young.hwang@sendbird.com", "Minhyuk Kim" => "minhyuk.kim@sendbird.com", "Jaesung Lee" => "jaesung.lee@sendbird.com" }
   s.platform     = :ios, "9.0"
-  s.source       = { :git => "https://github.com/sendbird/sendbird-calls-ios.git", :tag => "v#{s.version}" }
+  s.source       = { :git => "https://github.com/sendbird/sendbird-calls-ios.git", :tag => "#{s.version}" }
   s.ios.vendored_frameworks = "SendBirdCalls.framework"
   s.ios.frameworks = ["UIKit", "Foundation", "PushKit", "WebRTC"]
   s.requires_arc = true
