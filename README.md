@@ -1,5 +1,33 @@
 # SendBirdCalls for iOS
 
+## Table of Contents
+- [Introduction](#introduction)
+- [Functional Overview](#functional-overview)
+- [SDK Prerequisites](#sdk-prerequisites)
+- [SDK Dependencies](#sdk-dependencies)
+- [Install and configure the SDK](#install-and-configure-the-sdk)
+  * [CocoaPods](#cocoapods)
+  * [Background Mode](#background-mode)
+  * [Configure Your App's Info.plist File](#configure-your-apps-infoplist-file)
+- [Initialize the SendBirdCall instance in a client app](#initialize-the-sendbirdcall-instance-in-a-client-app)
+- [Authenticate a user and register a push token](#authenticate-a-user-and-register-a-push-token)
+- [Register event handlers](#register-event-handlers)
+  * [SendBirdCallDelegate](#sendbirdcalldelegate)
+  * [DirectCallDelegate](#directcalldelegate)
+- [Make a call](#make-a-call)
+- [Receive a call](#receive-a-call)
+- [Handle a current call](#handle-a-current-call)
+- [End a call](#end-a-call)
+- [Deauthenticate a user and unregister a push token](#deauthenticate-a-user-and-unregister-a-push-token)
+  * [Deauthenticate a user](#deauthenticate-a-user)
+  * [Unregister a push token or unregister user's all push tokens](#unregister-a-push-token-or-unregister-users-all-push-tokens)
+- [Retrieve a call information](#retrieve-a-call-information)
+- [Retrieve call history](#retrieve-call-history)
+- [Additional information](#additional-information)
+  * [call results](#call-results)
+- [TroubleShootings](#troubleshootings)
+  * [Library not loaded WebRTC.framework](#library-not-loaded-webrtcframework)
+
 ## Introduction
 SendBirdCalls is a new product enabling real-time calls between users registered within a SendBird application. SDKs are provided for JavaScript, Android, and iOS. Using any one of these, developers can quickly integrate calling functions into their own applications that will allow users to make and receive real-time voice calls on the SendBird platform.
 
@@ -9,17 +37,26 @@ When implemented, the **SendBirdCalls** SDK provides the framework to both make 
 ## SDK Prerequisites
 * iOS 9.0 or later
 * Swift 4 or later, Objective-C
-* Installation of [Git Large File Storage](https://git-lfs.github.com)
-* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios): it will be integrated by CocoaPods
+* Installation of **[Git Large File Storage](https://git-lfs.github.com)**
 * Real devices. **The iOS simulator is NOT supported**
 
+## SDK Dependencies
+* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios): it will be integrated by CocoaPods
+
 ## Install and configure the SDK
+You **MUST** install **[Git Large File Storage](https://git-lfs.github.com)** first. If not, you will suffer [the trouble](#library-not-loaded-webrtcframework).
+```
+brew install gif-lfs
+```
+
 ### CocoaPods
 [CocoaPods](https://cocoapods.org/) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate SendBirdCalls into your Xcode project using CocoaPods, specify it in your `Podfile`:
 ```
 pod 'SendBirdCalls'
-pod 'SendBirdWebRTC', :git => 'https://github.com/sendbird/SendBird-WebRTC-iOS.git', :tag => 'v1.0' // supports bitcode
 ```
+> Note: The `SendBirdCalls` SDK relies on the` SendBirdWebRTC` framework. `SendBirdWebRTC` is based on` GoogleWebRTC` and recompiled with `bitcode` enabled. Since Cocoapod in `SendBirdCalls` has already declared a dependency with ` SendBirdWebRTC`, you can see `SendBirdWebRTC.framework` after installing Cocoapod.
+
+> **IMPORTANT**: After installing Cocoapod, there **MUST** be `SendBirdWebRTC` binary whose size is over 800MB in your `Pods/SendBirdWebRTC.framework`. If not, you can fix this by following [Troubleshooting](#library-not-loaded-webrtcframework)
 <br/>
 
 ### Background Mode
@@ -193,6 +230,43 @@ class MyClass: DirectCallDelegate {
 }
 ```
 
+## Deauthenticate a user and unregister a push token
+### Deauthenticate a user
+You can deauthenticate the user with `SendBirdCall.deauthenticate(pushToken:completionHandler:) ` method. If you call the method without push token, you can keep receiving calls even if the application is terminated or is in background. If you don't want to receive VoIP push notification anymore, you have to pass the VoIP push token of the device.
+``` swift
+class MyClass {
+    func signOut() {
+        SendBirdCall.deauthenticate(pushToken: myVoIPPushToken) { error in
+            guard error == nil else {
+                // handle error
+                return
+            }
+
+            // ...
+        }
+    }
+}
+```
+
+### Unregister a push token or unregister user's all push tokens
+You will not receive VoIP push notification for a call anymore if you remove your VoIP push token by calling `unregister(pushToken:completionHandler:)`. And if you don't want to receive a call in all of the devices of the users, call `unregisterAllPushTokens(completionHandler:)`.
+```swift
+class MyClass {
+    func removeVoIPPushToken() {
+        SendBirdCall.unregister(pushToken: myVoIPPushToken) { error in
+        guard error == nil else { return }
+        // Unregistered successfully
+    }
+
+    func removeAllOfVoIPPushTokens() {
+        func unregisterAllPushTokens(completionHandler: ErrorHandler?) {
+            guard error == nil else { return }
+            // Unregistered all push tokens successfully
+        }
+    }
+}
+```
+ 
 ## Retrieve a call information
 The local or remote user’s information is available via the `directCall.localUser` and `directCall.remoteUser` properties.
 
@@ -216,7 +290,8 @@ query.next(completionHandler: { callLogs, error in
 |myRole     | Returns call logs of the specified role. For example, the setMyRole(Callee) returns only the callee’s call logs.                                                                                                                                                                                                  |
 |endResults | Returns the call logs for specified results. If you specify more than one result, they are processed as OR condition and all call logs corresponding with the specified end results will be returned. For example, [.noAnswer, .canceled], only the .noAnswer or .canceled call logs will be returned.|
 
-## Additional information: call results
+## Additional information 
+### call results
 | EndResult        | Description                                                                                                            |
 |------------------|------------------------------------------------------------------------------------------------------------------------|
 | noAnswer            | The callee hasn’t either accepted or declined the call for a specific period of time.                              |
@@ -228,3 +303,46 @@ query.next(completionHandler: { callLogs, error in
 | dialFailed          | The dial() method call has failed.                                                                                 |
 | acceptFailed        | The accept() method call has failed.                                                                               |
 | otherDeviceAccepted | When the call is accepted on one of the callee’s devices, all the other devices will receive this call result.     |
+
+## TroubleShootings
+We don't want you to suffer [Karoshi](https://en.wikipedia.org/wiki/Karoshi). You can have a good night with following trouble shootings
+### Library not loaded WebRTC.framework
+If you face the following error, you can fix the issue by following the next step. 
+```
+dyld: Library not loaded: @rpath/WebRTC.framework/WebRTC
+  Referenced from: /private/var/containers/Bundle/Application/{UUID}/{YOUR-APPLICATION}.app/Frameworks/SendBirdCalls.framework/SendBirdCalls
+Reason: image not found
+```
+This is because of the lack of `Git Large File Storage`. The size of `SendBirdWebRTC.framework` is over 800MB (the size of `WebRTC` binary is about 849MB), but normal `Git` can't download a huge file. Your project may have downloaded a fake framework file. You need to install `git-lfs` to install the entire framework file. 
+But since Cocoapods has already cached `SendBirdWebRTC.framework` without the entire binary, just installing` git-lfs` will not solve the problem. You can fix this by removing all the caches associated with `SendBirdWebRTC.framework`.
+
+However, you couldn't solve the problem only by installing `git-lfs` since your Cocoapods already cached `SendBirdWebRTC.framework` without the whole binary. You can fix the issue by removing all of the caches related with `SendBirdWebRTC.framework`. Follow the next steps: 
+1. Install `git-lfs`
+```
+// in the directory of your project
+brew install git-lfs
+```
+2. Remove all of the caches
+```
+pod cache clean --all
+
+rm -rf ~/Library/Caches/CocoaPods/*
+rm -rf ~/Libaray/Developer/Xcode/DerivedData/*
+```
+If you don't want remove all of the caches that are not related with `SendBirdWebRTC.framework`, you can remove only `SendBirdWebRTC.framework`
+```
+pod cache clean 'SendBirdWebRTC' --all
+
+rm -rf ~/Library/Caches/CocoaPods/Pods/Release/SendBirdWebRTC
+rm -rf ~/Library/Caches/CocoaPods/Pods/Specs/Release/SendBirdWebRTC
+rm -rf ~/Library/Developer/Xcode/DerivedData/{YOUR-PROJECT-NAME}-{UUID}
+```
+3. Re-setup Cocoapod
+```
+pod deintegrate
+pod setup
+```
+4. Re-install Cocoapod
+```
+pod install
+```
