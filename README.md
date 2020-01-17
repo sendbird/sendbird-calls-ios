@@ -5,8 +5,10 @@
 - [Functional Overview](#functional-overview)
 - [SDK Prerequisites](#sdk-prerequisites)
 - [SDK Dependencies](#sdk-dependencies)
-- [Install and configure the SDK](#install-and-configure-the-sdk)
+- [Installation](#installation)
   * [CocoaPods](#cocoapods)
+  * [Carthage](#carthage)
+- [Configure the Application for the SDK](#configure-the-application-for-the-sdk)
   * [Background Mode](#background-mode)
   * [Configure Your App's Info.plist File](#configure-your-apps-infoplist-file)
 - [Initialize the SendBirdCall instance in a client app](#initialize-the-sendbirdcall-instance-in-a-client-app)
@@ -43,14 +45,14 @@ When implemented, the **SendBirdCalls** SDK provides the framework to both make 
 ## SDK Dependencies
 * [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios): it will be integrated by CocoaPods
 
-## Install and configure the SDK
+## Installation
 You **MUST** install **[Git Large File Storage](https://git-lfs.github.com)** first. If not, you will suffer [the trouble](#library-not-loaded-webrtcframework).
 ```
 brew install gif-lfs
 ```
 
 ### CocoaPods
-[CocoaPods](https://cocoapods.org/) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate SendBirdCalls into your Xcode project using CocoaPods, specify it in your `Podfile`:
+[CocoaPods](https://cocoapods.org/) is a dependency manager for Cocoa projects. For usage and installation CocoaPods instructions, visit [their website]((https://cocoapods.org/). To integrate SendBirdCalls into your Xcode project using CocoaPods, specify it in your `Podfile`:
 ```
 pod 'SendBirdCalls'
 ```
@@ -58,6 +60,39 @@ pod 'SendBirdCalls'
 
 > **IMPORTANT**: After installing Cocoapod, there **MUST** be `SendBirdWebRTC` binary whose size is over 800MB in your `Pods/SendBirdWebRTC.framework`. If not, you can fix this by following [Troubleshooting](#library-not-loaded-webrtcframework)
 <br/>
+
+### Carthage
+[Carthage](https://github.com/Carthage/Carthage#quick-start) is a another dependency manager for Xcode projects. You can integrate SendBirdCalls into your Xcode project with `Carthage`, by following:
+1. Get Carthage by running `brew install carthage` or choose [another installation method](https://github.com/Carthage/Carthage#installing-carthage)
+2. Create a [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) in the same directory where your .xcodeproj or .xcworkspace is
+3. List the desired dependencies in the [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile), like this:
+```
+github "sendbird/sendbird-calls-ios"
+github "sendbird/sendbird-ios-framework"
+```
+4. Run `carthage update`
+5. A `Cartfile.resolved` file and a `Carthage` directory will appear in the same directory where your `.xcodeproj` or `.xcworkspace` is
+6. Drag the built `.framework` binaries from `Carthage/Build/iOS` into your application’s Xcode project. 
+7. On your application targets’ `Build Phases` settings tab, click the `+` icon and choose `New Run Script Phase`. Create a `Run Script` in which you specify your shell (ex: `/bin/sh`), add the following contents to the script area below the shell:
+```
+/usr/local/bin/carthage copy-frameworks
+```
+* Add the paths to the frameworks you want to use under “Input Files". For example:
+```
+$(SRCROOT)/Carthage/Build/iOS/SendBirdCalls.framework
+$(SRCROOT)/Carthage/Build/iOS/WebRTC.framework
+```
+* Add the paths to the copied frameworks to the “Output Files”. For example:
+```
+$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SendBirdCalls.framework
+$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/WebRTC.framework
+```
+Another approach when having multiple dependencies is to use `.xcfilelists`. This is covered in If you´re building for `iOS`
+
+For an in depth guide, read on from [Carthage's ReadMe](https://github.com/Carthage/Carthage#quick-start)
+<br/>
+
+## Configure the Application for the SDK
 
 ### Background Mode
 To support background operation, your VoIP app must have `background mode` enabled in the `Xcode Project > Signing&Capabilities` pane. Select the checkbox for Voice over IP. 
