@@ -265,9 +265,9 @@ class MyClass: DirectCallDelegate {
 }
 ```
 
-## Deauthenticate a user and unregister a push token
-### Deauthenticate a user
-You can deauthenticate the user with `SendBirdCall.deauthenticate(pushToken:completionHandler:) ` method. If you call the method without push token, you can keep receiving calls even if the application is terminated or is in background. If you don't want to receive VoIP push notification anymore, you have to pass the VoIP push token of the device.
+## Deauthenticating a user and unregistering a device token
+### Deauthenticating a user
+When a user signs out of SendBird Calls, you should deauthenticate the user with the `SendBirdCall.deauthenticate(pushToken:completionHandler:)` method. If the method is called without a user's VoIP device token, the user will continue to receive calls even though the app is terminated or runs in the background.
 ``` swift
 class MyClass {
     func signOut() {
@@ -283,8 +283,8 @@ class MyClass {
 }
 ```
 
-### Unregister a push token or unregister user's all push tokens
-You will not receive VoIP push notification for a call anymore if you remove your VoIP push token by calling `unregister(pushToken:completionHandler:)`. And if you don't want to receive a call in all of the devices of the users, call `unregisterAllPushTokens(completionHandler:)`.
+### Unregistering one or all device tokens
+The user won't receive push notifications for calls if the VoIP device token is deleted by calling the `unregister(pushToken:completionHandler:)` method. If you don't want to send any calls to the user's devices, call the `unregisterAllPushTokents(completionHandler:)` method.
 ```swift
 class MyClass {
     func removeVoIPPushToken() {
