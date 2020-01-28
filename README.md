@@ -68,7 +68,7 @@ pod 'SendBirdCalls'
 3. List the desired dependencies in the [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile), like this:
 ```
 github "sendbird/sendbird-calls-ios"
-github "sendbird/sendbird-ios-framework"
+github "sendbird/sendbird-webrtc-ios"
 ```
 4. Run `carthage update`
 5. A `Cartfile.resolved` file and a `Carthage` directory will appear in the same directory where your `.xcodeproj` or `.xcworkspace` is
