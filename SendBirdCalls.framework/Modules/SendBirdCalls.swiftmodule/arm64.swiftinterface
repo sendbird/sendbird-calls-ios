@@ -32,10 +32,7 @@ extension DirectCall {
 }
 @objc(SBCAuthenticateParams) public class AuthenticateParams : ObjectiveC.NSObject {
   @objc public var userId: Swift.String
-  @objc public var accessToken: Swift.String? {
-    @objc get
-    @objc set
-  }
+  @objc public var accessToken: Swift.String?
   @objc public var pushToken: Foundation.Data? {
     get
     }
@@ -158,17 +155,19 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
   @objc(SBCErrorCode) public enum ErrorCode : Swift.Int, Swift.RawRepresentable, Swift.Codable {
     public typealias RawValue = Swift.Int
     case dialCanceled = 1800100
-    case dialMyself = 1800101
-    case httpRequestFailed = 1800200
-    case wsResponseTimeout = 1800203
-    case wsConnectionLost = 1800204
-    case invalidResponse = 1800205
+    case myUserIdNotAllowed = 1800101
+    case requestFailed = 1800200
+    case websocketConnectionNotOpened = 1800201
+    case websocketConnectionFailed = 1800202
+    case noResponseDueToTimeout = 1800203
+    case requestFailedDueToWebsocketConnectionLost = 1800204
+    case wrongResponse = 1800205
     case queryInProgress = 1800206
-    case internalServer = 1800207
+    case internalServerError = 1800207
     case malformedData = 1800208
-    case invalidParameter = 1800300
+    case invalidParameterValue = 1800300
     case invalidParameterType = 1800301
-    case notInitializedSendBirdCall = 1800302
+    case instanceNotInitialized = 1800302
     case notAuthenticated = 1800303
     public init?(rawValue: Swift.Int)
     public var rawValue: Swift.Int {
@@ -225,11 +224,11 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
     @objc get
   }
   @objc public var startedAt: Swift.Int64 {
-    @objc get
-  }
+    get
+    }
   @objc public var endedAt: Swift.Int64 {
-    @objc get
-  }
+    get
+    }
   @objc public var duration: Swift.Int64 {
     @objc get
   }
@@ -252,19 +251,21 @@ extension DirectCall {
   }
 }
 @objc(SBCCallOptions) public class CallOptions : ObjectiveC.NSObject {
+  @available(*, deprecated, message: "DO NOT use this property. This property is deprecated.")
   @objc public var isVideoCall: Swift.Bool
   @objc public var isAudioEnabled: Swift.Bool {
     @objc get
     @objc set
   }
+  @available(*, deprecated, message: "DO NOT use this method. This method is deprecated.")
   @objc convenience public init(isVideoCall: Swift.Bool = false, isAudioEnabled: Swift.Bool = true)
+  @objc convenience public init(isAudioEnabled: Swift.Bool = true)
   @objc override dynamic public init()
   @objc deinit
 }
 @objc(SBCSendBirdCall) public class SendBirdCall : ObjectiveC.NSObject {
   @objc public static var appId: Swift.String? {
     @objc get
-    @objc set
   }
   @discardableResult
   @objc public static func configure(appId: Swift.String) -> Swift.Bool
@@ -282,7 +283,10 @@ extension DirectCall {
   @objc public static func authenticate(params: SendBirdCalls.AuthenticateParams, completionHandler: @escaping SendBirdCalls.AuthenticateHandler)
   @objc public static func deauthenticate(pushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
   @discardableResult
+  @available(*, deprecated, message: "DO NOT use this method. This method is unavailable. Use dial(to:isVideoCall:callOptions:completionHandler:) instead.")
   @objc public static func dial(to calleeId: Swift.String, callOptions: SendBirdCalls.CallOptions = CallOptions(), completionHandler: @escaping SendBirdCalls.DirectCallHandler) -> SendBirdCalls.DirectCall?
+  @discardableResult
+  @objc public static func dial(to calleeId: Swift.String, isVideoCall: Swift.Bool = false, callOptions: SendBirdCalls.CallOptions = CallOptions(), completionHandler: @escaping SendBirdCalls.DirectCallHandler) -> SendBirdCalls.DirectCall?
   @objc public static func pushRegistry(_ registry: PushKit.PKPushRegistry, didReceiveIncomingPushWith payload: PushKit.PKPushPayload, for type: PushKit.PKPushType, completionHandler: SendBirdCalls.PushRegistryHandler?)
   @objc public static func register(pushToken: Foundation.Data?, unique: Swift.Bool = false, completionHandler: SendBirdCalls.ErrorHandler?)
   @objc public static func unregister(pushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)

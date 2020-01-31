@@ -1,5 +1,13 @@
 # Change Log
 
+### 0.6.10 (Jan 31, 2020)
+* Deprecated `SendBirdCall.appId` setter.
+* Deprecated `CallOption.isVideoCall` property.
+* New initializer of `CallOption`, `init(isAudioEnabled:)`.
+* Deprecated `SendBirdCall.dial(to:callOptions:completionHandler:)`.
+* New method to dial `dial(to:isVideoCall:callOptions:completionHandler:)`.
+* Increase stability.
+
 ### 0.6.3 (Jan 3, 2020)
 * Support `DirectCall.duration` when a call is active.
 * Fixed a bug with `didRemoteAudioSettingChange()` delegate.
