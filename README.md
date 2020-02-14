@@ -39,6 +39,7 @@ When implemented, the **SendBirdCalls** SDK provides the framework to both make 
 ## SDK Prerequisites
 * iOS 9.0 or later
 * Swift 4 or later, Objective-C
+* Xcode 9 or later, macOS Sierra or later.
 * Installation of **[Git Large File Storage](https://git-lfs.github.com)**
 * Real devices. **The iOS simulator is NOT supported**
 
@@ -95,7 +96,9 @@ For an in depth guide, read on from [Carthage's ReadMe](https://github.com/Carth
 ## Configure the Application for the SDK
 
 ### Background Mode
-To support background operation, your VoIP app must have `background mode` enabled in the `Xcode Project > Signing&Capabilities` pane. Select the checkbox for Voice over IP. 
+To support background operation, your VoIP app must have `Background Mode` enabled in the `Xcode Project > Signing&Capabilities` pane. Select the checkbox for `Voice over IP` and `Remote notifications`.
+
+To receive push notifications, your app also must have `Push Notifications` enabled in the `Xcode Project > Signing&Capabilities` pane. 
 > For more information about VoIP push notification and PushKit, see Apple's [CallKit](https://developer.apple.com/documentation/callkit) and [PushKit](https://developer.apple.com/documentation/callkit)
 <br/>
 
