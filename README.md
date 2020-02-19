@@ -26,6 +26,7 @@
 - [Retrieve a call information](#retrieve-a-call-information)
 - [Retrieve call history](#retrieve-call-history)
 - [Additional information](#additional-information)
+  * [Callback and Delegate thread handling](#callback-and-delegate-thread-handling)
   * [call results](#call-results)
 - [TroubleShootings](#troubleshootings)
   * [Library not loaded WebRTC.framework](#library-not-loaded-webrtcframework)
@@ -329,6 +330,13 @@ query.next(completionHandler: { callLogs, error in
 |endResults | Returns the call logs for specified results. If you specify more than one result, they are processed as OR condition and all call logs corresponding with the specified end results will be returned. For example, [.noAnswer, .canceled], only the .noAnswer or .canceled call logs will be returned.|
 
 ## Additional information 
+
+### Callback and Delegate thread handling.
+You can designate a specific thread for SendBird to run callbacks and events on. For example, you can tell SendBirdCall to call DirectCall delegate functions on a custom background thread to keep your main thread undisturbed. 
+
+To specify a thread of your choice, run `SendBirdCall.executeOn(queue: YOUR_QUEUE)`. If you do not specify a thread, SendBirdCall will run asynchronously on `DispatchQueue.main`.
+> However, because VoIP PushKit **requires** immediate and synchronous handling of callbacks, `SendBirdCallDelegate.didStartRinging(_)` and completion handler of `SendBirdCall.pushRegistry(_:didReceiveIncomingPushWith:for:completion:)` will run synchronously on the thread that you called them. In other words, only these two processes will not run on the thread that you specified in `SendBirdCall.executeOn(queue:)`.
+
 ### call results
 | EndResult        | Description                                                                                                            |
 |------------------|------------------------------------------------------------------------------------------------------------------------|
