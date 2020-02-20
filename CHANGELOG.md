@@ -1,12 +1,42 @@
 # Change Log
 
+### 0.7.0 (Feb 20, 2020)
+* Replaced `didEnterRinging(_:)` with `didStartRinging(_:)` in `SendBirdCallDelegate`.
+* New feature of `CustomItems`.
+	* `updateCustomItems(customItems:completionHandler:)` in `DirectCall` class.
+	* `deleteCustomItems(customItemKeys:completionHandler:)` in `DirectCall` class.
+	* `deleteAllCustomItems(completionHandler:)` in `DirectCall` class.
+	* `updateCustomItems(callId:customItems:completionHandler:)` in `SendBirdCall` class.
+	* `deleteCustomItems(callId:customItemKeys:completionHandler:)` in `SendBirdCall` class.
+	* `deleteAllCustomItems(callId:completionHandler:)` in `SendBirdCall` class.
+	* `didUpdateCustomItems(call:updatedKeys:)` in `DirectCallDelegate` protocol.
+	* `didDeleteCustomItems(call:deletedKeys:)` in `DirectCallDelegate` protocol.
+	* Read-only property `customItems` in `DirectCall`.
+* New methods related to change of audio route.
+	* `didAudioDeviceChange(_:session:previousRoute:reason:)` in `DirectCallDelegate` protocol.
+	* `routePickerView(frame:)` in `SendBirdCall` class.
+* New protocol of call reconnection.
+	* `didStartReconnecting(_:)` 
+	* `didReconnect(_:)`
+* New parameter Classes for Dial, `DialParams` `AcceptParams`.
+	* Replaced `dial(to:isVideoCall:completionHandler:)` with `dial(with:completionHandler:)`.
+	* Replaced `accept(callOptions:)` with `accept(with:)`.	
+* Replaced `authenticate(params:completionHandler:)` with `authenticate(with:completionHandler:)`.	
+* Replaced `EndResult` enum with `DirectCallEndResult`.
+* Renamed Objective-C methods
+	* `addWithEndResult:` to `addEndResult:` in `SBCDirectCallLogListQueryParams` class.
+	* `removeWithEndResult:` to `removeEndResult:` in `SBCDirectCallLogListQueryParams` class.
+	* `initWithIsAudioEnabled:` to `initWithAudioEnabled:` in `CallOptions` class.
+	* `createDirectCallLogListQueryWith:` to `createDirectCallLogListQueryWithParams:` in `SendBirdCall` class.
+* Increased stability.
+
 ### 0.6.10 (Jan 31, 2020)
 * Deprecated `SendBirdCall.appId` setter.
 * Deprecated `CallOption.isVideoCall` property.
 * New initializer of `CallOption`, `init(isAudioEnabled:)`.
 * Deprecated `SendBirdCall.dial(to:callOptions:completionHandler:)`.
 * New method to dial `dial(to:isVideoCall:callOptions:completionHandler:)`.
-* Increase stability.
+* Increased stability.
 
 ### 0.6.3 (Jan 3, 2020)
 * Support `DirectCall.duration` when a call is active.

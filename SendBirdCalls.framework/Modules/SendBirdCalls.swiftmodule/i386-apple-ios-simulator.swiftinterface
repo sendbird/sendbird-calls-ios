@@ -1,11 +1,13 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.1 (swiftlang-1100.0.270.13 clang-1100.0.33.7)
+// swift-compiler-version: Apple Swift version 5.1.3 (swiftlang-1100.0.282.1 clang-1100.0.33.15)
 // swift-module-flags: -target i386-apple-ios9.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendBirdCalls
+import AVFoundation
+import AVKit
 import CommonCrypto
-import CoreFoundation
 import Foundation
+import MediaPlayer
+import Network
 import PushKit
-import Security
 @_exported import SendBirdCalls
 import Swift
 import UIKit
@@ -15,11 +17,34 @@ import zlib
   @objc final public let role: SendBirdCalls.DirectCall.UserRole
   @objc deinit
 }
+@objc(SBCDirectCallEndResult) public enum DirectCallEndResult : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+  case none
+  case completed
+  case canceled
+  case declined
+  case otherDeviceAccepted
+  case timedOut
+  case connectionLost
+  case noAnswer
+  case dialFailed
+  case acceptFailed
+  case unknown
+  public typealias RawValue = Swift.String
+  public var rawValue: SendBirdCalls.DirectCallEndResult.RawValue {
+    get
+  }
+  public init(rawValue: Swift.String)
+}
 extension DirectCall {
+  @available(*, deprecated, message: "This method is deprecated. Use accept(with:completionHandler:) instead. This will be removed from version 0.8")
   @objc dynamic public func accept(callOptions: SendBirdCalls.CallOptions)
+  @objc(acceptWithParams:) dynamic public func accept(with params: SendBirdCalls.AcceptParams)
   @objc dynamic public func end()
   @objc dynamic public func muteMicrophone()
   @objc dynamic public func unmuteMicrophone()
+  @objc dynamic public func updateCustomItems(customItems: [Swift.String : Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
+  @objc dynamic public func deleteCustomItems(customItemKeys: [Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
+  @objc dynamic public func deleteAllCustomItems(completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
 }
 @objc public protocol SBCLogReceiver : AnyObject {
   @objc(logMessage:) func log(message: Swift.String)
@@ -66,7 +91,7 @@ extension DirectCall {
   @objc public var callee: SendBirdCalls.DirectCallUser? {
     @objc get
   }
-  @objc public var endResult: SendBirdCalls.EndResult {
+  @objc public var endResult: SendBirdCalls.DirectCallEndResult {
     get
     }
   @objc public var myRole: SendBirdCalls.DirectCall.UserRole {
@@ -75,14 +100,16 @@ extension DirectCall {
   @objc public var isVideoCall: Swift.Bool {
     get
     }
+  @objc public var customItems: [Swift.String : Swift.String] {
+    get
+    }
   required public init(from decoder: Swift.Decoder) throws
   @objc override dynamic public init()
   @objc deinit
 }
 @objc(SBCDirectCallLogListQuery) public class DirectCallLogListQuery : ObjectiveC.NSObject {
-  @objc public enum UserRoleFilter : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+  @objc public enum UserRoleFilter : Swift.Int, Swift.RawRepresentable {
     case caller, callee, all
-    public init(stringValue: Swift.String?)
     public typealias RawValue = Swift.Int
     public init?(rawValue: Swift.Int)
     public var rawValue: Swift.Int {
@@ -96,26 +123,26 @@ extension DirectCall {
     get
     }
   @objc public var myRole: SendBirdCalls.DirectCallLogListQuery.UserRoleFilter {
+    @objc get
+  }
+  public var endResults: [SendBirdCalls.DirectCallEndResult] {
     get
-    }
-  public var endResults: [SendBirdCalls.EndResult] {
-    get
-    }
+  }
   @objc public var endResultsArray: Foundation.NSArray {
     @objc get
   }
   @objc public var limit: Swift.Int32 {
-    get
-    }
+    @objc get
+  }
   @objc public func next(completionHandler: @escaping SendBirdCalls.CallLogsResultHandler)
   @objc(SBCDirectCallLogListQueryParams) public class Params : ObjectiveC.NSObject {
     @objc public var myRole: SendBirdCalls.DirectCallLogListQuery.UserRoleFilter
-    public var endResults: [SendBirdCalls.EndResult]
+    public var endResults: [SendBirdCalls.DirectCallEndResult]
     @objc public var endResultsArray: Foundation.NSArray {
       @objc get
     }
-    @objc public func add(endResult: SendBirdCalls.EndResult)
-    @objc public func remove(endResult: SendBirdCalls.EndResult)
+    @objc(addEndResult:) public func add(endResult: SendBirdCalls.DirectCallEndResult)
+    @objc(removeEndResult:) public func remove(endResult: SendBirdCalls.DirectCallEndResult)
     @objc public var limit: Swift.Int32 {
       @objc get
       @objc set
@@ -128,6 +155,7 @@ extension DirectCall {
 }
 public typealias AuthenticateHandler = (SendBirdCalls.User?, SendBirdCalls.SBCError?) -> Swift.Void
 public typealias DirectCallHandler = (SendBirdCalls.DirectCall?, SendBirdCalls.SBCError?) -> Swift.Void
+public typealias CustomItemsHandler = ([Swift.String : Swift.String]?, [Swift.String]?, SendBirdCalls.SBCError?) -> Swift.Void
 public typealias ErrorHandler = (SendBirdCalls.SBCError?) -> Swift.Void
 public typealias VoidHandler = () -> Swift.Void
 public typealias CallLogsResultHandler = ([SendBirdCalls.DirectCallLog]?, SendBirdCalls.SBCError?) -> Swift.Void
@@ -178,16 +206,21 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
   @objc deinit
 }
 @objc(SBCSendBirdCallDelegate) public protocol SendBirdCallDelegate : AnyObject {
-  @objc func didEnterRinging(_ call: SendBirdCalls.DirectCall)
+  @objc func didStartRinging(_ call: SendBirdCalls.DirectCall)
 }
 @objc(SBCDirectCallDelegate) public protocol DirectCallDelegate : AnyObject {
   @objc optional func didEstablish(_ call: SendBirdCalls.DirectCall)
   @objc func didConnect(_ call: SendBirdCalls.DirectCall)
+  @objc optional func didStartReconnecting(_ call: SendBirdCalls.DirectCall)
+  @objc optional func didReconnect(_ call: SendBirdCalls.DirectCall)
   @objc optional func didRemoteAudioSettingsChange(_ call: SendBirdCalls.DirectCall)
   @objc func didEnd(_ call: SendBirdCalls.DirectCall)
+  @objc optional func didAudioDeviceChange(_ call: SendBirdCalls.DirectCall, session: AVFoundation.AVAudioSession, previousRoute: AVFoundation.AVAudioSessionRouteDescription, reason: AVFoundation.AVAudioSession.RouteChangeReason)
+  @objc optional func didUpdateCustomItems(call: SendBirdCalls.DirectCall, updatedKeys: [Swift.String])
+  @objc optional func didDeleteCustomItems(call: SendBirdCalls.DirectCall, deletedKeys: [Swift.String])
 }
 @objc(SBCDirectCall) public class DirectCall : ObjectiveC.NSObject {
-  @objc(SBCDirectCallUserRole) public enum UserRole : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+  @objc(SBCDirectCallUserRole) public enum UserRole : Swift.Int, Swift.RawRepresentable {
     case caller, callee
     public init(stringValue: Swift.String?)
     public typealias RawValue = Swift.Int
@@ -199,12 +232,18 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
   @objc public var callId: Swift.String {
     get
     }
+  @objc public var callUUID: Foundation.UUID? {
+    @objc get
+  }
   @objc public var caller: SendBirdCalls.DirectCallUser? {
     get
     }
   @objc public var callee: SendBirdCalls.DirectCallUser? {
     get
     }
+  @objc public var customItems: [Swift.String : Swift.String] {
+    @objc get
+  }
   @objc public var remoteUser: SendBirdCalls.DirectCallUser? {
     @objc get
   }
@@ -217,18 +256,18 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
   public var endedBy: SendBirdCalls.DirectCallUser? {
     get
   }
-  @objc public var endResult: SendBirdCalls.EndResult {
+  @objc public var endResult: SendBirdCalls.DirectCallEndResult {
     @objc get
   }
   @objc public var isEnded: Swift.Bool {
     @objc get
   }
   @objc public var startedAt: Swift.Int64 {
-    get
-    }
+    @objc get
+  }
   @objc public var endedAt: Swift.Int64 {
-    get
-    }
+    @objc get
+  }
   @objc public var duration: Swift.Int64 {
     @objc get
   }
@@ -245,11 +284,6 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
   @objc override dynamic public init()
   @objc deinit
 }
-extension DirectCall {
-  @objc dynamic public var callUUID: Foundation.UUID? {
-    @objc get
-  }
-}
 @objc(SBCCallOptions) public class CallOptions : ObjectiveC.NSObject {
   @available(*, deprecated, message: "DO NOT use this property. This property is deprecated.")
   @objc public var isVideoCall: Swift.Bool
@@ -259,7 +293,17 @@ extension DirectCall {
   }
   @available(*, deprecated, message: "DO NOT use this method. This method is deprecated.")
   @objc convenience public init(isVideoCall: Swift.Bool = false, isAudioEnabled: Swift.Bool = true)
-  @objc convenience public init(isAudioEnabled: Swift.Bool = true)
+  @objc(initWithAudioEnabled:) convenience public init(isAudioEnabled: Swift.Bool = true)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(SBCDialParams) public class DialParams : ObjectiveC.NSObject {
+  @objc public var calleeId: Swift.String
+  @objc public var isVideoCall: Swift.Bool
+  @objc public var callOptions: SendBirdCalls.CallOptions
+  @objc public var customItems: [Swift.String : Swift.String]
+  @objc public init(calleeId: Swift.String, isVideoCall: Swift.Bool = false, callOptions: SendBirdCalls.CallOptions = CallOptions(), customItems: [Swift.String : Swift.String] = [:])
+  @objc convenience public init(calleeId: Swift.String)
   @objc override dynamic public init()
   @objc deinit
 }
@@ -272,6 +316,7 @@ extension DirectCall {
   @objc public static var sdkVersion: Swift.String {
     @objc get
   }
+  @objc public static func routePickerView(frame: CoreGraphics.CGRect) -> UIKit.UIView
   @objc public static func executeOn(queue: Dispatch.DispatchQueue)
   @objc public static func addDelegate(_ delegate: SendBirdCalls.SendBirdCallDelegate, identifier: Swift.String)
   @objc public static func removeDelegate(identifier: Swift.String)
@@ -280,23 +325,32 @@ extension DirectCall {
   @objc public static var currentUser: SendBirdCalls.User? {
     @objc get
   }
-  @objc public static func authenticate(params: SendBirdCalls.AuthenticateParams, completionHandler: @escaping SendBirdCalls.AuthenticateHandler)
+  @available(*, deprecated, message: "This enumeration is deprecated. Use `authenticate(with:completionHandler:)`. This will be removed from version 0.8")
+  public static func authenticate(params: SendBirdCalls.AuthenticateParams, completionHandler: @escaping SendBirdCalls.AuthenticateHandler)
+  @objc(authenticateWithParams:completionHandler:) public static func authenticate(with params: SendBirdCalls.AuthenticateParams, completionHandler: @escaping SendBirdCalls.AuthenticateHandler)
   @objc public static func deauthenticate(pushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
   @discardableResult
-  @available(*, deprecated, message: "DO NOT use this method. This method is unavailable. Use dial(to:isVideoCall:callOptions:completionHandler:) instead.")
+  @available(*, deprecated, message: "This method is deprecated. Use dial(with:completionHandler:) instead. This will be removed from version 0.8")
   @objc public static func dial(to calleeId: Swift.String, callOptions: SendBirdCalls.CallOptions = CallOptions(), completionHandler: @escaping SendBirdCalls.DirectCallHandler) -> SendBirdCalls.DirectCall?
   @discardableResult
+  @available(*, deprecated, message: "This method is deprecated. Use dial(with:completionHandler:) instead. This will be removed from version 0.8")
   @objc public static func dial(to calleeId: Swift.String, isVideoCall: Swift.Bool = false, callOptions: SendBirdCalls.CallOptions = CallOptions(), completionHandler: @escaping SendBirdCalls.DirectCallHandler) -> SendBirdCalls.DirectCall?
+  @discardableResult
+  @objc(dialWithParams:completionHandler:) public static func dial(with params: SendBirdCalls.DialParams, completionHandler: @escaping SendBirdCalls.DirectCallHandler) -> SendBirdCalls.DirectCall?
   @objc public static func pushRegistry(_ registry: PushKit.PKPushRegistry, didReceiveIncomingPushWith payload: PushKit.PKPushPayload, for type: PushKit.PKPushType, completionHandler: SendBirdCalls.PushRegistryHandler?)
   @objc public static func register(pushToken: Foundation.Data?, unique: Swift.Bool = false, completionHandler: SendBirdCalls.ErrorHandler?)
   @objc public static func unregister(pushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
   @objc public static func unregisterAllPushTokens(completionHandler: SendBirdCalls.ErrorHandler?)
-  @objc public static func createDirectCallLogListQuery(with params: SendBirdCalls.DirectCallLogListQuery.Params) -> SendBirdCalls.DirectCallLogListQuery?
+  @objc(createDirectCallLogListQueryWithParams:) public static func createDirectCallLogListQuery(with params: SendBirdCalls.DirectCallLogListQuery.Params) -> SendBirdCalls.DirectCallLogListQuery?
+  @objc public static func updateCustomItems(callId: Swift.String, customItems: [Swift.String : Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
+  @objc public static func deleteCustomItems(callId: Swift.String, customItemKeys: [Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
+  @objc public static func deleteAllCustomItems(callId: Swift.String, completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
   @objc deinit
 }
 @objc extension SendBirdCall {
   @objc public static func getCall(forUUID callUUID: Foundation.UUID) -> SendBirdCalls.DirectCall?
 }
+@available(*, deprecated, message: "This enumeration is deprecated. Use `DirectCallEndResult`. This will be removed from version 0.8")
 @objc(SBCEndResult) public enum EndResult : Swift.Int, Swift.RawRepresentable, Swift.Codable {
   case none
   case completed
@@ -315,9 +369,20 @@ extension DirectCall {
   }
   public init(rawValue: Swift.String)
 }
+@objc(SBCAcceptParams) public class AcceptParams : ObjectiveC.NSObject {
+  @objc public var callOptions: SendBirdCalls.CallOptions
+  @objc public init(callOptions: SendBirdCalls.CallOptions = CallOptions())
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension SendBirdCalls.DirectCallEndResult : Swift.Equatable {}
+extension SendBirdCalls.DirectCallEndResult : Swift.Hashable {}
 extension SendBirdCalls.DirectCallLogListQuery.UserRoleFilter : Swift.Equatable {}
 extension SendBirdCalls.DirectCallLogListQuery.UserRoleFilter : Swift.Hashable {}
 extension SendBirdCalls.SBCError.ErrorCode : Swift.Equatable {}
 extension SendBirdCalls.SBCError.ErrorCode : Swift.Hashable {}
 extension SendBirdCalls.DirectCall.UserRole : Swift.Hashable {}
+@available(*, deprecated, message: "This enumeration is deprecated. Use `DirectCallEndResult`. This will be removed from version 0.8")
+extension SendBirdCalls.EndResult : Swift.Equatable {}
+@available(*, deprecated, message: "This enumeration is deprecated. Use `DirectCallEndResult`. This will be removed from version 0.8")
 extension SendBirdCalls.EndResult : Swift.Hashable {}
