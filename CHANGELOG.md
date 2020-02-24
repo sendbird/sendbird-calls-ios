@@ -1,5 +1,8 @@
 # Change Log
 
+### 0.7.1 (Feb 24, 2020)
+* Improved WebSocket Connection Stability.
+
 ### 0.7.0 (Feb 20, 2020)
 * Replaced `didEnterRinging(_:)` with `didStartRinging(_:)` in `SendBirdCallDelegate`.
 * New feature of `CustomItems`.
