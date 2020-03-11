@@ -8,10 +8,13 @@ import CoreFoundation
 import Foundation
 import MediaPlayer
 import PushKit
+import WebRTC.RTCVideoRenderer
 import Security
 @_exported import SendBirdCalls
 import Swift
+import UIKit.UIApplication
 import UIKit
+import UserNotifications
 import WebRTC
 import zlib
 @objc(SBCDirectCallUser) public class DirectCallUser : SendBirdCalls.User {
@@ -43,6 +46,8 @@ extension DirectCall {
   @objc dynamic public func end()
   @objc dynamic public func muteMicrophone()
   @objc dynamic public func unmuteMicrophone()
+  @objc dynamic public func startVideo()
+  @objc dynamic public func stopVideo()
   @objc dynamic public func updateCustomItems(customItems: [Swift.String : Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
   @objc dynamic public func deleteCustomItems(customItemKeys: [Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
   @objc dynamic public func deleteAllCustomItems(completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
@@ -56,19 +61,33 @@ extension DirectCall {
   @objc override dynamic public init()
   @objc deinit
 }
+extension DirectCall {
+  @objc dynamic public func updateLocalVideoView(_ videoView: SendBirdCalls.SendBirdVideoView)
+  @objc dynamic public func updateRemoteVideoView(_ videoView: SendBirdCalls.SendBirdVideoView)
+}
 @objc(SBCAuthenticateParams) public class AuthenticateParams : ObjectiveC.NSObject {
   @objc public var userId: Swift.String
   @objc public var accessToken: Swift.String?
-  @objc public var pushToken: Foundation.Data? {
+  @objc public var voipPushToken: Foundation.Data? {
     get
     }
   @objc public var unique: Swift.Bool {
     get
     }
-  @objc public init(userId: Swift.String, accessToken: Swift.String? = nil, pushToken: Foundation.Data? = nil, unique: Swift.Bool)
+  @available(*, deprecated, message: "This variable is deprecated. Use `voipPushToken`. This will be removed from version 1.0")
+  @objc public var pushToken: Foundation.Data? {
+    @objc get
+  }
+  @available(*, deprecated, message: "This initializer is deprecated. Use `init(userId:accessToken:voipPushToken:unique:)`. This will be removed from version 1.0")
+  @objc public init(userId: Swift.String, accessToken: Swift.String? = nil, pushToken: Foundation.Data, unique: Swift.Bool)
+  @objc public init(userId: Swift.String, accessToken: Swift.String? = nil, voipPushToken: Foundation.Data? = nil, unique: Swift.Bool)
   @objc convenience public init(userId: Swift.String, accessToken: Swift.String?)
-  @objc convenience public init(userId: Swift.String, pushToken: Foundation.Data?, unique: Swift.Bool)
+  @available(*, deprecated, message: "This initializer is deprecated. Use `init(userId:voipPushToken:unique):`. This will be removed from version 1.0")
+  @objc convenience public init(userId: Swift.String, pushToken: Foundation.Data, unique: Swift.Bool)
+  @objc convenience public init(userId: Swift.String, voipPushToken: Foundation.Data?, unique: Swift.Bool)
+  @available(*, deprecated, message: "This method is deprecated. Use `setVoIPPush(token:withUniqueness:)`. This will be removed from version 1.0")
   @objc public func setPush(token: Foundation.Data?, withUniqueness unique: Swift.Bool = false)
+  @objc public func setVoIPPush(token: Foundation.Data?, withUniqueness unique: Swift.Bool = false)
   @objc override dynamic public init()
   @objc deinit
 }
@@ -161,6 +180,12 @@ public typealias ErrorHandler = (SendBirdCalls.SBCError?) -> Swift.Void
 public typealias VoidHandler = () -> Swift.Void
 public typealias CallLogsResultHandler = ([SendBirdCalls.DirectCallLog]?, SendBirdCalls.SBCError?) -> Swift.Void
 public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
+@objc(SBCVideoView) public class SendBirdVideoView : WebRTC.RTCEAGLVideoView {
+  @objc override dynamic public init(frame: CoreGraphics.CGRect, shader: WebRTC.RTCVideoViewShading)
+  @objc override dynamic public init(coder aDecoder: Foundation.NSCoder, shader: WebRTC.RTCVideoViewShading)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
 @objc(SBCUser) public class User : ObjectiveC.NSObject, Swift.Codable {
   @objc final public let userId: Swift.String
   @objc public var nickname: Swift.String? {
@@ -215,6 +240,7 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
   @objc optional func didStartReconnecting(_ call: SendBirdCalls.DirectCall)
   @objc optional func didReconnect(_ call: SendBirdCalls.DirectCall)
   @objc optional func didRemoteAudioSettingsChange(_ call: SendBirdCalls.DirectCall)
+  @objc optional func didRemoteVideoSettingsChange(_ call: SendBirdCalls.DirectCall)
   @objc func didEnd(_ call: SendBirdCalls.DirectCall)
   @objc optional func didAudioDeviceChange(_ call: SendBirdCalls.DirectCall, session: AVFoundation.AVAudioSession, previousRoute: AVFoundation.AVAudioSessionRouteDescription, reason: AVFoundation.AVAudioSession.RouteChangeReason)
   @objc optional func didUpdateCustomItems(call: SendBirdCalls.DirectCall, updatedKeys: [Swift.String])
@@ -278,6 +304,18 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
   @objc public var isLocalAudioEnabled: Swift.Bool {
     @objc get
   }
+  @objc weak public var localVideoView: SendBirdCalls.SendBirdVideoView? {
+    @objc get
+  }
+  @objc weak public var remoteVideoView: SendBirdCalls.SendBirdVideoView? {
+    @objc get
+  }
+  @objc public var isLocalVideoEnabled: Swift.Bool {
+    @objc get
+  }
+  @objc public var isRemoteVideoEnabled: Swift.Bool {
+    @objc get
+  }
   @objc public var isVideoCall: Swift.Bool {
     get
     }
@@ -286,17 +324,25 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
   @objc deinit
 }
 @objc(SBCCallOptions) public class CallOptions : ObjectiveC.NSObject {
+  @objc weak public var localVideoView: SendBirdCalls.SendBirdVideoView?
+  @objc weak public var remoteVideoView: SendBirdCalls.SendBirdVideoView?
   @available(*, deprecated, message: "DO NOT use this property. This property is deprecated.")
   @objc public var isVideoCall: Swift.Bool
   @objc public var isAudioEnabled: Swift.Bool {
     @objc get
     @objc set
   }
-  @available(*, deprecated, message: "DO NOT use this method. This method is deprecated.")
-  @objc convenience public init(isVideoCall: Swift.Bool = false, isAudioEnabled: Swift.Bool = true)
-  @objc(initWithAudioEnabled:) convenience public init(isAudioEnabled: Swift.Bool = true)
+  @objc public var isVideoEnabled: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc(initWithAudioEnabled:) convenience public init(isAudioEnabled: Swift.Bool)
+  @objc(initWithAudioEnabled:videoEnabled:localVideoView:remoteVideoView:) public init(isAudioEnabled: Swift.Bool = true, isVideoEnabled: Swift.Bool = true, localVideoView: SendBirdCalls.SendBirdVideoView? = nil, remoteVideoView: SendBirdCalls.SendBirdVideoView? = nil)
   @objc override dynamic public init()
   @objc deinit
+}
+extension CallOptions : Foundation.NSCopying {
+  @objc dynamic public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
 }
 @objc(SBCDialParams) public class DialParams : ObjectiveC.NSObject {
   @objc public var calleeId: Swift.String
@@ -307,6 +353,9 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
   @objc convenience public init(calleeId: Swift.String)
   @objc override dynamic public init()
   @objc deinit
+}
+extension DialParams : Foundation.NSCopying {
+  @objc dynamic public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
 }
 @objc(SBCSendBirdCall) public class SendBirdCall : ObjectiveC.NSObject {
   @objc public static var appId: Swift.String? {
@@ -329,7 +378,9 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
   @available(*, deprecated, message: "This enumeration is deprecated. Use `authenticate(with:completionHandler:)`. This will be removed from version 0.8")
   public static func authenticate(params: SendBirdCalls.AuthenticateParams, completionHandler: @escaping SendBirdCalls.AuthenticateHandler)
   @objc(authenticateWithParams:completionHandler:) public static func authenticate(with params: SendBirdCalls.AuthenticateParams, completionHandler: @escaping SendBirdCalls.AuthenticateHandler)
+  @available(*, deprecated, message: "This method is deprecated. Use `deauthenticate(voipPushToken:, completionHandler:)`. This will be removed from version 1.0")
   @objc public static func deauthenticate(pushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
+  @objc(deauthenticateWithVoIPPushToken:completionHandler:) public static func deauthenticate(voipPushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
   @discardableResult
   @available(*, deprecated, message: "This method is deprecated. Use dial(with:completionHandler:) instead. This will be removed from version 0.8")
   @objc public static func dial(to calleeId: Swift.String, callOptions: SendBirdCalls.CallOptions = CallOptions(), completionHandler: @escaping SendBirdCalls.DirectCallHandler) -> SendBirdCalls.DirectCall?
@@ -339,9 +390,15 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
   @discardableResult
   @objc(dialWithParams:completionHandler:) public static func dial(with params: SendBirdCalls.DialParams, completionHandler: @escaping SendBirdCalls.DirectCallHandler) -> SendBirdCalls.DirectCall?
   @objc public static func pushRegistry(_ registry: PushKit.PKPushRegistry, didReceiveIncomingPushWith payload: PushKit.PKPushPayload, for type: PushKit.PKPushType, completionHandler: SendBirdCalls.PushRegistryHandler?)
+  @available(*, deprecated, message: "This method is deprecated. Use `registerVoIPPush(token:unique:completionHandler:)`. This will be removed from version 1.0")
   @objc public static func register(pushToken: Foundation.Data?, unique: Swift.Bool = false, completionHandler: SendBirdCalls.ErrorHandler?)
+  @objc public static func registerVoIPPush(token: Foundation.Data?, unique: Swift.Bool = false, completionHandler: SendBirdCalls.ErrorHandler?)
+  @available(*, deprecated, message: "This method is deprecated. Use `unregisterVoIPPush(token:completionHandler:)`. This will be removed from version 1.0")
   @objc public static func unregister(pushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
+  @objc public static func unregisterVoIPPush(token: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
+  @available(*, deprecated, message: "This method is deprecated. Use `unregisterAllVoIPPushTokens(completionHandler:)`. This will be removed from version 1.0")
   @objc public static func unregisterAllPushTokens(completionHandler: SendBirdCalls.ErrorHandler?)
+  @objc public static func unregisterAllVoIPPushTokens(completionHandler: SendBirdCalls.ErrorHandler?)
   @objc(createDirectCallLogListQueryWithParams:) public static func createDirectCallLogListQuery(with params: SendBirdCalls.DirectCallLogListQuery.Params) -> SendBirdCalls.DirectCallLogListQuery?
   @objc public static func updateCustomItems(callId: Swift.String, customItems: [Swift.String : Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
   @objc public static func deleteCustomItems(callId: Swift.String, customItemKeys: [Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
@@ -350,25 +407,6 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
 }
 @objc extension SendBirdCall {
   @objc public static func getCall(forUUID callUUID: Foundation.UUID) -> SendBirdCalls.DirectCall?
-}
-@available(*, deprecated, message: "This enumeration is deprecated. Use `DirectCallEndResult`. This will be removed from version 0.8")
-@objc(SBCEndResult) public enum EndResult : Swift.Int, Swift.RawRepresentable, Swift.Codable {
-  case none
-  case completed
-  case canceled
-  case declined
-  case otherDeviceAccepted
-  case timedOut
-  case connectionLost
-  case noAnswer
-  case dialFailed
-  case acceptFailed
-  case unknown
-  public typealias RawValue = Swift.String
-  public var rawValue: SendBirdCalls.EndResult.RawValue {
-    get
-  }
-  public init(rawValue: Swift.String)
 }
 @objc(SBCAcceptParams) public class AcceptParams : ObjectiveC.NSObject {
   @objc public var callOptions: SendBirdCalls.CallOptions
@@ -383,7 +421,3 @@ extension SendBirdCalls.DirectCallLogListQuery.UserRoleFilter : Swift.Hashable {
 extension SendBirdCalls.SBCError.ErrorCode : Swift.Equatable {}
 extension SendBirdCalls.SBCError.ErrorCode : Swift.Hashable {}
 extension SendBirdCalls.DirectCall.UserRole : Swift.Hashable {}
-@available(*, deprecated, message: "This enumeration is deprecated. Use `DirectCallEndResult`. This will be removed from version 0.8")
-extension SendBirdCalls.EndResult : Swift.Equatable {}
-@available(*, deprecated, message: "This enumeration is deprecated. Use `DirectCallEndResult`. This will be removed from version 0.8")
-extension SendBirdCalls.EndResult : Swift.Hashable {}

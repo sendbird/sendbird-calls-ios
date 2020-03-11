@@ -1,5 +1,19 @@
 # Change Log
 
+### 0.8.0 (Mar 11, 2020)
+* Added video call feature.
+        * Added `SendBirdVideoView` class.
+        * Added `isLocalVideoEnabled` and `isRemoteVideoEnabled` in `DirectCall`.
+        * Added `startVideo()` and `stopVideo()` in `DirectCall`.
+        * Added `updateLocalVideoView(_:)` and `updateRemoteVideoView(_:)` in `DirectCall`.
+        * Added `init(isAudioEnabled:isVideoEnabled:localVideoView:remoteVideoView:)` in `CallOptions`.
+        * Added `didRemoteVideoSettingsChange(call:)` method in `DirectCallDelegate`.
+* Renamed `PushToken` to `VoIPPushToken`.  Previous methods were deprecated, and will be removed in 1.0.0.
+* Modified `CallOptions` and `DialParams` to conform `NSCopying`
+* Removed deprecated methods.
+* Allowed to receive incoming calls without CallKit.
+* Improved stability.
+
 ### 0.7.1 (Feb 24, 2020)
 * Improved WebSocket Connection Stability.
 
