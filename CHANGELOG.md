@@ -1,5 +1,8 @@
 # Change Log
 
+### 0.8.2 (Mar 12, 2020)
+* Improved stability.
+
 ### 0.8.1 (Mar 11, 2020)
 * Stability improvements. 
 
