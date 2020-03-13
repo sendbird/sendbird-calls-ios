@@ -1,4 +1,6 @@
 # Change Log
+### 0.8.3 (Mar 13, 2020)
+* Fixed a bug that could not render local video view.
 
 ### 0.8.2 (Mar 12, 2020)
 * Improved stability.
