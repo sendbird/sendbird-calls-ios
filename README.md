@@ -42,7 +42,6 @@ When implemented, the **SendBirdCalls** SDK provides the framework to both make 
 * Swift 4 or later, Objective-C
 * Xcode 9 or later, macOS Sierra or later.
 * Installation of **[Git Large File Storage](https://git-lfs.github.com)**
-* Real devices. **The iOS simulator is NOT supported**
 
 ## SDK Dependencies
 * [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios): it will be integrated by CocoaPods
@@ -97,15 +96,16 @@ For an in depth guide, read on from [Carthage's ReadMe](https://github.com/Carth
 ## Configure the Application for the SDK
 
 ### Background Mode
-To support background operation, your VoIP app must have `Background Mode` enabled in the `Xcode Project > Signing&Capabilities` pane. Select the checkbox for `Voice over IP` and `Remote notifications`.
+To support background operation, your VoIP app must have `Background Mode` enabled in the `Xcode Project > Signing&Capabilities` pane. Select the checkbox for `Voice over IP`.
 
 To receive push notifications, your app also must have `Push Notifications` enabled in the `Xcode Project > Signing&Capabilities` pane. 
-> For more information about VoIP push notification and PushKit, see Apple's [CallKit](https://developer.apple.com/documentation/callkit) and [PushKit](https://developer.apple.com/documentation/callkit)
+> For more information about VoIP push notification and PushKit, see Apple's [CallKit](https://developer.apple.com/documentation/callkit) and [PushKit](https://developer.apple.com/documentation/pushkit)
 <br/>
 
 ### Configure Your App's Info.plist File
 iOS requires that your app provide static messages to display to the user when the system asks for microphone permission :
 * If your app uses device microphones, include the [NSMicrophoneUsageDescription](https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW25) key in your app’s Info.plist file.
+* If your app uses device camera, include the [NSCameraUsageDescription](https://developer.apple.com/documentation/bundleresources/information_property_list/nscamerausagedescription) key in your app’s Info.plist file
 <br/>
 
 ## Initialize the SendBirdCall instance in a client app
@@ -116,7 +116,7 @@ SendBirdCall.configure(appId: APP_ID)
 
 ## Authenticate a user and register a push token
 
-In order to make and receive calls, authenticate the user with SendBird server with the the `SendBirdCall.authenticate()` method. To receive calls while an app is in the background or closed, a device registration token must be registered to the server. Register a device push token during authentication by either providing it as a parameter in the authenticate() method, or after authentication has completed using the `SendBirdCall.registerPushToken()` method.
+In order to make and receive calls, authenticate the user with SendBird server with the the `SendBirdCall.authenticate()` method. To receive calls while an app is in the background or closed, a device registration token must be registered to the server. Register a device push token during authentication by either providing it as a parameter in the authenticate() method, or after authentication has completed using the `SendBirdCall.registerVoIPPush()` method.
 ```swift
 // Authenticate
 let params = AuthenticateParams(userId: userId, accessToken: accessToken)
@@ -137,7 +137,7 @@ class AppDelegate: PKPushRegistryDelegate {
 
     ...
     func pushRegistry(_ registry: PKPushRegistry, didUpdate pushCredentials: PKPushCredentials, for type: PKPushType) {
-        SendBirdCall.register(pushToken: pushCredentials.token, unique: true) { (error) in
+        SendBirdCall.registerVoIPPush(token: pushCredentials.token, unique: true) { (error) in
             guard let error = error else {
                 return
             }
@@ -155,7 +155,7 @@ Register a device-specific `SendBirdCallDelegate` event handler using the `SendB
 
 ```swift
 SendBirdCall.addDelegate(self, identifier: UNIQUE_HANDLER_ID)
-func didEnterRinging(_ call: DirectCall) {
+func didStartRinging(_ call: DirectCall) {
 }
 ```
 <br/>
