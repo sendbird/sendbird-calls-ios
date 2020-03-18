@@ -1,4 +1,9 @@
 # Change Log
+### 0.9.0 (Mar 18, 2020)
+* Changed endpoint domain.
+* Added Completion Handler to `DirectCall.end` for more flexible usage. 
+* Improved stability.
+
 ### 0.8.3 (Mar 13, 2020)
 * Fixed a bug that could not render local video view.
 

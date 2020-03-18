@@ -493,15 +493,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 @class SBCError;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
-/// Requests <code>ACCEPT</code> to <em>SendBird</em> server and sets up Turn credential. This method is called when the callee accepts incoming call.
-/// <ul>
-///   <li>
-///     See Also: use <a href="x-source-tag://accept(with:)">accept(with:)</a> instead
-///   </li>
-/// </ul>
-/// \param callOptions Set up the call that you’re receiving. Cannot be empty
-///
-- (void)acceptWithCallOptions:(SBCCallOptions * _Nonnull)callOptions SWIFT_DEPRECATED_MSG("This method is deprecated. Use accept(with:completionHandler:) instead. This will be removed from version 0.8");
 /// Accepts the incoming direct call. SendBirdCalls will continue to process the call with the server.
 /// \param params Set up the call that you’re receiving. Cannot be empty
 ///
@@ -522,6 +513,21 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 ///
 /// \endcode
 - (void)end;
+/// Ends the call. This method has a closeHandler that is called when the end message is successfully sent to the server.
+/// note:
+/// One example of implementing this method is for CallKit implementation, where CXEndCallAction should be fulfilled when call has been ended to ensure that the end command has been sent to the server before the Callkit is terminated and sent to background. Aside from that, you may choose to use the original <code>end()</code> method.
+/// \code
+/// func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
+///     // After Authenticating...
+///
+///     // End the call
+///     call.end {
+///         action.fulfill()
+///     };
+/// }
+///
+/// \endcode
+- (void)endWithCloseHandler:(void (^ _Nullable)(void))closeHandler;
 /// Mutes the audio of local user. Will trigger <code>DirectCallDelegate.didRemoteAudioSettingsChange()</code> delegate method of the remote user. If the remote user changes their audio settings, local user will be notified via same delegate method.
 /// \code
 /// // mute my microphone
@@ -1127,20 +1133,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param completionHandler Error Handler to be called after deauthenticate process is finished
 ///
 + (void)deauthenticateWithVoIPPushToken:(NSData * _Nullable)voipPushToken completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// This method will be removed in v0.8.0
-/// <ul>
-///   <li>
-///     See Also: use <a href="x-source-tag://dial(with:completionHandler:)">dial(with:completionHandler:)</a> instead
-///   </li>
-/// </ul>
-+ (SBCDirectCall * _Nullable)dialTo:(NSString * _Nonnull)calleeId callOptions:(SBCCallOptions * _Nonnull)callOptions completionHandler:(void (^ _Nonnull)(SBCDirectCall * _Nullable, SBCError * _Nullable))completionHandler SWIFT_DEPRECATED_MSG("This method is deprecated. Use dial(with:completionHandler:) instead. This will be removed from version 0.8");
-/// This method will be removed in v0.8.0
-/// <ul>
-///   <li>
-///     See Also: use <a href="x-source-tag://dial(with:completionHandler:)">dial(with:completionHandler:)</a> instead
-///   </li>
-/// </ul>
-+ (SBCDirectCall * _Nullable)dialTo:(NSString * _Nonnull)calleeId isVideoCall:(BOOL)isVideoCall callOptions:(SBCCallOptions * _Nonnull)callOptions completionHandler:(void (^ _Nonnull)(SBCDirectCall * _Nullable, SBCError * _Nullable))completionHandler SWIFT_DEPRECATED_MSG("This method is deprecated. Use dial(with:completionHandler:) instead. This will be removed from version 0.8");
 /// Makes a call to user(callee) directly. (1:1 Call).  Use the <code>CallOptions</code> object to choose initial call configuration (e.g. muted/unmuted)
 /// \code
 /// let params = DialParams(calleeId: CALLEE_ID, callOptions: CallOptions())
@@ -1848,15 +1840,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 @class SBCError;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
-/// Requests <code>ACCEPT</code> to <em>SendBird</em> server and sets up Turn credential. This method is called when the callee accepts incoming call.
-/// <ul>
-///   <li>
-///     See Also: use <a href="x-source-tag://accept(with:)">accept(with:)</a> instead
-///   </li>
-/// </ul>
-/// \param callOptions Set up the call that you’re receiving. Cannot be empty
-///
-- (void)acceptWithCallOptions:(SBCCallOptions * _Nonnull)callOptions SWIFT_DEPRECATED_MSG("This method is deprecated. Use accept(with:completionHandler:) instead. This will be removed from version 0.8");
 /// Accepts the incoming direct call. SendBirdCalls will continue to process the call with the server.
 /// \param params Set up the call that you’re receiving. Cannot be empty
 ///
@@ -1877,6 +1860,21 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 ///
 /// \endcode
 - (void)end;
+/// Ends the call. This method has a closeHandler that is called when the end message is successfully sent to the server.
+/// note:
+/// One example of implementing this method is for CallKit implementation, where CXEndCallAction should be fulfilled when call has been ended to ensure that the end command has been sent to the server before the Callkit is terminated and sent to background. Aside from that, you may choose to use the original <code>end()</code> method.
+/// \code
+/// func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
+///     // After Authenticating...
+///
+///     // End the call
+///     call.end {
+///         action.fulfill()
+///     };
+/// }
+///
+/// \endcode
+- (void)endWithCloseHandler:(void (^ _Nullable)(void))closeHandler;
 /// Mutes the audio of local user. Will trigger <code>DirectCallDelegate.didRemoteAudioSettingsChange()</code> delegate method of the remote user. If the remote user changes their audio settings, local user will be notified via same delegate method.
 /// \code
 /// // mute my microphone
@@ -2482,20 +2480,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param completionHandler Error Handler to be called after deauthenticate process is finished
 ///
 + (void)deauthenticateWithVoIPPushToken:(NSData * _Nullable)voipPushToken completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// This method will be removed in v0.8.0
-/// <ul>
-///   <li>
-///     See Also: use <a href="x-source-tag://dial(with:completionHandler:)">dial(with:completionHandler:)</a> instead
-///   </li>
-/// </ul>
-+ (SBCDirectCall * _Nullable)dialTo:(NSString * _Nonnull)calleeId callOptions:(SBCCallOptions * _Nonnull)callOptions completionHandler:(void (^ _Nonnull)(SBCDirectCall * _Nullable, SBCError * _Nullable))completionHandler SWIFT_DEPRECATED_MSG("This method is deprecated. Use dial(with:completionHandler:) instead. This will be removed from version 0.8");
-/// This method will be removed in v0.8.0
-/// <ul>
-///   <li>
-///     See Also: use <a href="x-source-tag://dial(with:completionHandler:)">dial(with:completionHandler:)</a> instead
-///   </li>
-/// </ul>
-+ (SBCDirectCall * _Nullable)dialTo:(NSString * _Nonnull)calleeId isVideoCall:(BOOL)isVideoCall callOptions:(SBCCallOptions * _Nonnull)callOptions completionHandler:(void (^ _Nonnull)(SBCDirectCall * _Nullable, SBCError * _Nullable))completionHandler SWIFT_DEPRECATED_MSG("This method is deprecated. Use dial(with:completionHandler:) instead. This will be removed from version 0.8");
 /// Makes a call to user(callee) directly. (1:1 Call).  Use the <code>CallOptions</code> object to choose initial call configuration (e.g. muted/unmuted)
 /// \code
 /// let params = DialParams(calleeId: CALLEE_ID, callOptions: CallOptions())

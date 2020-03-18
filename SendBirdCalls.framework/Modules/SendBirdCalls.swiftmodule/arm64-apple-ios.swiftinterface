@@ -14,7 +14,6 @@ import Security
 import Swift
 import UIKit.UIApplication
 import UIKit
-import UserNotifications
 import WebRTC
 import zlib
 @objc(SBCDirectCallUser) public class DirectCallUser : SendBirdCalls.User {
@@ -40,10 +39,9 @@ import zlib
   public init(rawValue: Swift.String)
 }
 extension DirectCall {
-  @available(*, deprecated, message: "This method is deprecated. Use accept(with:completionHandler:) instead. This will be removed from version 0.8")
-  @objc dynamic public func accept(callOptions: SendBirdCalls.CallOptions)
   @objc(acceptWithParams:) dynamic public func accept(with params: SendBirdCalls.AcceptParams)
   @objc dynamic public func end()
+  @objc dynamic public func end(closeHandler: SendBirdCalls.VoidHandler?)
   @objc dynamic public func muteMicrophone()
   @objc dynamic public func unmuteMicrophone()
   @objc dynamic public func startVideo()
@@ -374,18 +372,10 @@ extension DialParams : Foundation.NSCopying {
   @objc public static var currentUser: SendBirdCalls.User? {
     @objc get
   }
-  @available(*, deprecated, message: "This enumeration is deprecated. Use `authenticate(with:completionHandler:)`. This will be removed from version 0.8")
-  public static func authenticate(params: SendBirdCalls.AuthenticateParams, completionHandler: @escaping SendBirdCalls.AuthenticateHandler)
   @objc(authenticateWithParams:completionHandler:) public static func authenticate(with params: SendBirdCalls.AuthenticateParams, completionHandler: @escaping SendBirdCalls.AuthenticateHandler)
   @available(*, deprecated, message: "This method is deprecated. Use `deauthenticate(voipPushToken:, completionHandler:)`. This will be removed from version 1.0")
   @objc public static func deauthenticate(pushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
   @objc(deauthenticateWithVoIPPushToken:completionHandler:) public static func deauthenticate(voipPushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
-  @discardableResult
-  @available(*, deprecated, message: "This method is deprecated. Use dial(with:completionHandler:) instead. This will be removed from version 0.8")
-  @objc public static func dial(to calleeId: Swift.String, callOptions: SendBirdCalls.CallOptions = CallOptions(), completionHandler: @escaping SendBirdCalls.DirectCallHandler) -> SendBirdCalls.DirectCall?
-  @discardableResult
-  @available(*, deprecated, message: "This method is deprecated. Use dial(with:completionHandler:) instead. This will be removed from version 0.8")
-  @objc public static func dial(to calleeId: Swift.String, isVideoCall: Swift.Bool = false, callOptions: SendBirdCalls.CallOptions = CallOptions(), completionHandler: @escaping SendBirdCalls.DirectCallHandler) -> SendBirdCalls.DirectCall?
   @discardableResult
   @objc(dialWithParams:completionHandler:) public static func dial(with params: SendBirdCalls.DialParams, completionHandler: @escaping SendBirdCalls.DirectCallHandler) -> SendBirdCalls.DirectCall?
   @objc public static func pushRegistry(_ registry: PushKit.PKPushRegistry, didReceiveIncomingPushWith payload: PushKit.PKPushPayload, for type: PushKit.PKPushType, completionHandler: SendBirdCalls.PushRegistryHandler?)
