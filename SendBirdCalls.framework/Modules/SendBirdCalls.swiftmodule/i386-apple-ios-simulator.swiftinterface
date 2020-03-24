@@ -38,6 +38,25 @@ import zlib
   }
   public init(rawValue: Swift.String)
 }
+@objc(SBCVideoDevice) public class VideoDevice : ObjectiveC.NSObject {
+  @objc final public let uniqueId: Swift.String
+  @objc final public let localizedName: Swift.String
+  @objc final public let position: SendBirdCalls.VideoDevice.Position
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension VideoDevice {
+  @objc(SBCVideoDevicePosition) public enum Position : Swift.Int, Swift.RawRepresentable {
+    case front
+    case back
+    case unspecified
+    public typealias RawValue = Swift.Int
+    public init?(rawValue: Swift.Int)
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+}
 extension DirectCall {
   @objc(acceptWithParams:) dynamic public func accept(with params: SendBirdCalls.AcceptParams)
   @objc dynamic public func end()
@@ -62,6 +81,13 @@ extension DirectCall {
 extension DirectCall {
   @objc dynamic public func updateLocalVideoView(_ videoView: SendBirdCalls.SendBirdVideoView)
   @objc dynamic public func updateRemoteVideoView(_ videoView: SendBirdCalls.SendBirdVideoView)
+  @objc dynamic public var availableVideoDevices: [SendBirdCalls.VideoDevice] {
+    @objc get
+  }
+  @objc dynamic public var currentVideoDevice: SendBirdCalls.VideoDevice? {
+    @objc get
+  }
+  @objc dynamic public func selectVideoDevice(_ device: SendBirdCalls.VideoDevice, completionHandler: @escaping SendBirdCalls.ErrorHandler)
 }
 @objc(SBCAuthenticateParams) public class AuthenticateParams : ObjectiveC.NSObject {
   @objc public var userId: Swift.String
@@ -72,19 +98,9 @@ extension DirectCall {
   @objc public var unique: Swift.Bool {
     get
     }
-  @available(*, deprecated, message: "This variable is deprecated. Use `voipPushToken`. This will be removed from version 1.0")
-  @objc public var pushToken: Foundation.Data? {
-    @objc get
-  }
-  @available(*, deprecated, message: "This initializer is deprecated. Use `init(userId:accessToken:voipPushToken:unique:)`. This will be removed from version 1.0")
-  @objc public init(userId: Swift.String, accessToken: Swift.String? = nil, pushToken: Foundation.Data, unique: Swift.Bool)
   @objc public init(userId: Swift.String, accessToken: Swift.String? = nil, voipPushToken: Foundation.Data? = nil, unique: Swift.Bool)
   @objc convenience public init(userId: Swift.String, accessToken: Swift.String?)
-  @available(*, deprecated, message: "This initializer is deprecated. Use `init(userId:voipPushToken:unique):`. This will be removed from version 1.0")
-  @objc convenience public init(userId: Swift.String, pushToken: Foundation.Data, unique: Swift.Bool)
   @objc convenience public init(userId: Swift.String, voipPushToken: Foundation.Data?, unique: Swift.Bool)
-  @available(*, deprecated, message: "This method is deprecated. Use `setVoIPPush(token:withUniqueness:)`. This will be removed from version 1.0")
-  @objc public func setPush(token: Foundation.Data?, withUniqueness unique: Swift.Bool = false)
   @objc public func setVoIPPush(token: Foundation.Data?, withUniqueness unique: Swift.Bool = false)
   @objc override dynamic public init()
   @objc deinit
@@ -221,6 +237,9 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
     case invalidParameterType = 1800301
     case instanceNotInitialized = 1800302
     case notAuthenticated = 1800303
+    case changingVideoDeviceNotSupported = 1800403
+    case changingVideoDeviceInProgress = 1800404
+    case changingVideoDeviceFailed = 1800405
     public init?(rawValue: Swift.Int)
     public var rawValue: Swift.Int {
       get
@@ -324,8 +343,7 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
 @objc(SBCCallOptions) public class CallOptions : ObjectiveC.NSObject {
   @objc weak public var localVideoView: SendBirdCalls.SendBirdVideoView?
   @objc weak public var remoteVideoView: SendBirdCalls.SendBirdVideoView?
-  @available(*, deprecated, message: "DO NOT use this property. This property is deprecated.")
-  @objc public var isVideoCall: Swift.Bool
+  @objc public var useFrontCamera: Swift.Bool
   @objc public var isAudioEnabled: Swift.Bool {
     @objc get
     @objc set
@@ -335,7 +353,7 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
     @objc set
   }
   @objc(initWithAudioEnabled:) convenience public init(isAudioEnabled: Swift.Bool)
-  @objc(initWithAudioEnabled:videoEnabled:localVideoView:remoteVideoView:) public init(isAudioEnabled: Swift.Bool = true, isVideoEnabled: Swift.Bool = true, localVideoView: SendBirdCalls.SendBirdVideoView? = nil, remoteVideoView: SendBirdCalls.SendBirdVideoView? = nil)
+  @objc(initWithAudioEnabled:videoEnabled:localVideoView:remoteVideoView:useFrontCamera:) public init(isAudioEnabled: Swift.Bool = true, isVideoEnabled: Swift.Bool = true, localVideoView: SendBirdCalls.SendBirdVideoView? = nil, remoteVideoView: SendBirdCalls.SendBirdVideoView? = nil, useFrontCamera: Swift.Bool = true)
   @objc override dynamic public init()
   @objc deinit
 }
@@ -369,25 +387,17 @@ extension DialParams : Foundation.NSCopying {
   @objc public static func addDelegate(_ delegate: SendBirdCalls.SendBirdCallDelegate, identifier: Swift.String)
   @objc public static func removeDelegate(identifier: Swift.String)
   @objc public static func removeAllDelegates()
-  @objc public static func getCall(forCallId callId: Swift.String) -> SendBirdCalls.DirectCall?
+  @objc(callForCallId:) public static func getCall(forCallId callId: Swift.String) -> SendBirdCalls.DirectCall?
   @objc public static var currentUser: SendBirdCalls.User? {
     @objc get
   }
   @objc(authenticateWithParams:completionHandler:) public static func authenticate(with params: SendBirdCalls.AuthenticateParams, completionHandler: @escaping SendBirdCalls.AuthenticateHandler)
-  @available(*, deprecated, message: "This method is deprecated. Use `deauthenticate(voipPushToken:, completionHandler:)`. This will be removed from version 1.0")
-  @objc public static func deauthenticate(pushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
   @objc(deauthenticateWithVoIPPushToken:completionHandler:) public static func deauthenticate(voipPushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
   @discardableResult
   @objc(dialWithParams:completionHandler:) public static func dial(with params: SendBirdCalls.DialParams, completionHandler: @escaping SendBirdCalls.DirectCallHandler) -> SendBirdCalls.DirectCall?
   @objc public static func pushRegistry(_ registry: PushKit.PKPushRegistry, didReceiveIncomingPushWith payload: PushKit.PKPushPayload, for type: PushKit.PKPushType, completionHandler: SendBirdCalls.PushRegistryHandler?)
-  @available(*, deprecated, message: "This method is deprecated. Use `registerVoIPPush(token:unique:completionHandler:)`. This will be removed from version 1.0")
-  @objc public static func register(pushToken: Foundation.Data?, unique: Swift.Bool = false, completionHandler: SendBirdCalls.ErrorHandler?)
   @objc public static func registerVoIPPush(token: Foundation.Data?, unique: Swift.Bool = false, completionHandler: SendBirdCalls.ErrorHandler?)
-  @available(*, deprecated, message: "This method is deprecated. Use `unregisterVoIPPush(token:completionHandler:)`. This will be removed from version 1.0")
-  @objc public static func unregister(pushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
   @objc public static func unregisterVoIPPush(token: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
-  @available(*, deprecated, message: "This method is deprecated. Use `unregisterAllVoIPPushTokens(completionHandler:)`. This will be removed from version 1.0")
-  @objc public static func unregisterAllPushTokens(completionHandler: SendBirdCalls.ErrorHandler?)
   @objc public static func unregisterAllVoIPPushTokens(completionHandler: SendBirdCalls.ErrorHandler?)
   @objc(createDirectCallLogListQueryWithParams:) public static func createDirectCallLogListQuery(with params: SendBirdCalls.DirectCallLogListQuery.Params) -> SendBirdCalls.DirectCallLogListQuery?
   @objc public static func updateCustomItems(callId: Swift.String, customItems: [Swift.String : Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
@@ -395,8 +405,8 @@ extension DialParams : Foundation.NSCopying {
   @objc public static func deleteAllCustomItems(callId: Swift.String, completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
   @objc deinit
 }
-@objc extension SendBirdCall {
-  @objc public static func getCall(forUUID callUUID: Foundation.UUID) -> SendBirdCalls.DirectCall?
+extension SendBirdCall {
+  @objc(callForUUID:) public static func getCall(forUUID callUUID: Foundation.UUID) -> SendBirdCalls.DirectCall?
 }
 @objc(SBCAcceptParams) public class AcceptParams : ObjectiveC.NSObject {
   @objc public var callOptions: SendBirdCalls.CallOptions
@@ -406,6 +416,8 @@ extension DialParams : Foundation.NSCopying {
 }
 extension SendBirdCalls.DirectCallEndResult : Swift.Equatable {}
 extension SendBirdCalls.DirectCallEndResult : Swift.Hashable {}
+extension SendBirdCalls.VideoDevice.Position : Swift.Equatable {}
+extension SendBirdCalls.VideoDevice.Position : Swift.Hashable {}
 extension SendBirdCalls.DirectCallLogListQuery.UserRoleFilter : Swift.Equatable {}
 extension SendBirdCalls.DirectCallLogListQuery.UserRoleFilter : Swift.Hashable {}
 extension SendBirdCalls.SBCError.ErrorCode : Swift.Equatable {}

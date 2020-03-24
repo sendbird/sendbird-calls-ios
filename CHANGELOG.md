@@ -1,4 +1,18 @@
 # Change Log
+### 1.0.0 (Mar 24, 2020)
+* Added camera selection feature.
+    * Updated  `init(isAudioEnabled:isVideoEnabled:localVideoView:remoteVideoView:useFrontCamera:)` in `CallOptions`.
+    * Added `useFrontCamera` in `CallOptions`.
+    * Added `VideoDevice` class.
+    * Added `VideoDevice.Position` enum.
+    * Added `availableVideoDevices` in `DirectCall`.
+    * Added `currentVideoDevice` in `DirectCall`.
+    * Added `selectVideoDevice(_:completionHandler:)` method in `DirectCall`.
+* Renamed Objective-C methods.
+    * `getCallForCallId:` to `callForCallId:` in `SBCSendBirdCall` class.
+    * `getCallForUUID:` to `callForUUID:` in `SBCSendBirdCall` class.
+* Removed deprecated methods.
+
 ### 0.9.0 (Mar 18, 2020)
 * Changed endpoint domain.
 * Added Completion Handler to `DirectCall.end` for more flexible usage. 

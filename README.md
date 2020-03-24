@@ -1,41 +1,12 @@
 # SendBirdCalls for iOS
 
-## Table of Contents
-- [Introduction](#introduction)
-- [Functional Overview](#functional-overview)
-- [SDK Prerequisites](#sdk-prerequisites)
-- [SDK Dependencies](#sdk-dependencies)
-- [Installation](#installation)
-  * [CocoaPods](#cocoapods)
-  * [Carthage](#carthage)
-- [Configure the Application for the SDK](#configure-the-application-for-the-sdk)
-  * [Background Mode](#background-mode)
-  * [Configure Your App's Info.plist File](#configure-your-apps-infoplist-file)
-- [Initialize the SendBirdCall instance in a client app](#initialize-the-sendbirdcall-instance-in-a-client-app)
-- [Authenticate a user and register a push token](#authenticate-a-user-and-register-a-push-token)
-- [Register event handlers](#register-event-handlers)
-  * [SendBirdCallDelegate](#sendbirdcalldelegate)
-  * [DirectCallDelegate](#directcalldelegate)
-- [Make a call](#make-a-call)
-- [Receive a call](#receive-a-call)
-- [Handle a current call](#handle-a-current-call)
-- [End a call](#end-a-call)
-- [Deauthenticate a user and unregister a push token](#deauthenticate-a-user-and-unregister-a-push-token)
-  * [Deauthenticate a user](#deauthenticate-a-user)
-  * [Unregister a push token or unregister user's all push tokens](#unregister-a-push-token-or-unregister-users-all-push-tokens)
-- [Retrieve a call information](#retrieve-a-call-information)
-- [Retrieve call history](#retrieve-call-history)
-- [Additional information](#additional-information)
-  * [Callback and Delegate thread handling](#callback-and-delegate-thread-handling)
-  * [call results](#call-results)
-- [TroubleShootings](#troubleshootings)
-  * [Library not loaded WebRTC.framework](#library-not-loaded-webrtcframework)
-
+![iOS 9.0+](https://img.shields.io/badge/iOS-9.0+-lightgray.svg) [![Languages](https://img.shields.io/badge/language-swift-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Languages](https://img.shields.io/badge/language-objc-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SendBirdCalls.svg)](https://img.shields.io/cocoapods/v/SendBirdCalls.svg) [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios/blob/master/LICENSE.md) 
+  
 ## Introduction
-SendBirdCalls is a new product enabling real-time calls between users registered within a SendBird application. SDKs are provided for JavaScript, Android, and iOS. Using any one of these, developers can quickly integrate calling functions into their own applications that will allow users to make and receive real-time voice calls on the SendBird platform.
+`SendBird Calls` is the latest addition to our product portfolio. It enables real-time calls between users within a SendBird application. SDKs are provided for iOS, Android, and JavaScript. Using any one of these, developers can quickly integrate voice and video call functions into their own client apps, allowing users to make and receive web-based real-time voice and video calls on the SendBird platform.
 
 ## Functional Overview
-When implemented, the **SendBirdCalls** SDK provides the framework to both make and receive one-to-one calls, referred to in the SDK as “direct calls” (analogous to “direct messages” / “DMs” in a messaging context). Direct calls are made when a caller identifies a user on the SendBird application and initializing a call request (dialing). The callee, with the SDK’s event handlers implemented, is notified on all authenticated devices, and can choose to accept the call.  If accepted, a network route is established between the caller and callee, and the direct call begins. Application administrators can then review call logs in the “Calls” section of the SendBird dashboard.
+The SendBird Calls iOS SDK provides a framework to make and receive voice and video calls. “Direct calls” in the SDK refers to one-to-one calls, comparable to “direct messages” (DMs) in messaging services. To make a direct voice or video call, the caller specifies the user ID of the intended callee, and dials. Upon dialing, all of the callee’s authenticated devices will receive incoming call notifications. The callee then can choose to accept the call from any one of the devices. When the call is accepted, a connection is established between the caller and the callee. This marks the start of the direct call. Call participants may mute themselves, as well as select the audio and video hardware used in the call. Calls may be ended by either party. The SendBird Dashboard displays call logs in the Calls menu for application owners and admins to review.
 
 ## SDK Prerequisites
 * iOS 9.0 or later
@@ -44,83 +15,82 @@ When implemented, the **SendBirdCalls** SDK provides the framework to both make 
 * Installation of **[Git Large File Storage](https://git-lfs.github.com)**
 
 ## SDK Dependencies
-* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios): it will be integrated by CocoaPods
+* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios) which can be integrated either by CocoaPods or Carthage.
 
 ## Installation
-You **MUST** install **[Git Large File Storage](https://git-lfs.github.com)** first. If not, you will suffer [the trouble](#library-not-loaded-webrtcframework).
-```
-brew install gif-lfs
-```
+To use SendBird Calls, you should first add our custom-built WebRTC framework to your project. (Git Large File Storage)[https://git-lfs.github.com] must be installed to use the WebRTC framework along with the SendBirdCalls framework.
+- Run `brew install git-lfs` in your project directory. 
 
 ### CocoaPods
-[CocoaPods](https://cocoapods.org/) is a dependency manager for Cocoa projects. For usage and installation CocoaPods instructions, visit [their website]((https://cocoapods.org/). To integrate SendBirdCalls into your Xcode project using CocoaPods, specify it in your `Podfile`:
-```
-pod 'SendBirdCalls'
-```
-> Note: The `SendBirdCalls` SDK relies on the` SendBirdWebRTC` framework. `SendBirdWebRTC` is based on` GoogleWebRTC` and recompiled with `bitcode` enabled. Since Cocoapod in `SendBirdCalls` has already declared a dependency with ` SendBirdWebRTC`, you can see `SendBirdWebRTC.framework` after installing Cocoapod.
+[CocoaPods](https://cocoapods.org/) is a dependency manager for Cocoa projects. For usage and installation CocoaPods instructions, visit [their website](https://cocoapods.org/). SendBirdCalls can be integrated into your Xcode project using CocoaPods by doing the following:
+1. Install CocoaPods into your project by running `pod init` in your project directory.
+2. Run `open Podfile`
+3. In the opened Podfile, include `pod ‘SendBirdCalls’` to your configuration under your project target.
+4. Install the SendBirdCalls framework by running `pod install` in your project directory. 
 
-> **IMPORTANT**: After installing Cocoapod, there **MUST** be `SendBirdWebRTC` binary whose size is over 800MB in your `Pods/SendBirdWebRTC.framework`. If not, you can fix this by following [Troubleshooting](#library-not-loaded-webrtcframework)
-<br/>
+> **Note**: The `SendBirdCalls` SDK relies on the` SendBirdWebRTC` framework. `SendBirdWebRTC` is based on` GoogleWebRTC` and is recompiled with `bitcode` enabled. Since `SendBirdWebRTC` is included in `SendBirdCalls` as a dependency, you do not need to explicitly download it.
+
+> **IMPORTANT**: After installing the framework, there **MUST** be a 800+MB `SendBirdWebRTC` binary inside `Pods/SendBirdWebRTC.framework`. If not, follow [this troubleshooting guide](#library-not-loaded-webrtcframework).
+
 
 ### Carthage
-[Carthage](https://github.com/Carthage/Carthage#quick-start) is a another dependency manager for Xcode projects. You can integrate SendBirdCalls into your Xcode project with `Carthage`, by following:
-1. Get Carthage by running `brew install carthage` or choose [another installation method](https://github.com/Carthage/Carthage#installing-carthage)
-2. Create a [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) in the same directory where your .xcodeproj or .xcworkspace is
+[Carthage](https://github.com/Carthage/Carthage#quick-start) is a another dependency manager for Xcode projects. SendBirdCalls can be integrated into an Xcode project with `Carthage` by following these steps:
+1. Get Carthage by running `brew install carthage`, or choose [another installation method](https://github.com/Carthage/Carthage#installing-carthage).
+2. Create a [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) in the same directory `.xcodeproj` or `.xcworkspace` is.
 3. List the desired dependencies in the [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile), like this:
 ```
 github "sendbird/sendbird-calls-ios"
 github "sendbird/sendbird-webrtc-ios"
 ```
-4. Run `carthage update`
-5. A `Cartfile.resolved` file and a `Carthage` directory will appear in the same directory where your `.xcodeproj` or `.xcworkspace` is
-6. Drag the built `.framework` binaries from `Carthage/Build/iOS` into your application’s Xcode project. 
-7. On your application targets’ `Build Phases` settings tab, click the `+` icon and choose `New Run Script Phase`. Create a `Run Script` in which you specify your shell (ex: `/bin/sh`), add the following contents to the script area below the shell:
+4. Run `carthage update`.
+5. A `Cartfile.resolved` file and a `Carthage` directory will appear in the same directory as  `.xcodeproj` or `.xcworkspace` .
+6. Drag the built `.framework` binaries from `Carthage/Build/iOS` into the application’s Xcode project. 
+7. On the application targets’ `Build Phases` settings tab, click the `+` icon and choose `New Run Script Phase`. Create a `Run Script` that specifies the desired shell (e.g. `/bin/sh`), then add the following contents to the script area below the shell:
 ```
 /usr/local/bin/carthage copy-frameworks
 ```
-* Add the paths to the frameworks you want to use under “Input Files". For example:
+8. Add the paths to the desired frameworks under “Input Files.” For example:
 ```
 $(SRCROOT)/Carthage/Build/iOS/SendBirdCalls.framework
 $(SRCROOT)/Carthage/Build/iOS/WebRTC.framework
 ```
-* Add the paths to the copied frameworks to the “Output Files”. For example:
+9. Add the paths to the copied frameworks to the “Output Files.” For example:
 ```
 $(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SendBirdCalls.framework
 $(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/WebRTC.framework
 ```
-Another approach when having multiple dependencies is to use `.xcfilelists`. This is covered in If you´re building for `iOS`
+Another approach when having multiple dependencies is to use `.xcfilelists`. This is covered when building for `iOS`
 
-For an in depth guide, read on from [Carthage's ReadMe](https://github.com/Carthage/Carthage#quick-start)
-<br/>
+For an in depth guide, read on from [Carthage’s ReadMe](https://github.com/Carthage/Carthage#quick-start)
+
 
 ## Configure the Application for the SDK
 
 ### Background Mode
-To support background operation, your VoIP app must have `Background Mode` enabled in the `Xcode Project > Signing&Capabilities` pane. Select the checkbox for `Voice over IP`.
+To support background operation, VoIP-enabled apps must have `Background Mode` enabled in the `Xcode Project > Signing&Capabilities` pane. Select the checkbox for `Voice over IP`.
 
-To receive push notifications, your app also must have `Push Notifications` enabled in the `Xcode Project > Signing&Capabilities` pane. 
+To receive push notifications, the app also must have `Push Notifications` enabled in the `Xcode Project > Signing&Capabilities` pane. 
 > For more information about VoIP push notification and PushKit, see Apple's [CallKit](https://developer.apple.com/documentation/callkit) and [PushKit](https://developer.apple.com/documentation/pushkit)
-<br/>
 
-### Configure Your App's Info.plist File
-iOS requires that your app provide static messages to display to the user when the system asks for microphone permission :
-* If your app uses device microphones, include the [NSMicrophoneUsageDescription](https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW25) key in your app’s Info.plist file.
-* If your app uses device camera, include the [NSCameraUsageDescription](https://developer.apple.com/documentation/bundleresources/information_property_list/nscamerausagedescription) key in your app’s Info.plist file
-<br/>
+
+### Configure The App’s `Info.plist` File
+iOS requires that apps display authorization message to grant the app access to the camera and microphone:
+* Microphone-enabled apps must include the [NSMicrophoneUsageDescription](https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW25) key in the app’s `Info.plist` file.
+* Camera-enabled apps must include the [NSCameraUsageDescription](https://developer.apple.com/documentation/bundleresources/information_property_list/nscamerausagedescription) key in the app’s `Info.plist` file.
 
 ## Initialize the SendBirdCall instance in a client app
-As shown below, the `SendBirdCall` instance must be initiated when a client app is launched. If another initialization with another APP_ID takes place, all existing data will be deleted and the `SendBirdCall` instance will be initialized with the new APP_ID.
+As shown below, the `SendBirdCall` instance must be initiated when a client app is launched. If another initialization with another `APP_ID` takes place, all existing data in the app will be deleted and the `SendBirdCall` instance will be initialized with the new `APP_ID`.
 ```swift
 SendBirdCall.configure(appId: APP_ID)
 ```
 
 ## Authenticate a user and register a push token
+In order to make and receive calls, authenticate the user with SendBird server with the `SendBirdCall.authenticate(with:)` method and **register a VoIP push token** to SendBird. You can register a VoIP push token during authentication by either providing it as a parameter in the `authenticate()` method, or after authentication has completed using the `SendBirdCall.registerVoIPPush(token:)` method. VoIP Push Notification will also enable receiving calls even when the app is in the background or terminated state. A valid APNS certificate also needs to be registered on the `SendBird Dashboard` : `Application` → `Settings` → `Notifications` → `Add certificate`. For more details on registering push tokens, please refer to [SendBirdCalls QuickStart](https://github.com/sendbird/quickstart-calls-ios#registering-push-tokens).
 
-In order to make and receive calls, authenticate the user with SendBird server with the the `SendBirdCall.authenticate()` method. To receive calls while an app is in the background or closed, a device registration token must be registered to the server. Register a device push token during authentication by either providing it as a parameter in the authenticate() method, or after authentication has completed using the `SendBirdCall.registerVoIPPush()` method.
 ```swift
 // Authenticate
 let params = AuthenticateParams(userId: userId, accessToken: accessToken)
-SendBirdCall.authenticate(params: params) { user, error in
+SendBirdCall.authenticate(with: params) { user, error in
     guard let user = user, error == nil else {
         return
     }
@@ -149,48 +119,75 @@ class AppDelegate: PKPushRegistryDelegate {
 ```
 
 ## Register event handlers
+The SDK provides two types of event handlers for various events that client apps may respond to: `SendBirdCallDelegate` and `DirectCallDelegate.`
 
 ### SendBirdCallDelegate
-Register a device-specific `SendBirdCallDelegate` event handler using the `SendBirdCall.addDelegate(:)` method. Responding to device-wide events (e.g. incoming calls) is then managed as shown below:
+Register a device-specific `SendBirdCallDelegate` event handler using the `SendBirdCall.addDelegate(:)` method. Prior to adding `SendBirdCallDelegate`, users will be unable to handle the `didStartRinging(:)` delegate event. It is therefore recommended that this event handler be added during app initialization. `SendBirdCallDelegate` is removed upon app termination. After the `SendBirdCallDelegate` is added, responding to device-wide events (e.g. incoming calls) is handled as shown below:
 
 ```swift
 SendBirdCall.addDelegate(self, identifier: UNIQUE_HANDLER_ID)
 func didStartRinging(_ call: DirectCall) {
+    // Process incoming call
 }
 ```
 <br/>
 
-| Method        | Description                                |
+| Method        | Invoked when                                |
 |---------------|--------------------------------------------|
-|didEnterRinging()    | Called when incoming calls are received.   |
+|didStartRinging()    | Incoming calls are received in the callee’s device. |
 
 ### DirectCallDelegate
-Register a call-specific `DirectCallDelegate` event handler using the `call.delegate = self` method. Responding to call-specific events (e.g. call connected) is then managed as shown below:
+Register a call-specific `DirectCallDelegate` event delegate using `call.delegate`. Responding to call-specific events (e.g. sucessfull call connection) is then managed as shown below:
 
 ```swift
 func didEstablish(_ call: DirectCall)
- 
+
 func didConnect(_ call: DirectCall)
- 
-func didRemoteAudioSettingsChange(_ call: DirectCall)
- 
+
 func didEnd(_ call: DirectCall)
+
+func didRemoteAudioSettingsChange(_ call: DirectCall)
+
+func didRemoteVideoSettingsChange(_ call: DirectCall)
+
+func didUpdateCustomItems(call: DirectCall, updatedKeys: [String])
+
+func didDeleteCustomItems(call: DirectCall, deletedKeys: [String])
+
+func didStartReconnecting(_ call: DirectCall)
+
+func didReconnect(_ call: DirectCall)
+
+func didAudioDeviceChange(_ call: DirectCall, 
+                          session: AVAudioSession, 
+                          previousRoute: AVAudioSessionRouteDescription, 
+                          reason: AVAudioSession.RouteChangeReason)
+
 ```
 <br/>
 
-| Method                        | Description                                                                                                       |
+| Method                        | Invocation Criteria                                                                                                       |
 |-------------------------------|-------------------------------------------------------------------------------------------------------------------|
-|didEstablish()                | Called when the callee has accepted the call, but not yet connected to media devices.                             |
-|didConnect()                  | Called when media devices between the caller and callee are connected and can start the call using media devices. |
-|didEnd()                      | Called when the call has ended.                                                                                   |
-|didRemoteAudioSettingsChange() | Called when the peer changes audio settings.
+| didEstablish()                | The callee accepted the call using the method `directCall.accept()`, but neither the caller or callee’s devices are as of yet connected to media devices. |
+| didConnect()                  | Media devices (e.g. microphone and speakers) between the caller and callee are connected and the voice or video call can begin. |
+| didEnd()                      | The call has ended on either the caller or the callee’s devices. This is triggered automatically when either party runs the method `directCall.end()`. This event listener is also invoked if the call is ended for other reasons. See the bottom of this readme for a list of all possible reasons for call termination.  |
+| didRemoteAudioSettingsChange() | The other party changed their audio settings. |
+| didRemoteVideoSettingsChange() | The other party changed their video settings. |
+| didUpdateCustomItems()         | One or more of `DirectCall`’s custom items (metadata) have been updated. |
+| didDeleteCustomItems()         | One or more of `DirectCall`’s custom items (metadata) have been deleted. |
+| didStartReconnecting()               | `DirectCall` started attempting to reconnect to the other party after a media connection disruption. |
+| didReconnect()                | The disrupted media connection reconnected. |
+| didAudioDeviceChange()         | The audio device used in the call has changed. |
+
 
 ## Make a call
-Initiate a call by providing the callee’s user id into the `SendBirdCall.dial()` method.  Use the `CallOptions` object to choose initial call configuration (e.g. muted/unmuted) 
+Initiate a call by first preparing the `DialParams` call parameter object.  This contains the initial call configuration, such as callee’s user id, audio or video capabilities, as well as a `CallOptions` object. You can further configure media settings with the `CallOptions` object. Once prepared, the `DialParams` object is then passed into the `SendBirdCall.dial()` method to start the call.
 
 ```swift
-let directCall = SendBirdCall.dial(to: CALLEE_ID, callOptions: CallOptions()) { directCall, error in
-    // 
+let dialParams = DialParams(calleeId: CALLEE_ID, isVideoCall: false, callOptions: CallOptions(), customItems: [:])
+
+let directCall = SendBirdCall.dial(with: dialParams) { directCall, error in
+    //
 }
 
 directCall.delegate = self
@@ -198,24 +195,26 @@ directCall.delegate = self
 
 
 ## Receive a call
-Receive incoming calls by registering the `SendBirdCallDelegate`. Accept or decline incoming calls using the `directCall.accept()` or the `directCall.end()` methods. If the call is accepted, a media session will be established by the SDK. The `directCall.delegate` must be registered through the event handler before accepting a call. Once registered, this delegate enables reacting to mid-call events via callbacks methods.
+Receive incoming calls by first registering `SendBirdCallDelegate`. Accept or decline incoming calls using the `directCall.accept()` or the `directCall.end()` methods. If the call is accepted, a media session will automatically be established by the SDK.
+
+Before accepting any calls, the `directCall.delegate` must be registered upfront in the `SendBirdCallDelegate`. Once registered,  `DirectCallDelegate` enables reacting to in-call events via callbacks methods.
 
 ```swift
 class MyClass: SendBirdCallDelegate {
-    func didEnterRinging(_ call: DirectCall) { 
+    func didStartRinging(_ call: DirectCall) { 
         call.delegate = self
     }
 }
 ```
 
-Incoming calls are received either via the application's persistent internal server connection, or (if the application is in the background) via PushKit. **PushKit messages received by the `SendBirdCall` instance must be delivered to the SDK.**
+When the app is in the foreground, incoming call events are received via the SDK’s persistent internal server connection. However, when the app is terminated or in the background, incoming calls are received via PushKit. **PushKit messages received by the `SendBirdCall` must be delivered to the `SendBirdCall.pushRegistry(_:didReceiveIncomingPushWith:for:)` method.**
 
 ```swift
 class MyClass: PKPushRegistryDelegate {
     func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, for type: PKPushType, completion: @escaping () -> Void) {
         SendBirdCall.pushRegistry(registry, didReceiveIncomingPushWith: payload, for: type) { uuid in
       
-            // IMPORTANT: You MUST report incoming call to CallKit when you receive a pushkit push. 
+            // IMPORTANT: You MUST report incoming call to CallKit when receiving a pushkit push. 
             let provider = CXProvider(configuration: CXProviderConfiguration)
             let update = CXCallUpdate()
             update.remoteHandle = CXHandle(type: .generic, value: HANDLE_VALUE)
@@ -229,7 +228,9 @@ class MyClass: PKPushRegistryDelegate {
 
 ## Handle a current call
 
-While a call is in progress, mute or unmute the caller’s audio using the `directCall.muteMicrophone()` or `directCall.unmuteMicrophone()` method(s). If the callee changes their audio settings, the caller is notified via the `DirectCallDelegate.didRemoteAudioSettingsChange()` delegate.
+During an ongoing call, mute or unmute the caller’s microphone using the `directCall.muteMicrophone()` or `directCall.unmuteMicrophone()` methods. If the remote user changes the audio settings, the local user will be notified via the `DirectCallDelegate.didRemoteAudioSettingsChange()` delegate method. 
+
+The caller may start or stop video using the `directCall.startVideo()` or `directCall.stopVideo()` methods. If the remote user changes the video settings, the local user will be notified via the `DirectCallDelegate.didRemoteVideoSettingsChange()` listener. The current video device can be changed by using `directCall.selectVideoDevice(_:completionHandler)`.
 
 ```swift
 // mute my microphone
@@ -238,12 +239,31 @@ call.muteMicrophone();
 // unmute my microphone
 call.unmuteMicrophone();
 
+// starts to show video
+directCall.startVideo();
+
+// stops showing video
+directCall.stopVideo();
+
+// changes current video device
+directCall.selectVideoDevice(videoDevice) { error in
+    // handle error
+}
+
 // receives the event
 class MyClass: DirectCallDelegate {
     ...
     func didRemoteAudioSettingsChange(_ call: DirectCall) {
-        if (call.isRemoteAudioEnabled) {
+        if call.isRemoteAudioEnabled {
             // The peer has been unmuted.            
+        } else {
+            // The peer has been muted.
+        }
+    }
+    
+    func didRemoteVideoSettingsChange(_ call: DirectCall) {
+        if call.isRemoteVideoEnabled {
+            // The peer has been unmuted.
         } else {
             // The peer has been muted.
         }
@@ -253,7 +273,7 @@ class MyClass: DirectCallDelegate {
 ```
 
 ## End a call
-A caller ends using the `directCall.end()` method. The event is then processed via the `DirectCallDelegate.didEnd(call:)` delegate. This delegate is also used when if the callee ends call.
+Users may end a call using the `directCall.end()` method. The event will then be processed via the `DirectCallDelegate.didEnd(call:)` delegate. This delegate is also triggered if the remote user ends the call.
 
 ```swift
 // End a call
@@ -263,19 +283,20 @@ call.end();
 class MyClass: DirectCallDelegate {
     ...
     func didEnd(_ call: DirectCall) {
-        // 
+        // Consider releasing or destroying call-related view from here.
     }
     ...
 }
 ```
 
-## Deauthenticating a user and unregistering a device token
+## Deauthenticating a user and unregistering a VoIP push token
 ### Deauthenticating a user
-When a user signs out of SendBird Calls, you should deauthenticate the user with the `SendBirdCall.deauthenticate(pushToken:completionHandler:)` method. If the method is called without a user's VoIP device token, the user will continue to receive calls even though the app is terminated or runs in the background.
+Users are deauthenticated (i.e. “logged out”) with `SendBirdCall.deauthenticate(voipPushToken:completionHandler:)` method. Failing to include the VoIP push token will result in the logged-out user continually receiving incoming calls despite the app being closed.
+
 ``` swift
 class MyClass {
     func signOut() {
-        SendBirdCall.deauthenticate(pushToken: myVoIPPushToken) { error in
+        SendBirdCall.deauthenticate(voipPushToken: myVoIPPushToken) { error in
             guard error == nil else {
                 // handle error
                 return
@@ -287,18 +308,18 @@ class MyClass {
 }
 ```
 
-### Unregistering one or all device tokens
-The user won't receive push notifications for calls if the VoIP device token is deleted by calling the `unregister(pushToken:completionHandler:)` method. If you don't want to send any calls to the user's devices, call the `unregisterAllPushTokents(completionHandler:)` method.
+### Unregistering one or all VoIP push tokens
+Users will no longer receive call notifications after the VoIP push token has been unregistered via the `unregisterVoIPPush(token:completionHandler:)` method. To stop sending notification to all of the user’s logged in devices, call the `unregisterAllVoIPPushTokens(completionHandler:)` method.
 ```swift
 class MyClass {
     func removeVoIPPushToken() {
-        SendBirdCall.unregister(pushToken: myVoIPPushToken) { error in
+        SendBirdCall.unregisterVoIPPush(token: myVoIPPushToken) { error in
         guard error == nil else { return }
         // Unregistered successfully
     }
 
     func removeAllOfVoIPPushTokens() {
-        func unregisterAllPushTokens(completionHandler: ErrorHandler?) {
+        func unregisterAllVoIPPushTokens(completionHandler: ErrorHandler?) {
             guard error == nil else { return }
             // Unregistered all push tokens successfully
         }
@@ -310,72 +331,71 @@ class MyClass {
 The local or remote user’s information is available via the `directCall.localUser` and `directCall.remoteUser` properties.
 
 ## Retrieve call history
-A user’s call history is available via a `DirectCallLogListQuery` instance.
+The SendBird server automatically stores details of calls, which can be retrieved later to display call history for users. A user’s call history is available via a `SendBirdCall.DirectCallLogListQuery` instance.
 
 ```swift
 let params = DirectCallLogListQuery.Params()
 let query = SendBirdCall.createDirectCallLogListQuery(with: params)
-query.next(completionHandler: { callLogs, error in
-    //
+
+query.next(completionHandler: { [weak query] callLogs, error in
+    if query?.hasNext == true, query?.isLoading == false {
+        // query.next() can be called once more.
+        // If a user wants to fetch more call logs.
+    }
 }
 ```
 
 | Method           | Description                                                                                                                                                                                                                                                                                                       |
 |------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|next()            | Used to query call history from SendBirdCall server.                                                                                                                                                                                                                                                              |
-|hasNext         | If true, there is more call history to be retrieved.                                                                                                                                                                                                                                                              |
-|isLoading       | If true, call history is being retrieved from SendBirdCall server.                                                                                                                                                                                                                                                |
-|limit      | Specifies the number of call logs to return at once.                                                                                                                                                                                                                                                              |
-|myRole     | Returns call logs of the specified role. For example, the setMyRole(Callee) returns only the callee’s call logs.                                                                                                                                                                                                  |
-|endResults | Returns the call logs for specified results. If you specify more than one result, they are processed as OR condition and all call logs corresponding with the specified end results will be returned. For example, [.noAnswer, .canceled], only the .noAnswer or .canceled call logs will be returned.|
+|next()            | Used to query the call history from `SendBirdCall` server. |
+|hasNext         | If true, there are additional call history entries yet to be retrieved. |
+|isLoading       | If true, the call history is being retrieved from the server.  |
+|limit      | Specifies the number of call history entries to return at once. |
+|myRole     | Returns the call history of the specified role. (e.g. the `params.myRole = .callee` returns only the callee’s call history.)  |
+|endResults | Filters the results based on the call end result (e.g. `.completed`,`.noAnswer`,etc.) If multiple values are specified, they are processed as an `OR` condition. For example, `add(endResult:.noAnswer)`, only the history entries that resulted in `.noAnswer` will be returned. |
 
 ## Additional information 
 
-### Callback and Delegate thread handling.
-You can designate a specific thread for SendBird to run callbacks and events on. For example, you can tell SendBirdCall to call DirectCall delegate functions on a custom background thread to keep your main thread undisturbed. 
-
-To specify a thread of your choice, run `SendBirdCall.executeOn(queue: YOUR_QUEUE)`. If you do not specify a thread, SendBirdCall will run asynchronously on `DispatchQueue.main`.
-> However, because VoIP PushKit **requires** immediate and synchronous handling of callbacks, `SendBirdCallDelegate.didStartRinging(_)` and completion handler of `SendBirdCall.pushRegistry(_:didReceiveIncomingPushWith:for:completion:)` will run synchronously on the thread that you called them. In other words, only these two processes will not run on the thread that you specified in `SendBirdCall.executeOn(queue:)`.
+### Callback and delegate thread handling
+Callbacks may be designated to run on specific background threads to keep main threads undisturbed.  To specify a thread, run `SendBirdCall.executeOn(queue: YOUR_QUEUE)`. Otherwise, `SendBirdCall` will run asynchronously on `DispatchQueue.main`.
+> However, because VoIP PushKit **requires** immediate and synchronous handling of callbacks, `SendBirdCallDelegate.didStartRinging(_)` and completion handler of `SendBirdCall.pushRegistry(_:didReceiveIncomingPushWith:for:completion:)` will run synchronously on the threads that called them. In other words, only these two processes will not run on the thread specified in `SendBirdCall.executeOn(queue:)`.
 
 ### call results
 | EndResult        | Description                                                                                                            |
 |------------------|------------------------------------------------------------------------------------------------------------------------|
-| noAnswer            | The callee hasn’t either accepted or declined the call for a specific period of time.                              |
-| canceled             | The caller has canceled the call before the callee accepts or declines.                                            |
-| declined             | The callee has declined the call.                                                                                  |
-| completed            | The call has ended by either the caller or callee after completion.                                                |
-| timedOut            | SendBird server failed to establish a media session between the caller and callee within a specific period of time.|
-| connectionLost      | Data streaming from either the caller or the callee has stopped due to a WebRTC connection issue while calling.    |
-| dialFailed          | The dial() method call has failed.                                                                                 |
-| acceptFailed        | The accept() method call has failed.                                                                               |
-| otherDeviceAccepted | When the call is accepted on one of the callee’s devices, all the other devices will receive this call result.     |
+| noAnswer            | The callee failed to either accept or decline the call within a specific amount of time. |
+| canceled             | The caller canceled the call before the callee could accept or decline. |
+| declined             | The callee declined the call.  |
+| completed            | The call ended after either party ended it. |
+| timedOut            | The SendBird server failed to establish a media session between the caller and callee within a specific amount of time. |
+| connectionLost      | The data stream from either the caller or the callee has stopped due to a WebRTC connection issue. |
+| dialFailed          | The `dial()` method call has failed. |
+| acceptFailed        | The `accept()` method call has failed. |
+| otherDeviceAccepted | The incoming call was accepted on a different device. This device received an incoming call notification, but the call ended when a different device accepted it. |
 
-## TroubleShootings
-We don't want you to suffer [Karoshi](https://en.wikipedia.org/wiki/Karoshi). You can have a good night with following trouble shootings
+## TroubleShooting 
 ### Library not loaded WebRTC.framework
-If you face the following error, you can fix the issue by following the next step. 
+Error message:
 ```
 dyld: Library not loaded: @rpath/WebRTC.framework/WebRTC
   Referenced from: /private/var/containers/Bundle/Application/{UUID}/{YOUR-APPLICATION}.app/Frameworks/SendBirdCalls.framework/SendBirdCalls
 Reason: image not found
 ```
-This is because of the lack of `Git Large File Storage`. The size of `SendBirdWebRTC.framework` is over 800MB (the size of `WebRTC` binary is about 849MB), but normal `Git` can't download a huge file. Your project may have downloaded a fake framework file. You need to install `git-lfs` to install the entire framework file. 
-But since Cocoapods has already cached `SendBirdWebRTC.framework` without the entire binary, just installing` git-lfs` will not solve the problem. You can fix this by removing all the caches associated with `SendBirdWebRTC.framework`.
-
-However, you couldn't solve the problem only by installing `git-lfs` since your Cocoapods already cached `SendBirdWebRTC.framework` without the whole binary. You can fix the issue by removing all of the caches related with `SendBirdWebRTC.framework`. Follow the next steps: 
+Above error is caused by the lack of `Git Large File Storage`. The size of `SendBirdWebRTC.framework` is over 800MB (the size of `WebRTC` binary is about 849MB), but  `Git` cannot normally download a file that large. To install the entire framework file, installing `git-lfs` is required.
+However, because Cocoapods has already cached the faulty `SendBirdWebRTC.framework` binary, simply installing `git-lfs` will not solve the problem. All caches associated with `SendBirdWebRTC.framework` must be cleared:
 1. Install `git-lfs`
 ```
-// in the directory of your project
+// in the project directory
 brew install git-lfs
 ```
-2. Remove all of the caches
+2. Remove all caches
 ```
 pod cache clean --all
 
 rm -rf ~/Library/Caches/CocoaPods/*
 rm -rf ~/Libaray/Developer/Xcode/DerivedData/*
 ```
-If you don't want remove all of the caches that are not related with `SendBirdWebRTC.framework`, you can remove only `SendBirdWebRTC.framework`
+Or, to avoid removing all of the caches not related to `SendBirdWebRTC.framework`, simply remove caches related to `SendBirdWebRTC.framework`.
 ```
 pod cache clean 'SendBirdWebRTC' --all
 
@@ -383,12 +403,12 @@ rm -rf ~/Library/Caches/CocoaPods/Pods/Release/SendBirdWebRTC
 rm -rf ~/Library/Caches/CocoaPods/Pods/Specs/Release/SendBirdWebRTC
 rm -rf ~/Library/Developer/Xcode/DerivedData/{YOUR-PROJECT-NAME}-{UUID}
 ```
-3. Re-setup Cocoapod
+3. Setup Cocoapods again
 ```
 pod deintegrate
 pod setup
 ```
-4. Re-install Cocoapod
+4. Re-install Cocoapods dependencies
 ```
 pod install
 ```

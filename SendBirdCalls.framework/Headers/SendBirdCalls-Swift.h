@@ -233,8 +233,6 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 @property (nonatomic, readonly, copy) NSData * _Nullable voipPushToken;
 /// Bool value indicating whether the Push token should be unique to the user. If the value is true, SendBird server will remove the push token from other devices of the authenticated user.
 @property (nonatomic, readonly) BOOL unique;
-@property (nonatomic, readonly, copy) NSData * _Nullable pushToken SWIFT_DEPRECATED_MSG("This variable is deprecated. Use `voipPushToken`. This will be removed from version 1.0");
-- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken pushToken:(NSData * _Nonnull)pushToken unique:(BOOL)unique OBJC_DESIGNATED_INITIALIZER SWIFT_DEPRECATED_MSG("This initializer is deprecated. Use `init(userId:accessToken:voipPushToken:unique:)`. This will be removed from version 1.0");
 /// <ul>
 ///   <li>
 ///     Parameters:
@@ -254,14 +252,12 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 /// </ul>
 - (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken voipPushToken:(NSData * _Nullable)voipPushToken unique:(BOOL)unique OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken;
-- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId pushToken:(NSData * _Nonnull)pushToken unique:(BOOL)unique SWIFT_DEPRECATED_MSG("This initializer is deprecated. Use `init(userId:voipPushToken:unique):`. This will be removed from version 1.0");
 - (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId voipPushToken:(NSData * _Nullable)voipPushToken unique:(BOOL)unique;
 /// Add push token to authenticate params.
 /// \param token Push Token for receiving push notifications from the device. Default value is nil.
 ///
 /// \param unique Bool value indicating whether the Push token should be unique to the user. Default value is false.
 ///
-- (void)setPushWithToken:(NSData * _Nullable)token withUniqueness:(BOOL)unique SWIFT_DEPRECATED_MSG("This method is deprecated. Use `setVoIPPush(token:withUniqueness:)`. This will be removed from version 1.0");
 - (void)setVoIPPushWithToken:(NSData * _Nullable)token withUniqueness:(BOOL)unique;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
@@ -276,14 +272,8 @@ SWIFT_CLASS_NAMED("CallOptions")
 @property (nonatomic, weak) SBCVideoView * _Nullable localVideoView;
 /// Shows remote user’s screen.
 @property (nonatomic, weak) SBCVideoView * _Nullable remoteVideoView;
-/// If <code>false</code>, the call is for audio only.
-/// //
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://dial(to:isVideoCall:callOptions:completionHandler:)">dial(to:isVideoCall:callOptions:completionHandler:)</a>
-///   </li>
-/// </ul>
-@property (nonatomic) BOOL isVideoCall SWIFT_DEPRECATED_MSG("DO NOT use this property. This property is deprecated.");
+/// <code>Bool</code> value indicates that whether to use the front camera when it start video call. device. The default value is <code>true</code>.
+@property (nonatomic) BOOL useFrontCamera;
 /// Bool value indicating whether the call will start with audio. If the value if <code>false</code>, the call will start without audio.
 @property (nonatomic) BOOL isAudioEnabled;
 @property (nonatomic) BOOL isVideoEnabled;
@@ -299,7 +289,7 @@ SWIFT_CLASS_NAMED("CallOptions")
 ///
 /// \param remoteVideoView <code>SendBirdVideoView</code> object to show remote video. Default value is <code>nil</code>
 ///
-- (nonnull instancetype)initWithAudioEnabled:(BOOL)isAudioEnabled videoEnabled:(BOOL)isVideoEnabled localVideoView:(SBCVideoView * _Nullable)localVideoView remoteVideoView:(SBCVideoView * _Nullable)remoteVideoView OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithAudioEnabled:(BOOL)isAudioEnabled videoEnabled:(BOOL)isVideoEnabled localVideoView:(SBCVideoView * _Nullable)localVideoView remoteVideoView:(SBCVideoView * _Nullable)remoteVideoView useFrontCamera:(BOOL)useFrontCamera OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -464,6 +454,10 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 };
 
 
+
+@class SBCVideoDevice;
+@class SBCError;
+
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Updates local <code>SendBirdVideoView</code>
 /// <ul>
@@ -474,7 +468,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \code
 ///
 ///
-/// \endcode\param view <code>SendBirdVideoView</code> object.
+/// \endcode\param videoView <code>SendBirdVideoView</code> object.
 ///
 - (void)updateLocalVideoView:(SBCVideoView * _Nonnull)videoView;
 /// Updates remote <code>SendBirdVideoView</code>
@@ -483,14 +477,36 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 ///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
 ///   </li>
 /// </ul>
-/// \param view <code>SendBirdVideoView</code> object.
+/// \param videoView <code>SendBirdVideoView</code> object.
 ///
 - (void)updateRemoteVideoView:(SBCVideoView * _Nonnull)videoView;
+/// List of available video devices that support video capture.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+@property (nonatomic, readonly, copy) NSArray<SBCVideoDevice *> * _Nonnull availableVideoDevices;
+/// Current video device using with capture device.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+@property (nonatomic, readonly, strong) SBCVideoDevice * _Nullable currentVideoDevice;
+/// Changes current video device asynchronously and notifies callback on completion.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+/// \param device <code>VideoDevice</code> object.
+///
+/// \param completionHandler Callback completionHandler. Contains error.
+///
+- (void)selectVideoDevice:(SBCVideoDevice * _Nonnull)device completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
 @end
 
-
-
-@class SBCError;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Accepts the incoming direct call. SendBirdCalls will continue to process the call with the server.
@@ -936,6 +952,9 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
   SBCErrorCodeInvalidParameterType = 1800301,
   SBCErrorCodeInstanceNotInitialized = 1800302,
   SBCErrorCodeNotAuthenticated = 1800303,
+  SBCErrorCodeChangingVideoDeviceNotSupported = 1800403,
+  SBCErrorCodeChangingVideoDeviceInProgress = 1800404,
+  SBCErrorCodeChangingVideoDeviceFailed = 1800405,
 };
 
 
@@ -1083,13 +1102,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 /// Removes all delegate for SendBirdCall events.
 + (void)removeAllDelegates;
 /// Returns call for call ID.
-/// \param forCallId Call ID.
+/// \param callId Call ID.
 ///
 ///
 /// returns:
 ///
 /// <code>DirectCall</code> object with corresponding call ID. It can be <code>nil</code>.
-+ (SBCDirectCall * _Nullable)getCallForCallId:(NSString * _Nonnull)callId SWIFT_WARN_UNUSED_RESULT;
++ (SBCDirectCall * _Nullable)callForCallId:(NSString * _Nonnull)callId SWIFT_WARN_UNUSED_RESULT;
 /// Returns the currently authenticated user.
 ///
 /// returns:
@@ -1112,7 +1131,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param completionHandler The handler to call when the authenication is complete.
 ///
 + (void)authenticateWithParams:(SBCAuthenticateParams * _Nonnull)params completionHandler:(void (^ _Nonnull)(SBCUser * _Nullable, SBCError * _Nullable))completionHandler;
-+ (void)deauthenticateWithPushToken:(NSData * _Nullable)pushToken completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler SWIFT_DEPRECATED_MSG("This method is deprecated. Use `deauthenticate(voipPushToken:, completionHandler:)`. This will be removed from version 1.0");
 /// Deauthenticates user. If you call the method without push token, you can keep receiving calls even if the application is terminated or is in background. If you don’t want to receive VoIP push notification anymore, you have to pass the VoIP push token of the device.
 /// \code
 /// class MyClass {
@@ -1177,13 +1195,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param completionHandler This closure is invoked with <code>UUID</code> from the payload.
 ///
 + (void)pushRegistry:(PKPushRegistry * _Nonnull)registry didReceiveIncomingPushWith:(PKPushPayload * _Nonnull)payload for:(PKPushType _Nonnull)type completionHandler:(void (^ _Nullable)(NSUUID * _Nullable))completionHandler;
-/// This method will be removed in v1.0.0
-/// <ul>
-///   <li>
-///     See Also: use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">registerVoIPPush(token:unique:completionHandler:)</a> instead
-///   </li>
-/// </ul>
-+ (void)registerWithPushToken:(NSData * _Nullable)pushToken unique:(BOOL)unique completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler SWIFT_DEPRECATED_MSG("This method is deprecated. Use `registerVoIPPush(token:unique:completionHandler:)`. This will be removed from version 1.0");
 /// To receive calls while an app is in the background or closed, a device registration token must be registered to the server. Register a device push token during authentication by either providing it as a parameter in the <code>SendBirdCall.authenticate()</code> method, or after authentication has completed using the <code>SendBirdCall.registerVoIPPushToken()</code> method.
 /// \code
 /// // PKPushRegistryDelegate
@@ -1206,18 +1217,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 ///    ...
 /// }
 ///
-/// \endcode\param voipPushToken <code>Data</code> object from <code>pushCredential.token</code>.  Refer to <code>PKPushRegistryDelegate</code>
+/// \endcode\param token <code>Data</code> object from <code>pushCredential.token</code>.  Refer to <code>PKPushRegistryDelegate</code>
 ///
 /// \param unique If it is false, you can register more token for multi devices. It has <code>false</code> as a default value.
 ///
 + (void)registerVoIPPushWithToken:(NSData * _Nullable)token unique:(BOOL)unique completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// This method will be removed in v1.0.0
-/// <ul>
-///   <li>
-///     See Also: use <a href="x-source-tag://unregisterVoIPPush(token:completionHandler:)">unregisterVoIPPush(token:completionHandler:)</a> instead
-///   </li>
-/// </ul>
-+ (void)unregisterWithPushToken:(NSData * _Nullable)pushToken completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler SWIFT_DEPRECATED_MSG("This method is deprecated. Use `unregisterVoIPPush(token:completionHandler:)`. This will be removed from version 1.0");
 /// Unregisters a push token of specific device. You will not receive VoIP push notification for a call anymore.   If you don’t want to receive a call in all of the devices of the users, call <code>unregisterAllVoIPPushTokens(completionHandler:)</code>.
 /// \code
 /// func removeVoIPPushToken() {
@@ -1226,18 +1230,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 ///     // Unregistered successfully
 /// }
 ///
-/// \endcode\param voipPushToken Optional Data for the push token that you want to unregister
+/// \endcode\param token Optional Data for the push token that you want to unregister
 ///
 /// \param completionHandler ErrorHandler that returns callback with error.
 ///
 + (void)unregisterVoIPPushWithToken:(NSData * _Nullable)token completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// This method will be removed in v1.0
-/// <ul>
-///   <li>
-///     See Also: use <a href="x-source-tag://unregisterAllVoIPPushTokens(completionHandler:)">unregisterAllVoIPPushTokens(completionHandler:)</a> instead
-///   </li>
-/// </ul>
-+ (void)unregisterAllPushTokensWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler SWIFT_DEPRECATED_MSG("This method is deprecated. Use `unregisterAllVoIPPushTokens(completionHandler:)`. This will be removed from version 1.0");
 /// Unregister all push token registered to the current user(multi device).  You will not receive a call in all of the devices of the users.
 /// \code
 /// func removeAllOfVoIPPushTokens() {
@@ -1287,7 +1284,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 
 @interface SBCSendBirdCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Returns call for a given UUID. Returns nil if such call doesn’t exist.
-+ (SBCDirectCall * _Nullable)getCallForUUID:(NSUUID * _Nonnull)callUUID SWIFT_WARN_UNUSED_RESULT;
++ (SBCDirectCall * _Nullable)callForUUID:(NSUUID * _Nonnull)callUUID SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -1339,6 +1336,53 @@ SWIFT_CLASS_NAMED("SendBirdVideoView")
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
+
+
+enum SBCVideoDevicePosition : NSInteger;
+
+/// A device for capture video.
+/// \code
+/// func flipCamera(call: DirectCall) {
+///
+///    let current = call.currentVideoDevice
+///    let devices = call.availableVideoDevices
+///
+///    guard let device = devices.first(where: { $0.position != current?.position }) else { return }
+///    
+///    call.selectVideoDevice(device) { error in
+///        // do something when error has occurred.
+///    }
+/// }
+///
+/// \endcode
+SWIFT_CLASS_NAMED("VideoDevice")
+@interface SBCVideoDevice : NSObject
+/// An ID unique to the model of device corresponding to the receiver.
+@property (nonatomic, readonly, copy) NSString * _Nonnull uniqueId;
+/// A localized human-readable name for the receiver.
+@property (nonatomic, readonly, copy) NSString * _Nonnull localizedName;
+/// Indicates the physical position of an VideoDevice’s hardware.
+@property (nonatomic, readonly) enum SBCVideoDevicePosition position;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+
+
+@interface SBCVideoDevice (SWIFT_EXTENSION(SendBirdCalls))
+@end
+
+/// Constants indicating the physical position of an VideoDevice’s hardware.
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCVideoDevicePosition, "Position", open) {
+/// The video device is on the front of the unit.
+  SBCVideoDevicePositionFront = 0,
+/// The video device is on the back of the unit.
+  SBCVideoDevicePositionBack = 1,
+/// The video device’s position relative to the system hardware is unspecified.
+  SBCVideoDevicePositionUnspecified = 2,
+};
+
 
 
 #if __has_attribute(external_source_symbol)
@@ -1580,8 +1624,6 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 @property (nonatomic, readonly, copy) NSData * _Nullable voipPushToken;
 /// Bool value indicating whether the Push token should be unique to the user. If the value is true, SendBird server will remove the push token from other devices of the authenticated user.
 @property (nonatomic, readonly) BOOL unique;
-@property (nonatomic, readonly, copy) NSData * _Nullable pushToken SWIFT_DEPRECATED_MSG("This variable is deprecated. Use `voipPushToken`. This will be removed from version 1.0");
-- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken pushToken:(NSData * _Nonnull)pushToken unique:(BOOL)unique OBJC_DESIGNATED_INITIALIZER SWIFT_DEPRECATED_MSG("This initializer is deprecated. Use `init(userId:accessToken:voipPushToken:unique:)`. This will be removed from version 1.0");
 /// <ul>
 ///   <li>
 ///     Parameters:
@@ -1601,14 +1643,12 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 /// </ul>
 - (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken voipPushToken:(NSData * _Nullable)voipPushToken unique:(BOOL)unique OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken;
-- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId pushToken:(NSData * _Nonnull)pushToken unique:(BOOL)unique SWIFT_DEPRECATED_MSG("This initializer is deprecated. Use `init(userId:voipPushToken:unique):`. This will be removed from version 1.0");
 - (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId voipPushToken:(NSData * _Nullable)voipPushToken unique:(BOOL)unique;
 /// Add push token to authenticate params.
 /// \param token Push Token for receiving push notifications from the device. Default value is nil.
 ///
 /// \param unique Bool value indicating whether the Push token should be unique to the user. Default value is false.
 ///
-- (void)setPushWithToken:(NSData * _Nullable)token withUniqueness:(BOOL)unique SWIFT_DEPRECATED_MSG("This method is deprecated. Use `setVoIPPush(token:withUniqueness:)`. This will be removed from version 1.0");
 - (void)setVoIPPushWithToken:(NSData * _Nullable)token withUniqueness:(BOOL)unique;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
@@ -1623,14 +1663,8 @@ SWIFT_CLASS_NAMED("CallOptions")
 @property (nonatomic, weak) SBCVideoView * _Nullable localVideoView;
 /// Shows remote user’s screen.
 @property (nonatomic, weak) SBCVideoView * _Nullable remoteVideoView;
-/// If <code>false</code>, the call is for audio only.
-/// //
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://dial(to:isVideoCall:callOptions:completionHandler:)">dial(to:isVideoCall:callOptions:completionHandler:)</a>
-///   </li>
-/// </ul>
-@property (nonatomic) BOOL isVideoCall SWIFT_DEPRECATED_MSG("DO NOT use this property. This property is deprecated.");
+/// <code>Bool</code> value indicates that whether to use the front camera when it start video call. device. The default value is <code>true</code>.
+@property (nonatomic) BOOL useFrontCamera;
 /// Bool value indicating whether the call will start with audio. If the value if <code>false</code>, the call will start without audio.
 @property (nonatomic) BOOL isAudioEnabled;
 @property (nonatomic) BOOL isVideoEnabled;
@@ -1646,7 +1680,7 @@ SWIFT_CLASS_NAMED("CallOptions")
 ///
 /// \param remoteVideoView <code>SendBirdVideoView</code> object to show remote video. Default value is <code>nil</code>
 ///
-- (nonnull instancetype)initWithAudioEnabled:(BOOL)isAudioEnabled videoEnabled:(BOOL)isVideoEnabled localVideoView:(SBCVideoView * _Nullable)localVideoView remoteVideoView:(SBCVideoView * _Nullable)remoteVideoView OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithAudioEnabled:(BOOL)isAudioEnabled videoEnabled:(BOOL)isVideoEnabled localVideoView:(SBCVideoView * _Nullable)localVideoView remoteVideoView:(SBCVideoView * _Nullable)remoteVideoView useFrontCamera:(BOOL)useFrontCamera OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1811,6 +1845,10 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 };
 
 
+
+@class SBCVideoDevice;
+@class SBCError;
+
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Updates local <code>SendBirdVideoView</code>
 /// <ul>
@@ -1821,7 +1859,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \code
 ///
 ///
-/// \endcode\param view <code>SendBirdVideoView</code> object.
+/// \endcode\param videoView <code>SendBirdVideoView</code> object.
 ///
 - (void)updateLocalVideoView:(SBCVideoView * _Nonnull)videoView;
 /// Updates remote <code>SendBirdVideoView</code>
@@ -1830,14 +1868,36 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 ///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
 ///   </li>
 /// </ul>
-/// \param view <code>SendBirdVideoView</code> object.
+/// \param videoView <code>SendBirdVideoView</code> object.
 ///
 - (void)updateRemoteVideoView:(SBCVideoView * _Nonnull)videoView;
+/// List of available video devices that support video capture.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+@property (nonatomic, readonly, copy) NSArray<SBCVideoDevice *> * _Nonnull availableVideoDevices;
+/// Current video device using with capture device.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+@property (nonatomic, readonly, strong) SBCVideoDevice * _Nullable currentVideoDevice;
+/// Changes current video device asynchronously and notifies callback on completion.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+/// \param device <code>VideoDevice</code> object.
+///
+/// \param completionHandler Callback completionHandler. Contains error.
+///
+- (void)selectVideoDevice:(SBCVideoDevice * _Nonnull)device completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
 @end
 
-
-
-@class SBCError;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Accepts the incoming direct call. SendBirdCalls will continue to process the call with the server.
@@ -2283,6 +2343,9 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
   SBCErrorCodeInvalidParameterType = 1800301,
   SBCErrorCodeInstanceNotInitialized = 1800302,
   SBCErrorCodeNotAuthenticated = 1800303,
+  SBCErrorCodeChangingVideoDeviceNotSupported = 1800403,
+  SBCErrorCodeChangingVideoDeviceInProgress = 1800404,
+  SBCErrorCodeChangingVideoDeviceFailed = 1800405,
 };
 
 
@@ -2430,13 +2493,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 /// Removes all delegate for SendBirdCall events.
 + (void)removeAllDelegates;
 /// Returns call for call ID.
-/// \param forCallId Call ID.
+/// \param callId Call ID.
 ///
 ///
 /// returns:
 ///
 /// <code>DirectCall</code> object with corresponding call ID. It can be <code>nil</code>.
-+ (SBCDirectCall * _Nullable)getCallForCallId:(NSString * _Nonnull)callId SWIFT_WARN_UNUSED_RESULT;
++ (SBCDirectCall * _Nullable)callForCallId:(NSString * _Nonnull)callId SWIFT_WARN_UNUSED_RESULT;
 /// Returns the currently authenticated user.
 ///
 /// returns:
@@ -2459,7 +2522,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param completionHandler The handler to call when the authenication is complete.
 ///
 + (void)authenticateWithParams:(SBCAuthenticateParams * _Nonnull)params completionHandler:(void (^ _Nonnull)(SBCUser * _Nullable, SBCError * _Nullable))completionHandler;
-+ (void)deauthenticateWithPushToken:(NSData * _Nullable)pushToken completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler SWIFT_DEPRECATED_MSG("This method is deprecated. Use `deauthenticate(voipPushToken:, completionHandler:)`. This will be removed from version 1.0");
 /// Deauthenticates user. If you call the method without push token, you can keep receiving calls even if the application is terminated or is in background. If you don’t want to receive VoIP push notification anymore, you have to pass the VoIP push token of the device.
 /// \code
 /// class MyClass {
@@ -2524,13 +2586,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param completionHandler This closure is invoked with <code>UUID</code> from the payload.
 ///
 + (void)pushRegistry:(PKPushRegistry * _Nonnull)registry didReceiveIncomingPushWith:(PKPushPayload * _Nonnull)payload for:(PKPushType _Nonnull)type completionHandler:(void (^ _Nullable)(NSUUID * _Nullable))completionHandler;
-/// This method will be removed in v1.0.0
-/// <ul>
-///   <li>
-///     See Also: use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">registerVoIPPush(token:unique:completionHandler:)</a> instead
-///   </li>
-/// </ul>
-+ (void)registerWithPushToken:(NSData * _Nullable)pushToken unique:(BOOL)unique completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler SWIFT_DEPRECATED_MSG("This method is deprecated. Use `registerVoIPPush(token:unique:completionHandler:)`. This will be removed from version 1.0");
 /// To receive calls while an app is in the background or closed, a device registration token must be registered to the server. Register a device push token during authentication by either providing it as a parameter in the <code>SendBirdCall.authenticate()</code> method, or after authentication has completed using the <code>SendBirdCall.registerVoIPPushToken()</code> method.
 /// \code
 /// // PKPushRegistryDelegate
@@ -2553,18 +2608,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 ///    ...
 /// }
 ///
-/// \endcode\param voipPushToken <code>Data</code> object from <code>pushCredential.token</code>.  Refer to <code>PKPushRegistryDelegate</code>
+/// \endcode\param token <code>Data</code> object from <code>pushCredential.token</code>.  Refer to <code>PKPushRegistryDelegate</code>
 ///
 /// \param unique If it is false, you can register more token for multi devices. It has <code>false</code> as a default value.
 ///
 + (void)registerVoIPPushWithToken:(NSData * _Nullable)token unique:(BOOL)unique completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// This method will be removed in v1.0.0
-/// <ul>
-///   <li>
-///     See Also: use <a href="x-source-tag://unregisterVoIPPush(token:completionHandler:)">unregisterVoIPPush(token:completionHandler:)</a> instead
-///   </li>
-/// </ul>
-+ (void)unregisterWithPushToken:(NSData * _Nullable)pushToken completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler SWIFT_DEPRECATED_MSG("This method is deprecated. Use `unregisterVoIPPush(token:completionHandler:)`. This will be removed from version 1.0");
 /// Unregisters a push token of specific device. You will not receive VoIP push notification for a call anymore.   If you don’t want to receive a call in all of the devices of the users, call <code>unregisterAllVoIPPushTokens(completionHandler:)</code>.
 /// \code
 /// func removeVoIPPushToken() {
@@ -2573,18 +2621,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 ///     // Unregistered successfully
 /// }
 ///
-/// \endcode\param voipPushToken Optional Data for the push token that you want to unregister
+/// \endcode\param token Optional Data for the push token that you want to unregister
 ///
 /// \param completionHandler ErrorHandler that returns callback with error.
 ///
 + (void)unregisterVoIPPushWithToken:(NSData * _Nullable)token completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// This method will be removed in v1.0
-/// <ul>
-///   <li>
-///     See Also: use <a href="x-source-tag://unregisterAllVoIPPushTokens(completionHandler:)">unregisterAllVoIPPushTokens(completionHandler:)</a> instead
-///   </li>
-/// </ul>
-+ (void)unregisterAllPushTokensWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler SWIFT_DEPRECATED_MSG("This method is deprecated. Use `unregisterAllVoIPPushTokens(completionHandler:)`. This will be removed from version 1.0");
 /// Unregister all push token registered to the current user(multi device).  You will not receive a call in all of the devices of the users.
 /// \code
 /// func removeAllOfVoIPPushTokens() {
@@ -2634,7 +2675,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 
 @interface SBCSendBirdCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Returns call for a given UUID. Returns nil if such call doesn’t exist.
-+ (SBCDirectCall * _Nullable)getCallForUUID:(NSUUID * _Nonnull)callUUID SWIFT_WARN_UNUSED_RESULT;
++ (SBCDirectCall * _Nullable)callForUUID:(NSUUID * _Nonnull)callUUID SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -2688,6 +2729,53 @@ SWIFT_CLASS_NAMED("SendBirdVideoView")
 - (nonnull instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder shader:(id <RTCVideoViewShading> _Nonnull)shader OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
+
+
+enum SBCVideoDevicePosition : NSInteger;
+
+/// A device for capture video.
+/// \code
+/// func flipCamera(call: DirectCall) {
+///
+///    let current = call.currentVideoDevice
+///    let devices = call.availableVideoDevices
+///
+///    guard let device = devices.first(where: { $0.position != current?.position }) else { return }
+///    
+///    call.selectVideoDevice(device) { error in
+///        // do something when error has occurred.
+///    }
+/// }
+///
+/// \endcode
+SWIFT_CLASS_NAMED("VideoDevice")
+@interface SBCVideoDevice : NSObject
+/// An ID unique to the model of device corresponding to the receiver.
+@property (nonatomic, readonly, copy) NSString * _Nonnull uniqueId;
+/// A localized human-readable name for the receiver.
+@property (nonatomic, readonly, copy) NSString * _Nonnull localizedName;
+/// Indicates the physical position of an VideoDevice’s hardware.
+@property (nonatomic, readonly) enum SBCVideoDevicePosition position;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+
+
+@interface SBCVideoDevice (SWIFT_EXTENSION(SendBirdCalls))
+@end
+
+/// Constants indicating the physical position of an VideoDevice’s hardware.
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCVideoDevicePosition, "Position", open) {
+/// The video device is on the front of the unit.
+  SBCVideoDevicePositionFront = 0,
+/// The video device is on the back of the unit.
+  SBCVideoDevicePositionBack = 1,
+/// The video device’s position relative to the system hardware is unspecified.
+  SBCVideoDevicePositionUnspecified = 2,
+};
+
 
 
 #if __has_attribute(external_source_symbol)
