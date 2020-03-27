@@ -1,4 +1,7 @@
 # Change Log
+### 1.0.1 (Mar 27, 2020)
+* Improved stability.
+
 ### 1.0.0 (Mar 24, 2020)
 * Added camera selection feature.
     * Updated  `init(isAudioEnabled:isVideoEnabled:localVideoView:remoteVideoView:useFrontCamera:)` in `CallOptions`.
