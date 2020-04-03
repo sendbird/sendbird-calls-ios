@@ -8,6 +8,7 @@ import CoreFoundation
 import Foundation
 import MediaPlayer
 import PushKit
+import WebRTC.RTCAudioSession
 import WebRTC.RTCVideoRenderer
 import Security
 @_exported import SendBirdCalls
@@ -143,7 +144,9 @@ extension DirectCall {
 }
 @objc(SBCDirectCallLogListQuery) public class DirectCallLogListQuery : ObjectiveC.NSObject {
   @objc public enum UserRoleFilter : Swift.Int, Swift.RawRepresentable {
-    case caller, callee, all
+    case caller
+    case callee
+    case all
     public typealias RawValue = Swift.Int
     public init?(rawValue: Swift.Int)
     public var rawValue: Swift.Int {
@@ -402,6 +405,8 @@ extension DialParams : Foundation.NSCopying {
   @objc public static func updateCustomItems(callId: Swift.String, customItems: [Swift.String : Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
   @objc public static func deleteCustomItems(callId: Swift.String, customItemKeys: [Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
   @objc public static func deleteAllCustomItems(callId: Swift.String, completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
+  @objc public static func audioSessionDidActivate(_ audioSession: AVFoundation.AVAudioSession)
+  @objc public static func audioSessionDidDeactivate(_ audioSession: AVFoundation.AVAudioSession)
   @objc deinit
 }
 extension SendBirdCall {

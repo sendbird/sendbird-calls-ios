@@ -1,4 +1,8 @@
 # Change Log
+### 1.0.2 (Apr 3, 2020)
+* Added `audioSessionDidActivate` and `audioSessionDidDeactivate` for updating audio session to handle CallKit events.
+* Stability Improvements.
+
 ### 1.0.1 (Mar 27, 2020)
 * Improved stability.
 
