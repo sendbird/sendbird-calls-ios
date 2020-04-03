@@ -359,6 +359,40 @@ query.next(completionHandler: { [weak query] callLogs, error in
 ### Callback and delegate thread handling
 Callbacks may be designated to run on specific background threads to keep main threads undisturbed.  To specify a thread, run `SendBirdCall.executeOn(queue: YOUR_QUEUE)`. Otherwise, `SendBirdCall` will run asynchronously on `DispatchQueue.main`.
 > However, because VoIP PushKit **requires** immediate and synchronous handling of callbacks, `SendBirdCallDelegate.didStartRinging(_)` and completion handler of `SendBirdCall.pushRegistry(_:didReceiveIncomingPushWith:for:completion:)` will run synchronously on the threads that called them. In other words, only these two processes will not run on the thread specified in `SendBirdCall.executeOn(queue:)`.
+```swift
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    let callbackQueue = DispatchQueue(label: QUEUE_LABEL)
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        // Set specific callback queue.
+        SendBirdCall.executeOn(queue: self.callbackQueue)
+
+        ...
+    }
+}
+
+extension AppDelegate: SendBirdCallDelegate {
+
+    func didStartRinging(_ call: DirectCall) {
+        // This delegate could be executed on other thread, not main thread. You can't ensure on which thread the delegate will be executed
+        ...
+    }
+
+}
+
+extension AppDelegate: DirectCallDelegate {
+
+    // Runs on the custom thread.
+    // In this sample code, runs on the callbackQueue above.
+    func didEstablish(_ call: DirectCall) { ... }
+    func didConnect(_ call: DirectCall) { ... }
+    func didEnd(_ call: DirectCall) { ... }
+    
+    ...
+}
+```
 
 ### call results
 | EndResult        | Description                                                                                                            |
