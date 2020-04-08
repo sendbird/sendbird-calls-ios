@@ -18,17 +18,17 @@ The SendBird Calls iOS SDK provides a framework to make and receive voice and vi
 * [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios) which can be integrated either by CocoaPods or Carthage.
 
 ## Installation
-To use SendBird Calls, you should first add our custom-built WebRTC framework to your project. (Git Large File Storage)[https://git-lfs.github.com] must be installed to use the WebRTC framework along with the SendBirdCalls framework.
-- Run `brew install git-lfs` in your project directory. 
+To use SendBird Calls, first add our custom-built WebRTC framework to the project. [Git Large File Storage](https://git-lfs.github.com) must be installed to use the WebRTC framework along with the SendBirdCalls framework.
+- Run `brew install git-lfs` in the project directory. 
 
 ### CocoaPods
-[CocoaPods](https://cocoapods.org/) is a dependency manager for Cocoa projects. For usage and installation CocoaPods instructions, visit [their website](https://cocoapods.org/). SendBirdCalls can be integrated into your Xcode project using CocoaPods by doing the following:
-1. Install CocoaPods into your project by running `pod init` in your project directory.
+[CocoaPods](https://cocoapods.org/) is a dependency manager for Cocoa projects. For usage and installation CocoaPods instructions, visit [their website](https://cocoapods.org/). SendBirdCalls can be integrated into the Xcode project using CocoaPods by doing the following:
+1. Install CocoaPods into the project by running `pod init` in the project directory.
 2. Run `open Podfile`
-3. In the opened Podfile, include `pod ‘SendBirdCalls’` to your configuration under your project target.
-4. Install the SendBirdCalls framework by running `pod install` in your project directory. 
+3. In the opened Podfile, include `pod ‘SendBirdCalls’` to the configuration under the project target.
+4. Install the SendBirdCalls framework by running `pod install` in the project directory. 
 
-> **Note**: The `SendBirdCalls` SDK relies on the` SendBirdWebRTC` framework. `SendBirdWebRTC` is based on` GoogleWebRTC` and is recompiled with `bitcode` enabled. Since `SendBirdWebRTC` is included in `SendBirdCalls` as a dependency, you do not need to explicitly download it.
+> **Note**: The `SendBirdCalls` SDK relies on the` SendBirdWebRTC` framework. `SendBirdWebRTC` is based on` GoogleWebRTC` and is recompiled with `bitcode` enabled. Since `SendBirdWebRTC` is included in `SendBirdCalls` as a dependency, it doesn't need to be explicitly downloaded.
 
 > **IMPORTANT**: After installing the framework, there **MUST** be a 800+MB `SendBirdWebRTC` binary inside `Pods/SendBirdWebRTC.framework`. If not, follow [this troubleshooting guide](#library-not-loaded-webrtcframework).
 
@@ -85,7 +85,7 @@ SendBirdCall.configure(appId: APP_ID)
 ```
 
 ## Authenticate a user and register a push token
-In order to make and receive calls, authenticate the user with SendBird server with the `SendBirdCall.authenticate(with:)` method and **register a VoIP push token** to SendBird. You can register a VoIP push token during authentication by either providing it as a parameter in the `authenticate()` method, or after authentication has completed using the `SendBirdCall.registerVoIPPush(token:)` method. VoIP Push Notification will also enable receiving calls even when the app is in the background or terminated state. A valid APNS certificate also needs to be registered on the `SendBird Dashboard` : `Application` → `Settings` → `Notifications` → `Add certificate`. For more details on registering push tokens, please refer to [SendBirdCalls QuickStart](https://github.com/sendbird/quickstart-calls-ios#registering-push-tokens).
+In order to make and receive calls, authenticate the user with SendBird server with the `SendBirdCall.authenticate(with:)` method and **register a VoIP push token** to SendBird. Register a VoIP push token by either providing it as a parameter in the `authenticate()` method during authentication, or by using the `SendBirdCall.registerVoIPPush(token:)` method after authentication has completed. VoIP Push Notification will also enable receiving calls even when the app is in the background or terminated state. A valid APNS certificate also needs to be registered on the `SendBird Dashboard` : `Application` → `Settings` → `Notifications` → `Add certificate`. For more details on registering push tokens, please refer to [SendBirdCalls QuickStart](https://github.com/sendbird/quickstart-calls-ios#registering-push-tokens).
 
 ```swift
 // Authenticate
@@ -181,7 +181,7 @@ func didAudioDeviceChange(_ call: DirectCall,
 
 
 ## Make a call
-Initiate a call by first preparing the `DialParams` call parameter object.  This contains the initial call configuration, such as callee’s user id, audio or video capabilities, as well as a `CallOptions` object. You can further configure media settings with the `CallOptions` object. Once prepared, the `DialParams` object is then passed into the `SendBirdCall.dial()` method to start the call.
+Initiate a call by first preparing the `DialParams` call parameter object.  This contains the initial call configuration, such as callee’s user id, audio or video capabilities, as well as a `CallOptions` object. Further configure media settings with the `CallOptions` object. Once prepared, the `DialParams` object is then passed into the `SendBirdCall.dial()` method to start the call.
 
 ```swift
 let dialParams = DialParams(calleeId: CALLEE_ID, isVideoCall: false, callOptions: CallOptions(), customItems: [:])
@@ -214,7 +214,7 @@ class MyClass: PKPushRegistryDelegate {
     func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, for type: PKPushType, completion: @escaping () -> Void) {
         SendBirdCall.pushRegistry(registry, didReceiveIncomingPushWith: payload, for: type) { uuid in
       
-            // IMPORTANT: You MUST report incoming call to CallKit when receiving a pushkit push. 
+            // IMPORTANT: Incoming calls MUST be reported when receiving a pushkit push. 
             let provider = CXProvider(configuration: CXProviderConfiguration)
             let update = CXCallUpdate()
             update.remoteHandle = CXHandle(type: .generic, value: HANDLE_VALUE)
@@ -357,7 +357,7 @@ query.next(completionHandler: { [weak query] callLogs, error in
 ## Additional information 
 
 ### Callback and delegate thread handling
-Callbacks may be designated to run on specific background threads to keep main threads undisturbed.  To specify a thread, run `SendBirdCall.executeOn(queue: YOUR_QUEUE)`. Otherwise, `SendBirdCall` will run asynchronously on `DispatchQueue.main`.
+Callbacks may be designated to run on specific background threads to keep main threads undisturbed.  To specify a thread, run `SendBirdCall.executeOn(queue: CUSTOM_QUEUE)`. Otherwise, `SendBirdCall` will run asynchronously on `DispatchQueue.main`.
 > However, because VoIP PushKit **requires** immediate and synchronous handling of callbacks, `SendBirdCallDelegate.didStartRinging(_)` and completion handler of `SendBirdCall.pushRegistry(_:didReceiveIncomingPushWith:for:completion:)` will run synchronously on the threads that called them. In other words, only these two processes will not run on the thread specified in `SendBirdCall.executeOn(queue:)`.
 ```swift
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -376,7 +376,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate: SendBirdCallDelegate {
 
     func didStartRinging(_ call: DirectCall) {
-        // This delegate could be executed on other thread, not main thread. You can't ensure on which thread the delegate will be executed
+    // This delegate may not be executed on the thread set by SendBirdCall.executeOn(queue:).
         ...
     }
 
@@ -412,7 +412,7 @@ extension AppDelegate: DirectCallDelegate {
 Error message:
 ```
 dyld: Library not loaded: @rpath/WebRTC.framework/WebRTC
-  Referenced from: /private/var/containers/Bundle/Application/{UUID}/{YOUR-APPLICATION}.app/Frameworks/SendBirdCalls.framework/SendBirdCalls
+  Referenced from: /private/var/containers/Bundle/Application/{UUID}/{APPLICATION_NAME}.app/Frameworks/SendBirdCalls.framework/SendBirdCalls
 Reason: image not found
 ```
 Above error is caused by the lack of `Git Large File Storage`. The size of `SendBirdWebRTC.framework` is over 800MB (the size of `WebRTC` binary is about 849MB), but  `Git` cannot normally download a file that large. To install the entire framework file, installing `git-lfs` is required.
@@ -435,7 +435,7 @@ pod cache clean 'SendBirdWebRTC' --all
 
 rm -rf ~/Library/Caches/CocoaPods/Pods/Release/SendBirdWebRTC
 rm -rf ~/Library/Caches/CocoaPods/Pods/Specs/Release/SendBirdWebRTC
-rm -rf ~/Library/Developer/Xcode/DerivedData/{YOUR-PROJECT-NAME}-{UUID}
+rm -rf ~/Library/Developer/Xcode/DerivedData/{PROJECT-NAME}-{UUID}
 ```
 3. Setup Cocoapods again
 ```
