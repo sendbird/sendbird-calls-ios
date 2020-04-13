@@ -14,6 +14,8 @@ The SendBird Calls iOS SDK provides a framework to make and receive voice and vi
 * Xcode 9 or later, macOS Sierra or later.
 * Installation of **[Git Large File Storage](https://git-lfs.github.com)**
 
+> **IMPORTANT**: **MAKE SURE to install Git LFS before installing the pod**. Check the size of `WebRTC.framework` in SendBirdWebRTC folder. It MUST be over 800 MB. If the loaded SendBirdWebRTC framework is smaller than that, check the *Git Large File Storage* settings and download again. Refer to [the troubleshooting section](#Library-not-loaded-WebRTC.framework).
+
 ## SDK Dependencies
 * [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios) which can be integrated either by CocoaPods or Carthage.
 
