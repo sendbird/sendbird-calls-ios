@@ -1,4 +1,14 @@
 # Change Log
+
+### 1.0.3 (Apr 23, 2020) 
+* Added Remote Push Notification Capabilities.
+    * Added `application(_:didReceiveRemoteNotification:)`.
+    * Added `registerRemotePush(token:unique:completionHandler:)`.
+    * Added `unregisterRemotePush(token:completionHandler:)`.
+    * Added `unregisterAllRemotePushTokens(completionHandler:)`.
+* Optimized FPS for video calls.
+* Improved stability. 
+
 ### 1.0.2 (Apr 3, 2020)
 * Added `audioSessionDidActivate` and `audioSessionDidDeactivate` for updating audio session to handle CallKit events.
 * Stability Improvements.

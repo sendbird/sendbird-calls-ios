@@ -1006,7 +1006,7 @@ enum UserRoleFilter : NSInteger;
 /// let params = DirectCallLogListQuery.Params()
 /// let query = SendBirdCall.createDirectCallLogListQuery(with: params)
 ///
-/// query.next(completionHandler: { callLogs, error in
+/// query.next { callLogs, error in
 ///     //
 /// }
 ///
@@ -1081,10 +1081,11 @@ typedef SWIFT_ENUM(NSInteger, UserRoleFilter, open) {
 };
 
 
+/// Parameters for configuring DirectCallLogListQuery
 /// \code
 /// let params = DirectCallLogListQuery.Params()
 /// let query = SendBirdCall.createDirectCallLogListQuery(with: params)
-/// query.next(completionHandler: { callLogs, error in
+/// query.next { callLogs, error in
 ///     //
 /// }
 ///
@@ -1092,17 +1093,24 @@ typedef SWIFT_ENUM(NSInteger, UserRoleFilter, open) {
 /// 1.0.0
 SWIFT_CLASS_NAMED("Params")
 @interface SBCDirectCallLogListQueryParams : NSObject
+/// Filter for specified role in the calls. For example, <code>.callee</code> will only return callee’s call logs.
 /// since:
 /// 1.0.0
 @property (nonatomic) enum UserRoleFilter myRole;
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly, strong) NSArray * _Nonnull endResultsArray;
+/// Adds DirectCallEndResult to <code>endResults</code>.
 /// since:
 /// 1.0.0
+/// \param endResult DirectCallEndResult to be added to the filter.
+///
 - (void)addEndResult:(enum SBCDirectCallEndResult)endResult;
+/// Removes DirectCallEndResult from <code>endResults</code>.
 /// since:
 /// 1.0.0
+/// \param endResult DirectCallEndResult to be removed from the filter.
+///
 - (void)removeEndResult:(enum SBCDirectCallEndResult)endResult;
 /// Specifies the number of call logs to return at once.
 /// note:
@@ -1284,6 +1292,7 @@ SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 @protocol SBCSendBirdCallDelegate;
 @class PKPushRegistry;
 @class PKPushPayload;
+@class UIApplication;
 
 SWIFT_CLASS_NAMED("SendBirdCall")
 @interface SBCSendBirdCall : NSObject
@@ -1500,7 +1509,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param completionHandler This closure is invoked with <code>UUID</code> from the payload.
 ///
 + (void)pushRegistry:(PKPushRegistry * _Nonnull)registry didReceiveIncomingPushWith:(PKPushPayload * _Nonnull)payload for:(PKPushType _Nonnull)type completionHandler:(void (^ _Nullable)(NSUUID * _Nullable))completionHandler;
-/// To receive calls while an app is in the background or closed, a device registration token must be registered to the server. Register a device push token during authentication by either providing it as a parameter in the <code>SendBirdCall.authenticate()</code> method, or after authentication has completed using the <code>SendBirdCall.registerVoIPPushToken()</code> method.
+/// To receive native-like calls while an app is in the background or closed, a device registration token must be registered to the server. Register a device push token during authentication by either providing it as a parameter in the <code>SendBirdCall.authenticate()</code> method, or after authentication has completed using the <code>SendBirdCall.registerVoIPPushToken()</code> method.
 /// \code
 /// // PKPushRegistryDelegate
 /// class AppDelegate: PKPushRegistryDelegate {
@@ -1529,7 +1538,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param unique If it is false, you can register more token for multi devices. It has <code>false</code> as a default value.
 ///
 + (void)registerVoIPPushWithToken:(NSData * _Nullable)token unique:(BOOL)unique completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// Unregisters a push token of specific device. You will not receive VoIP push notification for a call anymore.   If you don’t want to receive a call in all of the devices of the users, call <code>unregisterAllVoIPPushTokens(completionHandler:)</code>.
+/// Unregisters a VoIP push token of specific device. You will not receive VoIP push notification for a call anymore.   If you don’t want to receive a call in all of the devices of the users, call <code>unregisterAllVoIPPushTokens(completionHandler:)</code>.
 /// \code
 /// func removeVoIPPushToken() {
 ///     SendBirdCall.unregisterVoIPPush(token: myVoIPPushToken) { error in
@@ -1544,7 +1553,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param completionHandler ErrorHandler that returns callback with error.
 ///
 + (void)unregisterVoIPPushWithToken:(NSData * _Nullable)token completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// Unregister all push token registered to the current user(multi device).  You will not receive a call in all of the devices of the users.
+/// Unregister all VoIP push token registered to the current user(multi device).  You will not receive a call in all of the devices of the users.
 /// \code
 /// func removeAllOfVoIPPushTokens() {
 ///     func unregisterAllVoIPPushTokens(completionHandler: ErrorHandler?) {
@@ -1558,6 +1567,77 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param completionHandler ErrorHandler that returns callback with error
 ///
 + (void)unregisterAllVoIPPushTokensWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+/// To receive remote notifications when the app is in the background or closed, you <em>must</em> deliver the received remote notification to SendBirdCalls SDK.
+/// note:
+/// SendBirdCall will only process SendBird’s notifications. If the userInfo does not contain SendBirdCall’s payload, method will be returned without processing the payload so that you can control the push notifications at your will.
+/// \code
+/// class AppDelegate {
+///     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+///         SendBirdCall.application(application, didReceiveRemoteNotification: userInfo)
+///     }
+/// }
+///
+/// \endcodesince:
+/// 1.0.3
+/// \param application Your singleton app object.
+///
+/// \param userInfo A dictionary that contains information about incoming SendBird Calls.
+///
++ (void)application:(UIApplication * _Nonnull)application didReceiveRemoteNotification:(NSDictionary * _Nonnull)userInfo;
+/// To receive remote notifications while an app is in the background or closed, a device registration token must be registered to the server. Register a remote push token during by using the <code>SendBirdCall.registerRemotePushToken()</code> method.
+/// \code
+/// func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+///   SendBirdCall.registerRemotePush(token: deviceToken) { error in
+///       //
+///   }
+/// }
+///
+/// \endcodenote:
+/// You must register the device to receive remote notifications via Apple Push Notification service for <code>application(_:didRegisterForRemoteNotificationsWithDeviceToken:)</code> to be called. Refer to <code>UIApplication.registerForRemoteNotifications()</code>.
+/// since:
+/// 1.0.3
+/// \param token Unique Token that identifies the device to APNs. Provide the token to register to SendBird.
+///
+/// \param unique If it is false, you can register more token for multi devices. It has <code>false</code> as a default value.
+///
++ (void)registerRemotePushWithToken:(NSData * _Nullable)token unique:(BOOL)unique completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+/// Unregisters a remote push token of specific device. You will not receive remote push notification on the device anymore. If you don’t want to receive remote notifications in all of the devices of the users, call <code>unregisterAllRemotePushTokens(completionHandler:)</code>.
+/// <ul>
+///   <li>
+///     parameters:
+///   </li>
+///   <li>
+///     token: Optional Data for the push token that you want to unregister
+///   </li>
+///   <li>
+///     completionHandler: ErrorHandler that returns callback with error.
+///   </li>
+/// </ul>
+/// \code
+/// func removeRemotePushToken() {
+///    SendBirdCall.unregisterRemotePush(token: myRemotePushToken) { error in
+///        guard error == nil else { return }
+///        // Unregistered successfully
+///    }
+/// }
+///
+/// \endcodesince:
+/// 1.0.3
++ (void)unregisterRemotePushWithToken:(NSData * _Nullable)token completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+/// Unregister all remote push token registered to the current user(multi device).  You will not receive remote notifications in all of the devices of the users.
+/// \code
+/// func removeAllOfRemotePushTokens() {
+///     func unregisterAllRemotePushTokens(completionHandler: ErrorHandler?) {
+///         guard error == nil else { return }
+///         // Unregistered all remote push tokens successfully
+///     }
+/// }
+///
+/// \endcodesince:
+/// 1.0.3
+/// \param completionHandler ErrorHandler that returns callback with error
+///
++ (void)unregisterAllRemotePushTokensWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
 /// Creates a Direct Call Log List Query from given params.
 /// since:
 /// 1.0.0
@@ -2761,7 +2841,7 @@ enum UserRoleFilter : NSInteger;
 /// let params = DirectCallLogListQuery.Params()
 /// let query = SendBirdCall.createDirectCallLogListQuery(with: params)
 ///
-/// query.next(completionHandler: { callLogs, error in
+/// query.next { callLogs, error in
 ///     //
 /// }
 ///
@@ -2836,10 +2916,11 @@ typedef SWIFT_ENUM(NSInteger, UserRoleFilter, open) {
 };
 
 
+/// Parameters for configuring DirectCallLogListQuery
 /// \code
 /// let params = DirectCallLogListQuery.Params()
 /// let query = SendBirdCall.createDirectCallLogListQuery(with: params)
-/// query.next(completionHandler: { callLogs, error in
+/// query.next { callLogs, error in
 ///     //
 /// }
 ///
@@ -2847,17 +2928,24 @@ typedef SWIFT_ENUM(NSInteger, UserRoleFilter, open) {
 /// 1.0.0
 SWIFT_CLASS_NAMED("Params")
 @interface SBCDirectCallLogListQueryParams : NSObject
+/// Filter for specified role in the calls. For example, <code>.callee</code> will only return callee’s call logs.
 /// since:
 /// 1.0.0
 @property (nonatomic) enum UserRoleFilter myRole;
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly, strong) NSArray * _Nonnull endResultsArray;
+/// Adds DirectCallEndResult to <code>endResults</code>.
 /// since:
 /// 1.0.0
+/// \param endResult DirectCallEndResult to be added to the filter.
+///
 - (void)addEndResult:(enum SBCDirectCallEndResult)endResult;
+/// Removes DirectCallEndResult from <code>endResults</code>.
 /// since:
 /// 1.0.0
+/// \param endResult DirectCallEndResult to be removed from the filter.
+///
 - (void)removeEndResult:(enum SBCDirectCallEndResult)endResult;
 /// Specifies the number of call logs to return at once.
 /// note:
@@ -3039,6 +3127,7 @@ SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 @protocol SBCSendBirdCallDelegate;
 @class PKPushRegistry;
 @class PKPushPayload;
+@class UIApplication;
 
 SWIFT_CLASS_NAMED("SendBirdCall")
 @interface SBCSendBirdCall : NSObject
@@ -3255,7 +3344,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param completionHandler This closure is invoked with <code>UUID</code> from the payload.
 ///
 + (void)pushRegistry:(PKPushRegistry * _Nonnull)registry didReceiveIncomingPushWith:(PKPushPayload * _Nonnull)payload for:(PKPushType _Nonnull)type completionHandler:(void (^ _Nullable)(NSUUID * _Nullable))completionHandler;
-/// To receive calls while an app is in the background or closed, a device registration token must be registered to the server. Register a device push token during authentication by either providing it as a parameter in the <code>SendBirdCall.authenticate()</code> method, or after authentication has completed using the <code>SendBirdCall.registerVoIPPushToken()</code> method.
+/// To receive native-like calls while an app is in the background or closed, a device registration token must be registered to the server. Register a device push token during authentication by either providing it as a parameter in the <code>SendBirdCall.authenticate()</code> method, or after authentication has completed using the <code>SendBirdCall.registerVoIPPushToken()</code> method.
 /// \code
 /// // PKPushRegistryDelegate
 /// class AppDelegate: PKPushRegistryDelegate {
@@ -3284,7 +3373,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param unique If it is false, you can register more token for multi devices. It has <code>false</code> as a default value.
 ///
 + (void)registerVoIPPushWithToken:(NSData * _Nullable)token unique:(BOOL)unique completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// Unregisters a push token of specific device. You will not receive VoIP push notification for a call anymore.   If you don’t want to receive a call in all of the devices of the users, call <code>unregisterAllVoIPPushTokens(completionHandler:)</code>.
+/// Unregisters a VoIP push token of specific device. You will not receive VoIP push notification for a call anymore.   If you don’t want to receive a call in all of the devices of the users, call <code>unregisterAllVoIPPushTokens(completionHandler:)</code>.
 /// \code
 /// func removeVoIPPushToken() {
 ///     SendBirdCall.unregisterVoIPPush(token: myVoIPPushToken) { error in
@@ -3299,7 +3388,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param completionHandler ErrorHandler that returns callback with error.
 ///
 + (void)unregisterVoIPPushWithToken:(NSData * _Nullable)token completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
-/// Unregister all push token registered to the current user(multi device).  You will not receive a call in all of the devices of the users.
+/// Unregister all VoIP push token registered to the current user(multi device).  You will not receive a call in all of the devices of the users.
 /// \code
 /// func removeAllOfVoIPPushTokens() {
 ///     func unregisterAllVoIPPushTokens(completionHandler: ErrorHandler?) {
@@ -3313,6 +3402,77 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param completionHandler ErrorHandler that returns callback with error
 ///
 + (void)unregisterAllVoIPPushTokensWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+/// To receive remote notifications when the app is in the background or closed, you <em>must</em> deliver the received remote notification to SendBirdCalls SDK.
+/// note:
+/// SendBirdCall will only process SendBird’s notifications. If the userInfo does not contain SendBirdCall’s payload, method will be returned without processing the payload so that you can control the push notifications at your will.
+/// \code
+/// class AppDelegate {
+///     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+///         SendBirdCall.application(application, didReceiveRemoteNotification: userInfo)
+///     }
+/// }
+///
+/// \endcodesince:
+/// 1.0.3
+/// \param application Your singleton app object.
+///
+/// \param userInfo A dictionary that contains information about incoming SendBird Calls.
+///
++ (void)application:(UIApplication * _Nonnull)application didReceiveRemoteNotification:(NSDictionary * _Nonnull)userInfo;
+/// To receive remote notifications while an app is in the background or closed, a device registration token must be registered to the server. Register a remote push token during by using the <code>SendBirdCall.registerRemotePushToken()</code> method.
+/// \code
+/// func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+///   SendBirdCall.registerRemotePush(token: deviceToken) { error in
+///       //
+///   }
+/// }
+///
+/// \endcodenote:
+/// You must register the device to receive remote notifications via Apple Push Notification service for <code>application(_:didRegisterForRemoteNotificationsWithDeviceToken:)</code> to be called. Refer to <code>UIApplication.registerForRemoteNotifications()</code>.
+/// since:
+/// 1.0.3
+/// \param token Unique Token that identifies the device to APNs. Provide the token to register to SendBird.
+///
+/// \param unique If it is false, you can register more token for multi devices. It has <code>false</code> as a default value.
+///
++ (void)registerRemotePushWithToken:(NSData * _Nullable)token unique:(BOOL)unique completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+/// Unregisters a remote push token of specific device. You will not receive remote push notification on the device anymore. If you don’t want to receive remote notifications in all of the devices of the users, call <code>unregisterAllRemotePushTokens(completionHandler:)</code>.
+/// <ul>
+///   <li>
+///     parameters:
+///   </li>
+///   <li>
+///     token: Optional Data for the push token that you want to unregister
+///   </li>
+///   <li>
+///     completionHandler: ErrorHandler that returns callback with error.
+///   </li>
+/// </ul>
+/// \code
+/// func removeRemotePushToken() {
+///    SendBirdCall.unregisterRemotePush(token: myRemotePushToken) { error in
+///        guard error == nil else { return }
+///        // Unregistered successfully
+///    }
+/// }
+///
+/// \endcodesince:
+/// 1.0.3
++ (void)unregisterRemotePushWithToken:(NSData * _Nullable)token completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+/// Unregister all remote push token registered to the current user(multi device).  You will not receive remote notifications in all of the devices of the users.
+/// \code
+/// func removeAllOfRemotePushTokens() {
+///     func unregisterAllRemotePushTokens(completionHandler: ErrorHandler?) {
+///         guard error == nil else { return }
+///         // Unregistered all remote push tokens successfully
+///     }
+/// }
+///
+/// \endcodesince:
+/// 1.0.3
+/// \param completionHandler ErrorHandler that returns callback with error
+///
++ (void)unregisterAllRemotePushTokensWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
 /// Creates a Direct Call Log List Query from given params.
 /// since:
 /// 1.0.0

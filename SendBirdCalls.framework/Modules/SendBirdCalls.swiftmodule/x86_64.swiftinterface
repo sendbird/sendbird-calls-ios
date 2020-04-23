@@ -4,13 +4,12 @@
 import AVFoundation
 import AVKit
 import CommonCrypto
-import CoreFoundation
 import Foundation
 import MediaPlayer
+import Network
 import PushKit
 import WebRTC.RTCAudioSession
 import WebRTC.RTCVideoRenderer
-import Security
 @_exported import SendBirdCalls
 import Swift
 import UIKit.UIApplication
@@ -402,6 +401,10 @@ extension DialParams : Foundation.NSCopying {
   @objc public static func registerVoIPPush(token: Foundation.Data?, unique: Swift.Bool = false, completionHandler: SendBirdCalls.ErrorHandler?)
   @objc public static func unregisterVoIPPush(token: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
   @objc public static func unregisterAllVoIPPushTokens(completionHandler: SendBirdCalls.ErrorHandler?)
+  @objc public static func application(_ application: UIKit.UIApplication, didReceiveRemoteNotification userInfo: [Swift.AnyHashable : Any])
+  @objc public static func registerRemotePush(token: Foundation.Data?, unique: Swift.Bool = false, completionHandler: SendBirdCalls.ErrorHandler?)
+  @objc public static func unregisterRemotePush(token: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
+  @objc public static func unregisterAllRemotePushTokens(completionHandler: SendBirdCalls.ErrorHandler?)
   @objc(createDirectCallLogListQueryWithParams:) public static func createDirectCallLogListQuery(with params: SendBirdCalls.DirectCallLogListQuery.Params) -> SendBirdCalls.DirectCallLogListQuery?
   @objc public static func updateCustomItems(callId: Swift.String, customItems: [Swift.String : Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
   @objc public static func deleteCustomItems(callId: Swift.String, customItemKeys: [Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
