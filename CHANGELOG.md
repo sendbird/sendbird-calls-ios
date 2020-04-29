@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.0.4 (Apr 29, 2020) 
+* Fixed a bug where VoIP Push Notifications weren’t being parsed.
+
 ### 1.0.3 (Apr 23, 2020) 
 * Added Remote Push Notification Capabilities.
     * Added `application(_:didReceiveRemoteNotification:)`.
