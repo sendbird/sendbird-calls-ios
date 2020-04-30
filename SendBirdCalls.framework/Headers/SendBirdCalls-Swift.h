@@ -241,14 +241,17 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 /// since:
 /// 1.0.0
 @property (nonatomic, copy) NSString * _Nullable accessToken;
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// Push Token for receiving push notifications from the device.
 /// since:
 /// 1.0.0
-@property (nonatomic, readonly, copy) NSData * _Nullable voipPushToken;
+@property (nonatomic, readonly, copy) NSData * _Nullable voipPushToken SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`.");
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// Bool value indicating whether the Push token should be unique to the user. If the value is true, SendBird server will remove the push token from other devices of the authenticated user.
 /// since:
 /// 1.0.0
-@property (nonatomic, readonly) BOOL unique;
+@property (nonatomic, readonly) BOOL unique SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`");
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please initialize with <a href="x-source-tag://init(userId:accessToken:)">init(userId:accessToken:)</a>.
 /// since:
 /// 1.0.0
 /// \param userId User Id of the user.
@@ -259,14 +262,15 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 ///
 /// \param unique Bool value indicating whether the Push token should be unique to the user. Default value is false.
 ///
-- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken voipPushToken:(NSData * _Nullable)voipPushToken unique:(BOOL)unique OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken voipPushToken:(NSData * _Nullable)voipPushToken unique:(BOOL)unique OBJC_DESIGNATED_INITIALIZER SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please initialize with `init(userId:accessToken:)`");
 /// since:
 /// 1.0.0
 /// \param userId User Id of the user.
 ///
 /// \param accessToken Access Token used for extra layer of security.
 ///
-- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken;
+- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken OBJC_DESIGNATED_INITIALIZER;
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// since:
 /// 1.0.0
 /// \param userId User Id of the user.
@@ -275,7 +279,8 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 ///
 /// \param unique Bool value indicating whether the Push token should be unique to the user. Default value is false.
 ///
-- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId voipPushToken:(NSData * _Nullable)voipPushToken unique:(BOOL)unique;
+- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId voipPushToken:(NSData * _Nullable)voipPushToken unique:(BOOL)unique SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `init(userId:accessToken:)` and `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`");
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// Add push token to authenticate params.
 /// since:
 /// 1.0.0
@@ -283,7 +288,7 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 ///
 /// \param unique Bool value indicating whether the Push token should be unique to the user. Default value is false.
 ///
-- (void)setVoIPPushWithToken:(NSData * _Nullable)token withUniqueness:(BOOL)unique;
+- (void)setVoIPPushWithToken:(NSData * _Nullable)token withUniqueness:(BOOL)unique SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`");
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -613,6 +618,17 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \param completionHandler Callback completionHandler. Contains error.
 ///
 - (void)selectVideoDevice:(SBCVideoDevice * _Nonnull)device completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+/// Toggles the selection between the front and the back camera.
+/// since:
+/// 1.0.3
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+/// \param completionHandler Callback completionHandler. Contains error.
+///
+- (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
 @end
 
 
@@ -1162,8 +1178,6 @@ SWIFT_CLASS_NAMED("DirectCallUser")
 
 
 
-
-
 @class NSCoder;
 
 /// Custom Error class for SendBirdCalls. Subclass of NSError.
@@ -1481,6 +1495,17 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// returns:
 /// (Discardable) <code>DirectCall</code> object. If the method failed to make a call, it would return <code>nil</code>.
 + (SBCDirectCall * _Nullable)dialWithParams:(SBCDialParams * _Nonnull)params completionHandler:(void (^ _Nonnull)(SBCDirectCall * _Nullable, SBCError * _Nullable))completionHandler;
+/// Timeout value for the timeout period before unanswered ringing or dialing calls expires and ends. its default value is 60 seconds.
+/// important:
+/// If you assign invalid value(0 or negative value), it will be ignored
+/// \code
+/// SendBirdCall.setRingingTimeout(30)
+///
+/// \endcodesince:
+/// 1.0.5
+/// \param timeout Timeout value in seconds.
+///
++ (void)setRingingTimeout:(NSInteger)timeout;
 /// Handles incoming VoIP push with SendBirdCalls payload. Incoming calls are received either via the application’s persistent internal server connection, or (if the application is in the background) via PushKit. PushKit messages received by the SendBirdCall instance <em>MUST</em> be delivered to the SDK.
 /// \code
 /// class MyClass: PKPushRegistryDelegate {
@@ -1806,6 +1831,8 @@ SWIFT_CLASS_NAMED("VideoDevice")
 
 
 
+
+
 @interface SBCVideoDevice (SWIFT_EXTENSION(SendBirdCalls))
 @end
 
@@ -1826,8 +1853,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCVideoDevicePosition, "Position", open) {
 /// 1.0.0
   SBCVideoDevicePositionUnspecified = 2,
 };
-
-
 
 #if __has_attribute(external_source_symbol)
 # pragma clang attribute pop
@@ -2076,14 +2101,17 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 /// since:
 /// 1.0.0
 @property (nonatomic, copy) NSString * _Nullable accessToken;
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// Push Token for receiving push notifications from the device.
 /// since:
 /// 1.0.0
-@property (nonatomic, readonly, copy) NSData * _Nullable voipPushToken;
+@property (nonatomic, readonly, copy) NSData * _Nullable voipPushToken SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`.");
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// Bool value indicating whether the Push token should be unique to the user. If the value is true, SendBird server will remove the push token from other devices of the authenticated user.
 /// since:
 /// 1.0.0
-@property (nonatomic, readonly) BOOL unique;
+@property (nonatomic, readonly) BOOL unique SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`");
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please initialize with <a href="x-source-tag://init(userId:accessToken:)">init(userId:accessToken:)</a>.
 /// since:
 /// 1.0.0
 /// \param userId User Id of the user.
@@ -2094,14 +2122,15 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 ///
 /// \param unique Bool value indicating whether the Push token should be unique to the user. Default value is false.
 ///
-- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken voipPushToken:(NSData * _Nullable)voipPushToken unique:(BOOL)unique OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken voipPushToken:(NSData * _Nullable)voipPushToken unique:(BOOL)unique OBJC_DESIGNATED_INITIALIZER SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please initialize with `init(userId:accessToken:)`");
 /// since:
 /// 1.0.0
 /// \param userId User Id of the user.
 ///
 /// \param accessToken Access Token used for extra layer of security.
 ///
-- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken;
+- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken OBJC_DESIGNATED_INITIALIZER;
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// since:
 /// 1.0.0
 /// \param userId User Id of the user.
@@ -2110,7 +2139,8 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 ///
 /// \param unique Bool value indicating whether the Push token should be unique to the user. Default value is false.
 ///
-- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId voipPushToken:(NSData * _Nullable)voipPushToken unique:(BOOL)unique;
+- (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId voipPushToken:(NSData * _Nullable)voipPushToken unique:(BOOL)unique SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `init(userId:accessToken:)` and `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`");
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// Add push token to authenticate params.
 /// since:
 /// 1.0.0
@@ -2118,7 +2148,7 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 ///
 /// \param unique Bool value indicating whether the Push token should be unique to the user. Default value is false.
 ///
-- (void)setVoIPPushWithToken:(NSData * _Nullable)token withUniqueness:(BOOL)unique;
+- (void)setVoIPPushWithToken:(NSData * _Nullable)token withUniqueness:(BOOL)unique SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`");
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -2448,6 +2478,17 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \param completionHandler Callback completionHandler. Contains error.
 ///
 - (void)selectVideoDevice:(SBCVideoDevice * _Nonnull)device completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+/// Toggles the selection between the front and the back camera.
+/// since:
+/// 1.0.3
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+/// \param completionHandler Callback completionHandler. Contains error.
+///
+- (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
 @end
 
 
@@ -2997,8 +3038,6 @@ SWIFT_CLASS_NAMED("DirectCallUser")
 
 
 
-
-
 @class NSCoder;
 
 /// Custom Error class for SendBirdCalls. Subclass of NSError.
@@ -3316,6 +3355,17 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// returns:
 /// (Discardable) <code>DirectCall</code> object. If the method failed to make a call, it would return <code>nil</code>.
 + (SBCDirectCall * _Nullable)dialWithParams:(SBCDialParams * _Nonnull)params completionHandler:(void (^ _Nonnull)(SBCDirectCall * _Nullable, SBCError * _Nullable))completionHandler;
+/// Timeout value for the timeout period before unanswered ringing or dialing calls expires and ends. its default value is 60 seconds.
+/// important:
+/// If you assign invalid value(0 or negative value), it will be ignored
+/// \code
+/// SendBirdCall.setRingingTimeout(30)
+///
+/// \endcodesince:
+/// 1.0.5
+/// \param timeout Timeout value in seconds.
+///
++ (void)setRingingTimeout:(NSInteger)timeout;
 /// Handles incoming VoIP push with SendBirdCalls payload. Incoming calls are received either via the application’s persistent internal server connection, or (if the application is in the background) via PushKit. PushKit messages received by the SendBirdCall instance <em>MUST</em> be delivered to the SDK.
 /// \code
 /// class MyClass: PKPushRegistryDelegate {
@@ -3643,6 +3693,8 @@ SWIFT_CLASS_NAMED("VideoDevice")
 
 
 
+
+
 @interface SBCVideoDevice (SWIFT_EXTENSION(SendBirdCalls))
 @end
 
@@ -3663,8 +3715,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCVideoDevicePosition, "Position", open) {
 /// 1.0.0
   SBCVideoDevicePositionUnspecified = 2,
 };
-
-
 
 #if __has_attribute(external_source_symbol)
 # pragma clang attribute pop

@@ -9,6 +9,7 @@ import MediaPlayer
 import Network
 import PushKit
 import WebRTC.RTCAudioSession
+import WebRTC.RTCSessionDescription
 import WebRTC.RTCVideoRenderer
 @_exported import SendBirdCalls
 import Swift
@@ -88,19 +89,25 @@ extension DirectCall {
     @objc get
   }
   @objc dynamic public func selectVideoDevice(_ device: SendBirdCalls.VideoDevice, completionHandler: @escaping SendBirdCalls.ErrorHandler)
+  @objc dynamic public func switchCamera(completionHandler: @escaping SendBirdCalls.ErrorHandler)
 }
 @objc(SBCAuthenticateParams) public class AuthenticateParams : ObjectiveC.NSObject {
   @objc public var userId: Swift.String
   @objc public var accessToken: Swift.String?
+  @available(*, deprecated, message: "Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`.")
   @objc public var voipPushToken: Foundation.Data? {
     get
     }
+  @available(*, deprecated, message: "Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`")
   @objc public var unique: Swift.Bool {
     get
     }
+  @available(*, deprecated, message: "Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please initialize with `init(userId:accessToken:)`")
   @objc public init(userId: Swift.String, accessToken: Swift.String? = nil, voipPushToken: Foundation.Data? = nil, unique: Swift.Bool)
-  @objc convenience public init(userId: Swift.String, accessToken: Swift.String?)
+  @objc public init(userId: Swift.String, accessToken: Swift.String?)
+  @available(*, deprecated, message: "Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `init(userId:accessToken:)` and `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`")
   @objc convenience public init(userId: Swift.String, voipPushToken: Foundation.Data?, unique: Swift.Bool)
+  @available(*, deprecated, message: "Voip Push Token registration through Authentication is deprecated. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`")
   @objc public func setVoIPPush(token: Foundation.Data?, withUniqueness unique: Swift.Bool = false)
   @objc override dynamic public init()
   @objc deinit
@@ -397,6 +404,7 @@ extension DialParams : Foundation.NSCopying {
   @objc(deauthenticateWithVoIPPushToken:completionHandler:) public static func deauthenticate(voipPushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
   @discardableResult
   @objc(dialWithParams:completionHandler:) public static func dial(with params: SendBirdCalls.DialParams, completionHandler: @escaping SendBirdCalls.DirectCallHandler) -> SendBirdCalls.DirectCall?
+  @objc public static func setRingingTimeout(_ timeout: Swift.Int)
   @objc public static func pushRegistry(_ registry: PushKit.PKPushRegistry, didReceiveIncomingPushWith payload: PushKit.PKPushPayload, for type: PushKit.PKPushType, completionHandler: SendBirdCalls.PushRegistryHandler?)
   @objc public static func registerVoIPPush(token: Foundation.Data?, unique: Swift.Bool = false, completionHandler: SendBirdCalls.ErrorHandler?)
   @objc public static func unregisterVoIPPush(token: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)

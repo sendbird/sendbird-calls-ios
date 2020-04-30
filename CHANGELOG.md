@@ -1,5 +1,12 @@
 # Change Log
 
+### 1.0.5 (Apr 30, 2020) 
+* VoIP Push Token Registration through AuthenticateParams is now deprecated. Please register by `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`.
+* Added `DirectCall.switchCamera(completionHandler:)` for switching the camera between front and back cameras.
+* Added `SendBirdCall.setRingingTimeout(_:)` to change the timeout period before unanswered ringing or dialing calls expires and ends.
+* Improved Remote Push Notification Handling
+* Stability Improvements. 
+
 ### 1.0.4 (Apr 29, 2020) 
 * Fixed a bug where VoIP Push Notifications weren’t being parsed.
 
