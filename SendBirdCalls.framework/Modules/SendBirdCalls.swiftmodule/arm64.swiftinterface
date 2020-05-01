@@ -248,10 +248,20 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
     case changingVideoDeviceNotSupported = 1800403
     case changingVideoDeviceInProgress = 1800404
     case changingVideoDeviceFailed = 1800405
+    case serverInternalError = 1400999
+    case invalidCallStatus = 1400101
+    case callDoesNotExist = 1400102
+    case calleeDoesNotExist = 1400103
+    case dialMyself = 1400104
+    case noPermission = 1400105
+    case calleeNeverAuthenticate = 1400106
     public init?(rawValue: Swift.Int)
     public var rawValue: Swift.Int {
       get
     }
+  }
+  public var errorCode: SendBirdCalls.SBCError.ErrorCode {
+    get
   }
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit

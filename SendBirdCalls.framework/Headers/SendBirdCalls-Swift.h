@@ -1247,6 +1247,27 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.0.0
   SBCErrorCodeChangingVideoDeviceFailed = 1800405,
+/// since:
+/// 1.0.6
+  SBCErrorCodeServerInternalError = 1400999,
+/// since:
+/// 1.0.6
+  SBCErrorCodeInvalidCallStatus = 1400101,
+/// since:
+/// 1.0.6
+  SBCErrorCodeCallDoesNotExist = 1400102,
+/// since:
+/// 1.0.6
+  SBCErrorCodeCalleeDoesNotExist = 1400103,
+/// since:
+/// 1.0.6
+  SBCErrorCodeDialMyself = 1400104,
+/// since:
+/// 1.0.6
+  SBCErrorCodeNoPermission = 1400105,
+/// since:
+/// 1.0.6
+  SBCErrorCodeCalleeNeverAuthenticate = 1400106,
 };
 
 
@@ -3107,6 +3128,27 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.0.0
   SBCErrorCodeChangingVideoDeviceFailed = 1800405,
+/// since:
+/// 1.0.6
+  SBCErrorCodeServerInternalError = 1400999,
+/// since:
+/// 1.0.6
+  SBCErrorCodeInvalidCallStatus = 1400101,
+/// since:
+/// 1.0.6
+  SBCErrorCodeCallDoesNotExist = 1400102,
+/// since:
+/// 1.0.6
+  SBCErrorCodeCalleeDoesNotExist = 1400103,
+/// since:
+/// 1.0.6
+  SBCErrorCodeDialMyself = 1400104,
+/// since:
+/// 1.0.6
+  SBCErrorCodeNoPermission = 1400105,
+/// since:
+/// 1.0.6
+  SBCErrorCodeCalleeNeverAuthenticate = 1400106,
 };
 
 

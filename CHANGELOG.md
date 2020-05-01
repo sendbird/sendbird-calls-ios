@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.0.6 (May 1, 2020)
+* Added `SBCError.errorCode` to access the `SBCError.ErrorCode` enum value of the error.
+* Added more cases to `SBCError.ErrorCode` enum to reflect the errors from the server.
+
 ### 1.0.5 (Apr 30, 2020) 
 * VoIP Push Token Registration through AuthenticateParams is now deprecated. Please register by `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`.
 * Added `DirectCall.switchCamera(completionHandler:)` for switching the camera between front and back cameras.
