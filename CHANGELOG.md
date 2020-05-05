@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.0.7 (May 5, 2020)
+* Fixed error where WebSocket would intermittently fail. 
+
 ### 1.0.6 (May 1, 2020)
 * Added `SBCError.errorCode` to access the `SBCError.ErrorCode` enum value of the error.
 * Added more cases to `SBCError.ErrorCode` enum to reflect the errors from the server.
