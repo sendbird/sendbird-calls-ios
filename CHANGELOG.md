@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.0.8 (May 6, 2020)
+* Enabled Bitcode
+
 ### 1.0.7 (May 5, 2020)
 * Fixed error where WebSocket would intermittently fail. 
 
