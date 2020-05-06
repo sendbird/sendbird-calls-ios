@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.0.9 (May 6, 2020)
+* Fixed Bitcode error with LLVM Profiling issue.  
+
 ### 1.0.8 (May 6, 2020)
 * Enabled Bitcode
 
