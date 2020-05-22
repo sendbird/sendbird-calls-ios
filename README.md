@@ -344,7 +344,7 @@ query.next(completionHandler: { [weak query] callLogs, error in
         // query.next() can be called once more.
         // If a user wants to fetch more call logs.
     }
-}
+})
 ```
 
 | Method           | Description                                                                                                                                                                                                                                                                                                       |
@@ -409,7 +409,7 @@ extension AppDelegate: DirectCallDelegate {
 | acceptFailed        | The `accept()` method call has failed. |
 | otherDeviceAccepted | The incoming call was accepted on a different device. This device received an incoming call notification, but the call ended when a different device accepted it. |
 
-## TroubleShooting 
+## Troubleshooting 
 ### Library not loaded WebRTC.framework
 Error message:
 ```
@@ -444,6 +444,12 @@ rm -rf ~/Library/Developer/Xcode/DerivedData/{PROJECT-NAME}-{UUID}
 pod deintegrate
 pod setup
 ```
+
+> Note
+ > `[!] A valid Xcode project file is required.`
+ > This error message will appear if you have multiple .xcodeproject or .xcworkspace files in the directory. Make sure to have only 1 copy of each file.
+ > If the same error message appears again, check if your current directory is the folder that contains your .xcodeproject: `$ ls`.
+
 4. Re-install Cocoapods dependencies
 ```
 pod install

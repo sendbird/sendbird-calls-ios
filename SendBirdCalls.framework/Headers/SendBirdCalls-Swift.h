@@ -241,17 +241,17 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 /// since:
 /// 1.0.0
 @property (nonatomic, copy) NSString * _Nullable accessToken;
-/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token,unique,completionHandler)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// Push Token for receiving push notifications from the device.
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly, copy) NSData * _Nullable voipPushToken SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`.");
-/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token,unique,completionHandler)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// Bool value indicating whether the Push token should be unique to the user. If the value is true, SendBird server will remove the push token from other devices of the authenticated user.
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly) BOOL unique SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`");
-/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please initialize with <a href="x-source-tag://init(userId:accessToken:)">init(userId:accessToken:)</a>.
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please initialize with <a href="x-source-tag://init(userId,accessToken)">init(userId:accessToken:)</a>.
 /// since:
 /// 1.0.0
 /// \param userId User Id of the user.
@@ -270,7 +270,7 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 /// \param accessToken Access Token used for extra layer of security.
 ///
 - (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken OBJC_DESIGNATED_INITIALIZER;
-/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token,unique,completionHandler)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// since:
 /// 1.0.0
 /// \param userId User Id of the user.
@@ -280,7 +280,7 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 /// \param unique Bool value indicating whether the Push token should be unique to the user. Default value is false.
 ///
 - (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId voipPushToken:(NSData * _Nullable)voipPushToken unique:(BOOL)unique SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `init(userId:accessToken:)` and `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`");
-/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token,unique,completionHandler)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// Add push token to authenticate params.
 /// since:
 /// 1.0.0
@@ -478,7 +478,7 @@ SWIFT_CLASS_NAMED("DirectCall")
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly) BOOL isLocalAudioEnabled;
-/// The local <code>SendBirdVideoView</code>. This is a read-only property. If you want to update value, use <a href="x-source-tag://updateLocalVideo(_:)">updateLocalVideo(_:)</a>
+/// The local <code>SendBirdVideoView</code>. This is a read-only property. If you want to update value, use <a href="x-source-tag://updateLocalVideoView(_)">updateLocalVideo(_:)</a>
 /// since:
 /// 1.0.0
 /// <ul>
@@ -486,7 +486,7 @@ SWIFT_CLASS_NAMED("DirectCall")
 ///     See Also:
 ///     <ul>
 ///       <li>
-///         <a href="x-source-tag://updateLocalVideo(_:)">updateLocalVideo(_:)</a>
+///         <a href="x-source-tag://updateLocalVideoView(_)">updateLocalVideo(_:)</a>
 ///       </li>
 ///       <li>
 ///         <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
@@ -495,7 +495,7 @@ SWIFT_CLASS_NAMED("DirectCall")
 ///   </li>
 /// </ul>
 @property (nonatomic, readonly, weak) SBCVideoView * _Nullable localVideoView;
-/// The remote <code>SendBirdVideoView</code>. This is a read-only property. If you want to update value, use <a href="x-source-tag://updateRemoteVideo(_:)">updateRemoteVideo(_:)</a>
+/// The remote <code>SendBirdVideoView</code>. This is a read-only property. If you want to update value, use <a href="x-source-tag://updateRemoteVideoView(_)">updateRemoteVideo(_:)</a>
 /// since:
 /// 1.0.0
 /// <ul>
@@ -503,7 +503,7 @@ SWIFT_CLASS_NAMED("DirectCall")
 ///     See Also:
 ///     <ul>
 ///       <li>
-///         <a href="x-source-tag://updateRemoteVideo(_:)">updateRemoteVideo(_:)</a>
+///         <a href="x-source-tag://updateRemoteVideoView(_)">updateRemoteVideo(_:)</a>
 ///       </li>
 ///       <li>
 ///         <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
@@ -858,7 +858,7 @@ SWIFT_PROTOCOL_NAMED("DirectCallDelegate")
 /// 1.0.0
 - (void)didEnd:(SBCDirectCall * _Nonnull)call;
 @optional
-/// Called when the audio device has been changed. To change audio route, see <a href="x-source-tag://routePickerView(frame:)">routePickerView(frame:)</a>
+/// Called when the audio device has been changed. To change audio route, see <a href="x-source-tag://routePickerView(frame)">routePickerView(frame:)</a>
 /// \code
 /// func didAudioDeviceChange(_ call: DirectCall, session: AVAudioSession, previousRoute: AVAudioSessionRouteDescription, reason: AVAudioSession.RouteChangeReason) {
 ///    // You can get current audio I/O, available inputs from the session. You can also set preferred input.
@@ -968,6 +968,10 @@ SWIFT_CLASS_NAMED("DirectCallLog")
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly, copy) NSString * _Nonnull callId;
+/// If the call log data is from server, it returns <code>true</code>
+/// since:
+/// 1.1.0
+@property (nonatomic, readonly) BOOL isFromServer;
 /// The started time of the Call. Int64 of miliseconds.
 /// since:
 /// 1.0.0
@@ -1271,6 +1275,8 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 };
 
 
+
+
 /// since:
 /// 1.0.0
 SWIFT_PROTOCOL("_TtP13SendBirdCalls14SBCLogReceiver_")
@@ -1293,12 +1299,15 @@ SWIFT_PROTOCOL("_TtP13SendBirdCalls14SBCLogReceiver_")
 - (void)logMessage:(NSString * _Nonnull)message;
 @end
 
+enum SBCLoggerLevel : NSInteger;
 
 /// since:
 /// 1.0.0
 SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 @interface SBCLogger : NSObject
-/// Adds receiver to receive logs from SendBirdCall Logger
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+/// Adds a custom log receiver to the SendBirdCall Logger.
 /// \code
 /// override func viewDidLoad() {
 ///    // ...
@@ -1308,10 +1317,10 @@ SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 ///
 /// \endcodesince:
 /// 1.0.0
-/// \param receiver The object inheritted<code>SBCLogReceiver</code> to receive logs
+/// \param receiver The object implemented<code>SBCLogReceiver</code> to receive logs
 ///
-+ (void)addWithReceiver:(id <SBCLogReceiver> _Nonnull)receiver;
-/// Removes receiver added before.
++ (void)addLogReceiver:(id <SBCLogReceiver> _Nonnull)receiver;
+/// Removes the custom log receiver from the SendBirdCall Logger.
 /// \code
 /// SBCLogger.remove(receiver: self)
 ///
@@ -1319,9 +1328,59 @@ SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 /// 1.0.0
 /// \param receiver The object inheritted<code>SBCLogReceiver</code>
 ///
-+ (void)removeWithReceiver:(id <SBCLogReceiver> _Nonnull)receiver;
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
++ (void)removeLogReceiver:(id <SBCLogReceiver> _Nonnull)receiver;
+/// Update the logger level.
+/// The log level decides what kind of logs are printed to the console and delivered to custom log receivers.
+/// \code
+/// SBCLogger.setLoggerLevel(.none)
+///
+/// \endcodesince:
+/// 1.1.0
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://LoggerLevel">LoggerLevel</a>
+///   </li>
+/// </ul>
+/// \param level The Logger Level value indicates the level to which it will be used.
+///
++ (void)setLoggerLevel:(enum SBCLoggerLevel)level;
 @end
+
+
+
+
+@interface SBCLogger (SWIFT_EXTENSION(SendBirdCalls))
+@end
+
+/// Logger Level enumeration.
+/// Log will not be exposed if the priority value is lower than the configured log level.
+/// Logger Level follows the following priority:
+/// <code>info < warning < error < none.</code>
+/// <ul>
+///   <li>
+///     Cases:
+///     <ul>
+///       <li>
+///         info: Informational messages that are general to the application.
+///       </li>
+///       <li>
+///         warning: Potentially problematic situation that may indicate potential problems.
+///       </li>
+///       <li>
+///         error: Error events that may represent the failure of normal program execution.
+///       </li>
+///       <li>
+///         none: No logging.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCLoggerLevel, "Level", open) {
+  SBCLoggerLevelInfo = 0,
+  SBCLoggerLevelWarning = 1,
+  SBCLoggerLevelError = 2,
+  SBCLoggerLevelNone = 3,
+};
 
 @class UIView;
 @protocol SBCSendBirdCallDelegate;
@@ -1331,7 +1390,7 @@ SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 
 SWIFT_CLASS_NAMED("SendBirdCall")
 @interface SBCSendBirdCall : NSObject
-/// The app id of your SendBirdCalls application. Configure the app id using <a href="x-source-tag://configure(appId:)">configure(appId:)</a>. This is get-only property.
+/// The app id of your SendBirdCalls application. Configure the app id using <a href="x-source-tag://configure(appId)">configure(appId:)</a>. This is get-only property.
 /// important:
 /// If you change the app ID, a previous configured app ID will be removed and all calls will be canceled.
 /// \code
@@ -1495,7 +1554,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 ///
 /// \param completionHandler Error Handler to be called after deauthenticate process is finished
 ///
-+ (void)deauthenticateWithVoIPPushToken:(NSData * _Nullable)voipPushToken completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
++ (void)deauthenticateWithVoIPPushToken:(NSData * _Nullable)voipPushToken completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler SWIFT_DEPRECATED_MSG("Voip Push Token un-registration through Deauthenticate is deprecated and will be removed in version 1.2. Please call `unregister` methods independently.");
 /// Makes a call to user(callee) directly. (1:1 Call).  Use the <code>CallOptions</code> object to choose initial call configuration (e.g. muted/unmuted)
 /// \code
 /// let params = DialParams(calleeId: CALLEE_ID, callOptions: CallOptions())
@@ -2122,17 +2181,17 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 /// since:
 /// 1.0.0
 @property (nonatomic, copy) NSString * _Nullable accessToken;
-/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token,unique,completionHandler)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// Push Token for receiving push notifications from the device.
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly, copy) NSData * _Nullable voipPushToken SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`.");
-/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token,unique,completionHandler)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// Bool value indicating whether the Push token should be unique to the user. If the value is true, SendBird server will remove the push token from other devices of the authenticated user.
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly) BOOL unique SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`");
-/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please initialize with <a href="x-source-tag://init(userId:accessToken:)">init(userId:accessToken:)</a>.
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please initialize with <a href="x-source-tag://init(userId,accessToken)">init(userId:accessToken:)</a>.
 /// since:
 /// 1.0.0
 /// \param userId User Id of the user.
@@ -2151,7 +2210,7 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 /// \param accessToken Access Token used for extra layer of security.
 ///
 - (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId accessToken:(NSString * _Nullable)accessToken OBJC_DESIGNATED_INITIALIZER;
-/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token,unique,completionHandler)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// since:
 /// 1.0.0
 /// \param userId User Id of the user.
@@ -2161,7 +2220,7 @@ SWIFT_CLASS_NAMED("AuthenticateParams")
 /// \param unique Bool value indicating whether the Push token should be unique to the user. Default value is false.
 ///
 - (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId voipPushToken:(NSData * _Nullable)voipPushToken unique:(BOOL)unique SWIFT_DEPRECATED_MSG("Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `init(userId:accessToken:)` and `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`");
-/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token:unique:completionHandler:)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
+/// Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use <a href="x-source-tag://registerVoIPPush(token,unique,completionHandler)">SendBirdCall.registerVoIPPush(token:unique:completionHandler:)</a>.
 /// Add push token to authenticate params.
 /// since:
 /// 1.0.0
@@ -2359,7 +2418,7 @@ SWIFT_CLASS_NAMED("DirectCall")
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly) BOOL isLocalAudioEnabled;
-/// The local <code>SendBirdVideoView</code>. This is a read-only property. If you want to update value, use <a href="x-source-tag://updateLocalVideo(_:)">updateLocalVideo(_:)</a>
+/// The local <code>SendBirdVideoView</code>. This is a read-only property. If you want to update value, use <a href="x-source-tag://updateLocalVideoView(_)">updateLocalVideo(_:)</a>
 /// since:
 /// 1.0.0
 /// <ul>
@@ -2367,7 +2426,7 @@ SWIFT_CLASS_NAMED("DirectCall")
 ///     See Also:
 ///     <ul>
 ///       <li>
-///         <a href="x-source-tag://updateLocalVideo(_:)">updateLocalVideo(_:)</a>
+///         <a href="x-source-tag://updateLocalVideoView(_)">updateLocalVideo(_:)</a>
 ///       </li>
 ///       <li>
 ///         <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
@@ -2376,7 +2435,7 @@ SWIFT_CLASS_NAMED("DirectCall")
 ///   </li>
 /// </ul>
 @property (nonatomic, readonly, weak) SBCVideoView * _Nullable localVideoView;
-/// The remote <code>SendBirdVideoView</code>. This is a read-only property. If you want to update value, use <a href="x-source-tag://updateRemoteVideo(_:)">updateRemoteVideo(_:)</a>
+/// The remote <code>SendBirdVideoView</code>. This is a read-only property. If you want to update value, use <a href="x-source-tag://updateRemoteVideoView(_)">updateRemoteVideo(_:)</a>
 /// since:
 /// 1.0.0
 /// <ul>
@@ -2384,7 +2443,7 @@ SWIFT_CLASS_NAMED("DirectCall")
 ///     See Also:
 ///     <ul>
 ///       <li>
-///         <a href="x-source-tag://updateRemoteVideo(_:)">updateRemoteVideo(_:)</a>
+///         <a href="x-source-tag://updateRemoteVideoView(_)">updateRemoteVideo(_:)</a>
 ///       </li>
 ///       <li>
 ///         <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
@@ -2739,7 +2798,7 @@ SWIFT_PROTOCOL_NAMED("DirectCallDelegate")
 /// 1.0.0
 - (void)didEnd:(SBCDirectCall * _Nonnull)call;
 @optional
-/// Called when the audio device has been changed. To change audio route, see <a href="x-source-tag://routePickerView(frame:)">routePickerView(frame:)</a>
+/// Called when the audio device has been changed. To change audio route, see <a href="x-source-tag://routePickerView(frame)">routePickerView(frame:)</a>
 /// \code
 /// func didAudioDeviceChange(_ call: DirectCall, session: AVAudioSession, previousRoute: AVAudioSessionRouteDescription, reason: AVAudioSession.RouteChangeReason) {
 ///    // You can get current audio I/O, available inputs from the session. You can also set preferred input.
@@ -2849,6 +2908,10 @@ SWIFT_CLASS_NAMED("DirectCallLog")
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly, copy) NSString * _Nonnull callId;
+/// If the call log data is from server, it returns <code>true</code>
+/// since:
+/// 1.1.0
+@property (nonatomic, readonly) BOOL isFromServer;
 /// The started time of the Call. Int64 of miliseconds.
 /// since:
 /// 1.0.0
@@ -3152,6 +3215,8 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 };
 
 
+
+
 /// since:
 /// 1.0.0
 SWIFT_PROTOCOL("_TtP13SendBirdCalls14SBCLogReceiver_")
@@ -3174,12 +3239,15 @@ SWIFT_PROTOCOL("_TtP13SendBirdCalls14SBCLogReceiver_")
 - (void)logMessage:(NSString * _Nonnull)message;
 @end
 
+enum SBCLoggerLevel : NSInteger;
 
 /// since:
 /// 1.0.0
 SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 @interface SBCLogger : NSObject
-/// Adds receiver to receive logs from SendBirdCall Logger
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+/// Adds a custom log receiver to the SendBirdCall Logger.
 /// \code
 /// override func viewDidLoad() {
 ///    // ...
@@ -3189,10 +3257,10 @@ SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 ///
 /// \endcodesince:
 /// 1.0.0
-/// \param receiver The object inheritted<code>SBCLogReceiver</code> to receive logs
+/// \param receiver The object implemented<code>SBCLogReceiver</code> to receive logs
 ///
-+ (void)addWithReceiver:(id <SBCLogReceiver> _Nonnull)receiver;
-/// Removes receiver added before.
++ (void)addLogReceiver:(id <SBCLogReceiver> _Nonnull)receiver;
+/// Removes the custom log receiver from the SendBirdCall Logger.
 /// \code
 /// SBCLogger.remove(receiver: self)
 ///
@@ -3200,9 +3268,59 @@ SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 /// 1.0.0
 /// \param receiver The object inheritted<code>SBCLogReceiver</code>
 ///
-+ (void)removeWithReceiver:(id <SBCLogReceiver> _Nonnull)receiver;
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
++ (void)removeLogReceiver:(id <SBCLogReceiver> _Nonnull)receiver;
+/// Update the logger level.
+/// The log level decides what kind of logs are printed to the console and delivered to custom log receivers.
+/// \code
+/// SBCLogger.setLoggerLevel(.none)
+///
+/// \endcodesince:
+/// 1.1.0
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://LoggerLevel">LoggerLevel</a>
+///   </li>
+/// </ul>
+/// \param level The Logger Level value indicates the level to which it will be used.
+///
++ (void)setLoggerLevel:(enum SBCLoggerLevel)level;
 @end
+
+
+
+
+@interface SBCLogger (SWIFT_EXTENSION(SendBirdCalls))
+@end
+
+/// Logger Level enumeration.
+/// Log will not be exposed if the priority value is lower than the configured log level.
+/// Logger Level follows the following priority:
+/// <code>info < warning < error < none.</code>
+/// <ul>
+///   <li>
+///     Cases:
+///     <ul>
+///       <li>
+///         info: Informational messages that are general to the application.
+///       </li>
+///       <li>
+///         warning: Potentially problematic situation that may indicate potential problems.
+///       </li>
+///       <li>
+///         error: Error events that may represent the failure of normal program execution.
+///       </li>
+///       <li>
+///         none: No logging.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCLoggerLevel, "Level", open) {
+  SBCLoggerLevelInfo = 0,
+  SBCLoggerLevelWarning = 1,
+  SBCLoggerLevelError = 2,
+  SBCLoggerLevelNone = 3,
+};
 
 @class UIView;
 @protocol SBCSendBirdCallDelegate;
@@ -3212,7 +3330,7 @@ SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 
 SWIFT_CLASS_NAMED("SendBirdCall")
 @interface SBCSendBirdCall : NSObject
-/// The app id of your SendBirdCalls application. Configure the app id using <a href="x-source-tag://configure(appId:)">configure(appId:)</a>. This is get-only property.
+/// The app id of your SendBirdCalls application. Configure the app id using <a href="x-source-tag://configure(appId)">configure(appId:)</a>. This is get-only property.
 /// important:
 /// If you change the app ID, a previous configured app ID will be removed and all calls will be canceled.
 /// \code
@@ -3376,7 +3494,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 ///
 /// \param completionHandler Error Handler to be called after deauthenticate process is finished
 ///
-+ (void)deauthenticateWithVoIPPushToken:(NSData * _Nullable)voipPushToken completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
++ (void)deauthenticateWithVoIPPushToken:(NSData * _Nullable)voipPushToken completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler SWIFT_DEPRECATED_MSG("Voip Push Token un-registration through Deauthenticate is deprecated and will be removed in version 1.2. Please call `unregister` methods independently.");
 /// Makes a call to user(callee) directly. (1:1 Call).  Use the <code>CallOptions</code> object to choose initial call configuration (e.g. muted/unmuted)
 /// \code
 /// let params = DialParams(calleeId: CALLEE_ID, callOptions: CallOptions())

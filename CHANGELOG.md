@@ -1,5 +1,20 @@
 # Change Log
 
+### 1.1.0 (May 22, 2020)
+
+* Added property `callLog` in `DirectCall`.
+* Added property `isFromServer` in `DirectCallLog`.
+* Improved Logger features.
+    * Added `setLoggerLevel(_:)`.
+    * Added `Logger.Level` enum.
+* VoIP Push Token Unregistration in deauthenticate method is now deprecated. 
+    * Deprecated `deauthenticate(voipPushToken:completionHandler:)`.
+    * Added `deauthenticate(completionHandler:)`.
+* Renamed Objective-C methods
+    * `addWithReceiver:` to `addLogReceiver:` in `SBCLogger` class.
+    * `removeWithReceiver:` to `removeLogReceiver:` in `SBCLogger` class.
+* Stability Improvements. 
+
 ### 1.0.9 (May 6, 2020)
 * Fixed Bitcode error with LLVM Profiling issue.  
 

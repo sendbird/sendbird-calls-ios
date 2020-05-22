@@ -15,6 +15,7 @@ import Security
 @_exported import SendBirdCalls
 import Swift
 import UIKit.UIApplication
+import UIKit.UIDevice
 import UIKit
 import WebRTC
 import zlib
@@ -75,10 +76,23 @@ extension DirectCall {
   @objc(logMessage:) func log(message: Swift.String)
 }
 @objc public class SBCLogger : ObjectiveC.NSObject {
-  @objc public static func add(receiver: SendBirdCalls.SBCLogReceiver)
-  @objc public static func remove(receiver: SendBirdCalls.SBCLogReceiver)
-  @objc override dynamic public init()
+  @objc(addLogReceiver:) public static func add(receiver: SendBirdCalls.SBCLogReceiver)
+  @objc(removeLogReceiver:) public static func remove(receiver: SendBirdCalls.SBCLogReceiver)
+  @objc public static func setLoggerLevel(_ level: SendBirdCalls.SBCLogger.Level)
   @objc deinit
+}
+extension SBCLogger {
+  @objc(SBCLoggerLevel) public enum Level : Swift.Int, Swift.RawRepresentable {
+    case info
+    case warning
+    case error
+    case none
+    public typealias RawValue = Swift.Int
+    public init?(rawValue: Swift.Int)
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
 }
 extension DirectCall {
   @objc dynamic public func updateLocalVideoView(_ videoView: SendBirdCalls.SendBirdVideoView)
@@ -113,8 +127,9 @@ extension DirectCall {
   @objc override dynamic public init()
   @objc deinit
 }
-@objc(SBCDirectCallLog) public class DirectCallLog : ObjectiveC.NSObject, Swift.Decodable {
+@objc(SBCDirectCallLog) public class DirectCallLog : ObjectiveC.NSObject, Swift.Codable {
   @objc final public let callId: Swift.String
+  @objc final public let isFromServer: Swift.Bool
   @objc public var startedAt: Swift.Int64 {
     get
     }
@@ -146,6 +161,7 @@ extension DirectCall {
     get
     }
   required public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
   @objc override dynamic public init()
   @objc deinit
 }
@@ -256,10 +272,10 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
     case dialMyself = 1400104
     case noPermission = 1400105
     case calleeNeverAuthenticate = 1400106
-    public init?(rawValue: Swift.Int)
     public var rawValue: Swift.Int {
       get
     }
+    public init?(rawValue: Swift.Int)
   }
   public var errorCode: SendBirdCalls.SBCError.ErrorCode {
     get
@@ -316,6 +332,9 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
   @objc public var myRole: SendBirdCalls.DirectCall.UserRole {
     get
     }
+  public var callLog: SendBirdCalls.DirectCallLog? {
+    get
+  }
   public var endedBy: SendBirdCalls.DirectCallUser? {
     get
   }
@@ -411,7 +430,9 @@ extension DialParams : Foundation.NSCopying {
     @objc get
   }
   @objc(authenticateWithParams:completionHandler:) public static func authenticate(with params: SendBirdCalls.AuthenticateParams, completionHandler: @escaping SendBirdCalls.AuthenticateHandler)
+  @available(*, deprecated, message: "Voip Push Token un-registration through Deauthenticate is deprecated and will be removed in version 1.2. Please call `unregister` methods independently.")
   @objc(deauthenticateWithVoIPPushToken:completionHandler:) public static func deauthenticate(voipPushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
+  public static func deauthenticate(completionHandler: SendBirdCalls.ErrorHandler?)
   @discardableResult
   @objc(dialWithParams:completionHandler:) public static func dial(with params: SendBirdCalls.DialParams, completionHandler: @escaping SendBirdCalls.DirectCallHandler) -> SendBirdCalls.DirectCall?
   @objc public static func setRingingTimeout(_ timeout: Swift.Int)
@@ -444,6 +465,8 @@ extension SendBirdCalls.DirectCallEndResult : Swift.Equatable {}
 extension SendBirdCalls.DirectCallEndResult : Swift.Hashable {}
 extension SendBirdCalls.VideoDevice.Position : Swift.Equatable {}
 extension SendBirdCalls.VideoDevice.Position : Swift.Hashable {}
+extension SendBirdCalls.SBCLogger.Level : Swift.Equatable {}
+extension SendBirdCalls.SBCLogger.Level : Swift.Hashable {}
 extension SendBirdCalls.DirectCallLogListQuery.UserRoleFilter : Swift.Equatable {}
 extension SendBirdCalls.DirectCallLogListQuery.UserRoleFilter : Swift.Hashable {}
 extension SendBirdCalls.SBCError.ErrorCode : Swift.Equatable {}
