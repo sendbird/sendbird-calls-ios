@@ -1,7 +1,9 @@
 # Change Log
 
-### 1.1.0 (May 22, 2020)
+### 1.1.1 (Jun 12, 2020)
+* Fix bug where video call starts with receiver mode.
 
+### 1.1.0 (May 22, 2020)
 * Added property `callLog` in `DirectCall`.
 * Added property `isFromServer` in `DirectCallLog`.
 * Improved Logger features.
