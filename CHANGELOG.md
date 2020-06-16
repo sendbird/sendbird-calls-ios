@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.1.2 (Jun 16, 2020)
+* Improved stability.
+
 ### 1.1.1 (Jun 12, 2020)
 * Fix bug where video call starts with receiver mode.
 
