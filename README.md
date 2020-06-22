@@ -19,7 +19,7 @@ The SendBird Calls iOS SDK provides a framework to make and receive voice and vi
 > **IMPORTANT**: **MAKE SURE to install Git LFS before installing the pod**. Check the size of `WebRTC.framework` in SendBirdWebRTC folder. It MUST be over 800 MB. If the loaded SendBirdWebRTC framework is smaller than that, check the *Git Large File Storage* settings and download again. Refer to [the troubleshooting section](#Library-not-loaded-WebRTC.framework).
 
 ## SDK Dependencies
-* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios) which can be integrated by CocoaPods.
+* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios), which can be integrated by CocoaPods or direct install.
 
 ## Installation
 To use SendBird Calls, first add our custom-built WebRTC framework to the project. [Git Large File Storage](https://git-lfs.github.com) must be installed to use the WebRTC framework along with the SendBirdCalls framework.
@@ -32,43 +32,57 @@ To use SendBird Calls, first add our custom-built WebRTC framework to the projec
 3. In the opened Podfile, include `pod ‘SendBirdCalls’` to the configuration under the project target.
 4. Install the SendBirdCalls framework by running `pod install` in the project directory. 
 
-> **Note**: The `SendBirdCalls` SDK relies on the` SendBirdWebRTC` framework. `SendBirdWebRTC` is based on` GoogleWebRTC` and is recompiled with `bitcode` enabled. Since `SendBirdWebRTC` is included in `SendBirdCalls` as a dependency, it doesn't need to be explicitly downloaded.
+> **Note**: The `SendBirdCalls` SDK relies on the` SendBirdWebRTC` framework. `SendBirdWebRTC` is based on `GoogleWebRTC` and is recompiled with `bitcode` enabled. Since `SendBirdWebRTC` is included in `SendBirdCalls` as a dependency, it doesn't need to be explicitly downloaded.
 
 > **IMPORTANT**: After installing the framework, there **MUST** be a 800+MB `SendBirdWebRTC` binary inside `Pods/SendBirdWebRTC.framework`. If not, follow [this troubleshooting guide](#library-not-loaded-webrtcframework).
 
+### Direct Install
+If you do not prefer to use CocoaPods to install Calls SDK, you can choose to integrate SendBirdCalls directly into your project. SendBirdCalls framework is provided as fat `.framework` file and `.xcframework` file. 
+1. Grab the framework file by one of the following:
+    - Direct download from git releases
+    - Git Submodules
+    - Other package managers
+2. Copy the downloaded framework file into your project directory. 
+3. Go to `General` tab of your Xcode Project Navigator, and scroll down to `Frameworks, Libraries, and Embedded Content` menu. 
+4. Click the `+` button, choose `Add other...` drop down menu, and select `Add files...` option. 
+5. From the file navigator, select the framework that you've previously downloaded. 
+6. Select `Embed & Sign` option in the `Embed` menu of the selected framework. 
+
+Because `SendBirdCalls` requires `SendBirdWebRTC` as a dependency, you need to install `SendBirdWebRTC` as well. 
+- Navigate to [SendBirdWebRTC Repository](https://github.com/sendbird/sendbird-webrtc-ios) and perform the above steps 1-6 similarly. 
 
 ### ~~Carthage~~
 
 > To ensure backwards compatibility, and because Carthage hasn't been updated for a long time, we are no longer officially supporting the use of Carthage to integrate Sendbird Calls. Instead, you can choose to integrate Sendbird Calls framework directly from the provided `.framework` file or `.xcframework` file.
 
-~~[Carthage](https://github.com/Carthage/Carthage#quick-start) is a another dependency manager for Xcode projects. SendBirdCalls can be integrated into an Xcode project with `Carthage` by following these steps:~~
-1. ~~Get Carthage by running `brew install carthage`, or choose [another installation method](https://github.com/Carthage/Carthage#installing-carthage).~~
-2. ~~Create a [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) in the same directory `.xcodeproj` or `.xcworkspace` is.~~
-3. ~~List the desired dependencies in the [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile), like this:~~
+[Carthage](https://github.com/Carthage/Carthage#quick-start) is a another dependency manager for Xcode projects. SendBirdCalls can be integrated into an Xcode project with `Carthage` by following these steps:
+1. Get Carthage by running `brew install carthage`, or choose [another installation method](https://github.com/Carthage/Carthage#installing-carthage).
+2. Create a [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) in the same directory `.xcodeproj` or `.xcworkspace` is.
+3. List the desired dependencies in the [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile), like this:
 ```
 github "sendbird/sendbird-calls-ios"
 github "sendbird/sendbird-webrtc-ios"
 ```
-4. ~~Run `carthage update`.~~
-5. ~~A `Cartfile.resolved` file and a `Carthage` directory will appear in the same directory as  `.xcodeproj` or `.xcworkspace` .~~
-6. ~~Drag the built `.framework` binaries from `Carthage/Build/iOS` into the application’s Xcode project.~~
-7. ~~On the application targets’ `Build Phases` settings tab, click the `+` icon and choose `New Run Script Phase`. Create a `Run Script` that specifies the desired shell (e.g. `/bin/sh`), then add the following contents to the script area below the shell:~~
+4. Run `carthage update`.
+5. A `Cartfile.resolved` file and a `Carthage` directory will appear in the same directory as  `.xcodeproj` or `.xcworkspace` .
+6. Drag the built `.framework` binaries from `Carthage/Build/iOS` into the application’s Xcode project.
+7. On the application targets’ `Build Phases` settings tab, click the `+` icon and choose `New Run Script Phase`. Create a `Run Script` that specifies the desired shell (e.g. `/bin/sh`), then add the following contents to the script area below the shell:
 ```
 /usr/local/bin/carthage copy-frameworks
 ```
-~~8. Add the paths to the desired frameworks under “Input Files.” For example:~~
+8. Add the paths to the desired frameworks under “Input Files.” For example:
 ```
 $(SRCROOT)/Carthage/Build/iOS/SendBirdCalls.framework
 $(SRCROOT)/Carthage/Build/iOS/WebRTC.framework
 ```
-~~9. Add the paths to the copied frameworks to the “Output Files.” For example:~~
+9. Add the paths to the copied frameworks to the “Output Files.” For example:
 ```
 $(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SendBirdCalls.framework
 $(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/WebRTC.framework
 ```
-~~Another approach when having multiple dependencies is to use `.xcfilelists`. This is covered when building for `iOS`~~
+Another approach when having multiple dependencies is to use `.xcfilelists`. This is covered when building for `iOS`
 
-~~For an in depth guide, read on from [Carthage’s ReadMe](https://github.com/Carthage/Carthage#quick-start)~~
+For an in depth guide, read on from [Carthage’s ReadMe](https://github.com/Carthage/Carthage#quick-start)
 
 ## Configure the Application for the SDK
 
