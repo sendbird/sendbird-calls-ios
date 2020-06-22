@@ -413,6 +413,14 @@ extension AppDelegate: DirectCallDelegate {
 | acceptFailed        | The `accept()` method call has failed. |
 | otherDeviceAccepted | The incoming call was accepted on a different device. This device received an incoming call notification, but the call ended when a different device accepted it. |
 
+## Encoding Specs
+| Category | Value | Note |
+|---|---|---|
+| Frames per second | 24 fps | |
+| Maximum resolution | 720p | 1280x720 px; standard HD |
+| Audio Codec | OPUS | |
+| Video Codec| H.264, VP8 | H.264 is used between iOS devices as a default codec. |
+
 ## Troubleshooting 
 ### Library not loaded WebRTC.framework
 Error message:
