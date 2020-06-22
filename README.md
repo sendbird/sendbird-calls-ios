@@ -413,7 +413,7 @@ extension AppDelegate: DirectCallDelegate {
 | acceptFailed        | The `accept()` method call has failed. |
 | otherDeviceAccepted | The incoming call was accepted on a different device. This device received an incoming call notification, but the call ended when a different device accepted it. |
 
-## Encoding Specs
+## Encoding Configurations
 | Category | Value | Note |
 |---|---|---|
 | Frames per second | 24 fps | |
