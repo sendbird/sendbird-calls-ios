@@ -51,9 +51,9 @@ If you do not prefer to use CocoaPods to install Calls SDK, you can choose to in
 Because `SendBirdCalls` requires `SendBirdWebRTC` as a dependency, you need to install `SendBirdWebRTC` as well. 
 - Navigate to [SendBirdWebRTC Repository](https://github.com/sendbird/sendbird-webrtc-ios) and perform the above steps 1-6 similarly. 
 
-### ~~Carthage~~
+### Carthage
 
-> To ensure backwards compatibility, and because Carthage hasn't been updated for a long time, we are no longer officially supporting the use of Carthage to integrate Sendbird Calls. Instead, you can choose to integrate Sendbird Calls framework directly from the provided `.framework` file or `.xcframework` file.
+> If you encounter any issues when using Carthage to install SendBirdCalls, please make sure that you are using the latest version of Carthage. 
 
 [Carthage](https://github.com/Carthage/Carthage#quick-start) is a another dependency manager for Xcode projects. SendBirdCalls can be integrated into an Xcode project with `Carthage` by following these steps:
 1. Get Carthage by running `brew install carthage`, or choose [another installation method](https://github.com/Carthage/Carthage#installing-carthage).
