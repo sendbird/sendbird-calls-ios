@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.1.5 (July 13, 2020)
+* Improved stability.
+
 ### 1.1.4 (Jun 30, 2020)
 * Fix error where Objective-C interface wouldn't appear for iOS Simulator build destinations.
 
