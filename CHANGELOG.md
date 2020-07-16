@@ -1,5 +1,18 @@
 # Change Log
 
+### 1.2.0 (July 16, 2020)
+* Added support for Peer-to-peer call.
+    * The Peer-to-peer option can be configured on the dashboard.
+* Added getting ongoing call count and ongoing status of `DirectCall`.
+    * Added `getOngoingCallCount()` to `SendBirdCall`.
+    * Added `isOngoing` to DirectCall.
+* Added `setCallConnectionTimeout(_:)`  to `SendBirdCall`.
+    * The call connection timer starts when the callee accepts the call. The timer will end the call after the specified timeout interval.
+* Added Equatable conformance to `DirectCall`, `DirectCallLog`, `User`, `DirectCallUser`.
+* Removed deprecated interfaces.
+* Improved stability.
+
+
 ### 1.1.6 (July 14, 2020)
 * Improved stability.
 

@@ -3,7 +3,6 @@
 // swift-module-flags: -target arm64-apple-ios9.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendBirdCalls
 import AVFoundation
 import AVKit
-import CoreTelephony.CTTelephonyNetworkInfo
 import CommonCrypto
 import CoreFoundation
 import CoreTelephony
@@ -24,6 +23,13 @@ import zlib
 @objc(SBCDirectCallUser) public class DirectCallUser : SendBirdCalls.User {
   @objc final public let role: SendBirdCalls.DirectCall.UserRole
   @objc deinit
+}
+extension DirectCallUser {
+  @objc override dynamic public var hash: Swift.Int {
+    @objc get
+  }
+  @objc override dynamic public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc override dynamic public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
 }
 @objc(SBCDirectCallEndResult) public enum DirectCallEndResult : Swift.Int, Swift.RawRepresentable, Swift.Codable {
   case none
@@ -111,21 +117,8 @@ extension DirectCall {
 @objc(SBCAuthenticateParams) public class AuthenticateParams : ObjectiveC.NSObject {
   @objc public var userId: Swift.String
   @objc public var accessToken: Swift.String?
-  @available(*, deprecated, message: "Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`.")
-  @objc public var voipPushToken: Foundation.Data? {
-    get
-    }
-  @available(*, deprecated, message: "Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`")
-  @objc public var unique: Swift.Bool {
-    get
-    }
-  @available(*, deprecated, message: "Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please initialize with `init(userId:accessToken:)`")
-  @objc public init(userId: Swift.String, accessToken: Swift.String? = nil, voipPushToken: Foundation.Data? = nil, unique: Swift.Bool)
   @objc public init(userId: Swift.String, accessToken: Swift.String?)
-  @available(*, deprecated, message: "Voip Push Token registration through Authentication is deprecated and will be removed in version 1.2. Please use `init(userId:accessToken:)` and `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`")
-  @objc convenience public init(userId: Swift.String, voipPushToken: Foundation.Data?, unique: Swift.Bool)
-  @available(*, deprecated, message: "Voip Push Token registration through Authentication is deprecated. Please use `SendBirdCall.registerVoIPPush(token:unique:completionHandler:)`")
-  @objc public func setVoIPPush(token: Foundation.Data?, withUniqueness unique: Swift.Bool = false)
+  @objc convenience public init(userId: Swift.String)
   @objc override dynamic public init()
   @objc deinit
 }
@@ -166,6 +159,12 @@ extension DirectCall {
   public func encode(to encoder: Swift.Encoder) throws
   @objc override dynamic public init()
   @objc deinit
+}
+extension DirectCallLog {
+  @objc override dynamic public var hash: Swift.Int {
+    @objc get
+  }
+  @objc override dynamic public func isEqual(_ object: Any?) -> Swift.Bool
 }
 @objc(SBCDirectCallLogListQuery) public class DirectCallLogListQuery : ObjectiveC.NSObject {
   @objc public enum UserRoleFilter : Swift.Int, Swift.RawRepresentable {
@@ -215,6 +214,15 @@ extension DirectCall {
   @objc override dynamic public init()
   @objc deinit
 }
+extension DirectCall {
+  @objc override dynamic public var hash: Swift.Int {
+    @objc get
+  }
+  @objc override dynamic public func isEqual(_ object: Any?) -> Swift.Bool
+}
+extension DirectCall : Foundation.NSCopying {
+  @objc dynamic public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
+}
 public typealias AuthenticateHandler = (SendBirdCalls.User?, SendBirdCalls.SBCError?) -> Swift.Void
 public typealias DirectCallHandler = (SendBirdCalls.DirectCall?, SendBirdCalls.SBCError?) -> Swift.Void
 public typealias CustomItemsHandler = ([Swift.String : Swift.String]?, [Swift.String]?, SendBirdCalls.SBCError?) -> Swift.Void
@@ -245,6 +253,15 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
   @objc override dynamic public init()
   @objc deinit
   public func encode(to encoder: Swift.Encoder) throws
+}
+extension User {
+  @objc override dynamic public var hash: Swift.Int {
+    @objc get
+  }
+  @objc override dynamic public func isEqual(_ object: Any?) -> Swift.Bool
+}
+extension User : Foundation.NSCopying {
+  @objc dynamic public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
 }
 @objc public class SBCError : Foundation.NSError {
   @objc(SBCErrorCode) public enum ErrorCode : Swift.Int, Swift.RawRepresentable, Swift.Codable {
@@ -346,6 +363,9 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
   @objc public var isEnded: Swift.Bool {
     @objc get
   }
+  @objc public var isOngoing: Swift.Bool {
+    @objc get
+  }
   @objc public var startedAt: Swift.Int64 {
     @objc get
   }
@@ -432,12 +452,11 @@ extension DialParams : Foundation.NSCopying {
     @objc get
   }
   @objc(authenticateWithParams:completionHandler:) public static func authenticate(with params: SendBirdCalls.AuthenticateParams, completionHandler: @escaping SendBirdCalls.AuthenticateHandler)
-  @available(*, deprecated, message: "Voip Push Token un-registration through Deauthenticate is deprecated and will be removed in version 1.2. Please call `unregister` methods independently.")
-  @objc(deauthenticateWithVoIPPushToken:completionHandler:) public static func deauthenticate(voipPushToken: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
-  public static func deauthenticate(completionHandler: SendBirdCalls.ErrorHandler?)
+  @objc public static func deauthenticate(completionHandler: SendBirdCalls.ErrorHandler?)
   @discardableResult
   @objc(dialWithParams:completionHandler:) public static func dial(with params: SendBirdCalls.DialParams, completionHandler: @escaping SendBirdCalls.DirectCallHandler) -> SendBirdCalls.DirectCall?
   @objc public static func setRingingTimeout(_ timeout: Swift.Int)
+  @objc public static func setCallConnectingTimeout(_ timeout: Swift.Int)
   @objc public static func pushRegistry(_ registry: PushKit.PKPushRegistry, didReceiveIncomingPushWith payload: PushKit.PKPushPayload, for type: PushKit.PKPushType, completionHandler: SendBirdCalls.PushRegistryHandler?)
   @objc public static func registerVoIPPush(token: Foundation.Data?, unique: Swift.Bool = false, completionHandler: SendBirdCalls.ErrorHandler?)
   @objc public static func unregisterVoIPPush(token: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
@@ -456,6 +475,7 @@ extension DialParams : Foundation.NSCopying {
 }
 extension SendBirdCall {
   @objc(callForUUID:) public static func getCall(forUUID callUUID: Foundation.UUID) -> SendBirdCalls.DirectCall?
+  @objc public static func getOngoingCallCount() -> Swift.Int
 }
 @objc(SBCAcceptParams) public class AcceptParams : ObjectiveC.NSObject {
   @objc public var callOptions: SendBirdCalls.CallOptions
