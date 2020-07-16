@@ -346,6 +346,41 @@ class MyClass {
     }
 }
 ```
+
+## Mirror a SendBirdVideoView
+You can set the current user’s local video view as mirrored or reversed when the camera is facing the user. In `UIView`, this can be easily done using the `CGAffineTransform(scaleX:y:)` method as shown below:   
+```Swift
+// localSBView is SendBirdVideoView object
+localSBView.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+```
+
+If you want to reverse the local video view when the user switches the camera from front to back and vice versa, use the following method: 
+```Swift
+func mirrorLocalVideoView(isEnabled: Bool) {
+    guard let localSBView = self.localVideoView?.subviews.first else { return }
+    switch isEnabled {
+        // Show Mirrored view
+        case true: localSBView.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+        // Show original view
+        case false: localSBView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+    }
+} 
+
+
+// Flipping camera
+self.call.selectVideoDevice(oppositeCamera) { error in
+    guard error == nil else { return }
+
+    DispatchQueue.main.async { [weak self] in
+        guard let self = self else { return }
+        switch oppositeCamera.position {
+            case .front: self.mirrorLocalVideoView(isEnabled: true)
+            case .back: self.mirrorLocalVideoView(isEnabled: false)
+            default: return
+        }
+    }
+}
+```
  
 ## Retrieve a call information
 The local or remote user’s information is available via the `directCall.localUser` and `directCall.remoteUser` properties.
