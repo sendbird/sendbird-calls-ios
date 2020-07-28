@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.2.1 (July 28, 2020)
+* Improved stability.
+
 ### 1.2.0 (July 16, 2020)
 * Added support for Peer-to-peer call.
     * The Peer-to-peer option can be configured on the dashboard.
@@ -11,7 +14,6 @@
 * Added Equatable conformance to `DirectCall`, `DirectCallLog`, `User`, `DirectCallUser`.
 * Removed deprecated interfaces.
 * Improved stability.
-
 
 ### 1.1.6 (July 14, 2020)
 * Improved stability.
