@@ -409,6 +409,21 @@ query.next(completionHandler: { [weak query] callLogs, error in
 |myRole     | Returns the call history of the specified role. (e.g. the `params.myRole = .callee` returns only the callee’s call history.)  |
 |endResults | Filters the results based on the call end result (e.g. `.completed`,`.noAnswer`,etc.) If multiple values are specified, they are processed as an `OR` condition. For example, `add(endResult:.noAnswer)`, only the history entries that resulted in `.noAnswer` will be returned. |
 
+## Timeout Options
+
+The following table lists a set of methods of the `SendBirdCall` class.
+
+```swift
+SendBirdCall.setRingingTimeout(30)
+
+SendBirdCall.setCallConnectionTimeout(30)
+```
+
+| Method                      | Description                                                                             |
+| --------------------------- | --------------------------------------------------------------------------------------- |
+| setRingingTimeout(_:)       | Sets the time limit in seconds for an unanswered call. The default value is 60 seconds. |
+| setCallConnectionTimeout(_:)| Sets the time limit in seconds for a connecting call. The default value is 60 seconds.  |
+
 ## Additional information 
 
 ### Callback and delegate thread handling
