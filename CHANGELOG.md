@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.2.2 (July 30, 2020)
+* Fixed issue where callee's remote video view wouldn't properly appear.
+
 ### 1.2.1 (July 28, 2020)
 * Improved stability.
 
