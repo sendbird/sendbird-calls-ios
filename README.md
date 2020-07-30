@@ -505,7 +505,7 @@ brew install git-lfs
 pod cache clean --all
 
 rm -rf ~/Library/Caches/CocoaPods/*
-rm -rf ~/Libaray/Developer/Xcode/DerivedData/*
+rm -rf ~/Library/Developer/Xcode/DerivedData/*
 ```
 Or, to avoid removing all of the caches not related to `SendBirdWebRTC.framework`, simply remove caches related to `SendBirdWebRTC.framework`.
 ```
