@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.2.3 (Aug 11, 2020)
+* Fixed issue where caller's local video view wouldn't appear while dialing.
+
 ### 1.2.2 (July 30, 2020)
 * Fixed issue where callee's remote video view wouldn't properly appear.
 
