@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.2.4 (Aug 21, 2020)
+* Improved stability.
+
 ### 1.2.3 (Aug 11, 2020)
 * Fixed issue where caller's local video view wouldn't appear while dialing.
 
