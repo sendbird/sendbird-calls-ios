@@ -477,7 +477,18 @@ extension AppDelegate: DirectCallDelegate {
 | acceptFailed        | The `accept()` method call has failed. |
 | otherDeviceAccepted | The incoming call was accepted on a different device. This device received an incoming call notification, but the call ended when a different device accepted it. |
 
-## Encoding Configurations
+## Additional Information
+
+### iOS SDK Sizes
+
+| File       | Raw Files | Compiled Size |
+|------------|-----------|---------------|
+| Calls SDK  | 16.5 MB   | 2.43 MB       |
+| WebRTC SDK | 24.5 MB   | 5.90 MB       |
+
+*Last Updated: Aug 27th, 2020*
+
+### Encoding Configurations
 | Category | Value | Note |
 |---|---|---|
 | Frames per second | 24 fps | |
