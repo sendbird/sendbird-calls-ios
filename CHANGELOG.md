@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.2.6 (Sep 11, 2020)
+* Fixed issue where VoIP Push notifications would intermittently cause crashes.  
+
 ### 1.2.5 (Aug 31, 2020)
 * Improved stability.
 
