@@ -1,5 +1,23 @@
 # Change Log
 
+### 1.3.0 (Sep 23, 2020)
+* Added media recording feature
+    * `SendBirdRecordingDelegate` protocol.
+    * `addRecordingDelegate(_:identifier:)`  method in `SendBirdCall` class.
+    * `removeRecordingDelegate(identifier:)`  method in `SendBirdCall` class.
+    * `removeAllRecordingDelegates()` method in `SendBirdCall` class.
+    * `startRecording(options:recordingStartedHandler:)`  method in `DirectCall` class.
+    * `stopRecording(recordingId:)`  method in `DirectCall` class.
+* Added screen capture feature
+    * `captureRemoteVideoView(completionHandler:)` method in `DirectCall` class.
+    * `captureLocalVideoView(completionHandler:)` method in `DirectCall` class.
+* Added sound effects feature
+    * `addDirectCallSound(_:bundle:forType:)` method in `SendBirdCall` class.
+    * `addDirectCallSound(_:forType:)` method in `SendBirdCall` class.
+    * `removeDirectCallSound(forType:)` method in `SendBirdCall` class.
+* Improved permission handling 
+    * You must acquire permission to use the camera to enable local camera device.
+
 ### 1.2.6 (Sep 11, 2020)
 * Fixed issue where VoIP Push notifications would intermittently cause crashes.  
 

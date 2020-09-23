@@ -1,6 +1,6 @@
 # SendBirdCalls for iOS
 
-![iOS 9.0+](https://img.shields.io/badge/iOS-9.0+-lightgray.svg) [![Languages](https://img.shields.io/badge/language-swift-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Languages](https://img.shields.io/badge/language-objc-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Coverage](https://img.shields.io/badge/coverage-87.00%25-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios) [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SendBirdCalls.svg)](https://img.shields.io/cocoapods/v/SendBirdCalls.svg) [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios/blob/master/LICENSE.md) 
+![iOS 9.0+](https://img.shields.io/badge/iOS-9.0+-lightgray.svg) [![Languages](https://img.shields.io/badge/language-swift-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Languages](https://img.shields.io/badge/language-objc-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Coverage](https://img.shields.io/badge/coverage-94.8%25-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios) [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SendBirdCalls.svg)](https://img.shields.io/cocoapods/v/SendBirdCalls.svg) [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios/blob/master/LICENSE.md) 
   
 ## Introduction
 `SendBird Calls` is the latest addition to our product portfolio. It enables real-time calls between users within a SendBird application. SDKs are provided for iOS, Android, and JavaScript. Using any one of these, developers can quickly integrate voice and video call functions into their own client apps, allowing users to make and receive web-based real-time voice and video calls on the SendBird platform.
@@ -409,7 +409,7 @@ query.next(completionHandler: { [weak query] callLogs, error in
 |myRole     | Returns the call history of the specified role. (e.g. the `params.myRole = .callee` returns only the callee’s call history.)  |
 |endResults | Filters the results based on the call end result (e.g. `.completed`,`.noAnswer`,etc.) If multiple values are specified, they are processed as an `OR` condition. For example, `add(endResult:.noAnswer)`, only the history entries that resulted in `.noAnswer` will be returned. |
 
-## Timeout Options
+## Timeout options
 
 The following table lists a set of methods of the `SendBirdCall` class.
 
@@ -423,6 +423,49 @@ SendBirdCall.setCallConnectionTimeout(30)
 | --------------------------- | --------------------------------------------------------------------------------------- |
 | setRingingTimeout(_:)       | Sets the time limit in seconds for an unanswered call. The default value is 60 seconds. |
 | setCallConnectionTimeout(_:)| Sets the time limit in seconds for a connecting call. The default value is 60 seconds.  |
+
+## Sound effects
+
+### Sound types
+| Type                | Description                                                                             |
+| ---------------- | --------------------------------------------------------------------------------------- |
+| dialing             | Refers to a sound that is played on a caller’s side when the caller makes a call to a callee. |
+| ringing            | Refers to a sound that is played on a callee’s side when receiving a call. |
+| reconnecting  | Refers to a sound that is played when a connection is lost, but immediately tries to reconnect. Users are also allowed to customize the ringtone. |
+| reconnnected | Refers to a sound that is played when a connection is re-established. |
+
+### Add sound
+
+#### Method 1
+| Method                                      | Description |
+| ----------------------------------- | ------------- |
+| addDirectCallSound(_:forType:) | Adds a specific sound such as a ringtone and an alert tone to a direct call with URL. If you use a bundle to play sound, use the `addDirectCallSound(_:bundle:forType:)` method below instead. |
+
+| Parameter | Type            | Description                                        |
+| ------------ | ------------- | ----------------------------------------- |
+| url              | URL            | Specifies the URL of your audio file. |
+| forType      | SoundType | Specifies the sound type to be used according to the event. |
+
+
+#### Method 2
+| Method                                                  | Description |
+| -------------------------------------------- | ------------- |
+| addDirectCallSound(_:bundle:forType:) | Adds a specific sound such as a ringtone and an alert tone to a direct call with its file name and bundle. |
+
+| Parameter | Type            | Description                                        |
+| ------------ | ------------- | ----------------------------------------- |
+| name         | String          | Specifies the name of the audio file. Make sure to specify a file extension as well. (For example: dialing.mp3) |
+| bundle       | Bundle        | Specifies the bundle object. The default is the main bundle. |
+| forType      | SoundType | Specifies the sound type to be used according to the event. |
+
+### Remove sound
+| Name                                             | Description                                                      |
+| -------------------------------------- | --------------------------------------------------- |
+| removeDirectCallSound(forType: ) | Removes a specific sound from a direct call. |
+
+| Parameter | Type            | Description                                                                              |
+| ------------ | ------------- | --------------------------------------------------------------------- |
+| forType      | SoundType | Specifies the sound type to be used according to the event. |
 
 ## Additional information 
 
@@ -477,17 +520,6 @@ extension AppDelegate: DirectCallDelegate {
 | acceptFailed        | The `accept()` method call has failed. |
 | otherDeviceAccepted | The incoming call was accepted on a different device. This device received an incoming call notification, but the call ended when a different device accepted it. |
 
-## Additional Information
-
-### iOS SDK Sizes
-
-| File       | Raw Files | Compiled Size |
-|------------|-----------|---------------|
-| Calls SDK  | 51.6 MB   | 5.45 MB       |
-| WebRTC SDK | 1.02 GB   | 11.1 MB       |
-
-*Last Updated: Sep 3rd, 2020*
-
 ### Encoding Configurations
 | Category | Value | Note |
 |---|---|---|
@@ -495,6 +527,14 @@ extension AppDelegate: DirectCallDelegate {
 | Maximum resolution | 720p | 1280x720 px; standard HD |
 | Audio Codec | OPUS | |
 | Video Codec| H.264, VP8 | H.264 is used between iOS devices as a default codec. |
+
+### iOS SDK Sizes
+| File       | Raw Files | Compiled Size |
+|------------|-----------|---------------|
+| Calls SDK  | 51.6 MB   | 5.45 MB       |
+| WebRTC SDK | 1.02 GB   | 11.1 MB       |
+
+*Last Updated: Sep 3rd, 2020*
 
 ## Troubleshooting 
 ### Library not loaded WebRTC.framework

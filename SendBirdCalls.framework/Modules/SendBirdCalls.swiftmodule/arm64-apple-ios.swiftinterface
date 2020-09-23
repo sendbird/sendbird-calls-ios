@@ -10,6 +10,7 @@ import Foundation
 import MediaPlayer
 import PushKit
 import WebRTC.RTCAudioSession
+import WebRTC.RTCI420Buffer
 import WebRTC.RTCSessionDescription
 import WebRTC.RTCVideoRenderer
 import Security
@@ -18,10 +19,32 @@ import Swift
 import UIKit.UIApplication
 import UIKit.UIDevice
 import UIKit
+import VideoToolbox
 import WebRTC
 import zlib
+@objc(SBCRecordingOptions) public class RecordingOptions : ObjectiveC.NSObject {
+  @objc final public let recordingType: SendBirdCalls.RecordingOptions.RecordingType
+  @objc final public let directoryPath: Foundation.URL
+  @objc final public let fileName: Swift.String?
+  @objc public init(recordingType: SendBirdCalls.RecordingOptions.RecordingType, directoryPath: Foundation.URL, fileName: Swift.String? = nil)
+  @objc(SBCRecordingType) public enum RecordingType : Swift.Int, Swift.RawRepresentable {
+    public typealias RawValue = Swift.String
+    case remoteAudioAndVideo
+    case remoteAudioOnly
+    case localRemoteAudios
+    case localAudioRemoteAudioAndVideo
+    case localAudioAndVideoRemoteAudio
+    public var rawValue: Swift.String {
+      get
+    }
+    public init?(rawValue: Swift.String)
+  }
+  @objc override dynamic public init()
+  @objc deinit
+}
 @objc(SBCDirectCallUser) public class DirectCallUser : SendBirdCalls.User {
   @objc final public let role: SendBirdCalls.DirectCall.UserRole
+  override public func encode(to encoder: Swift.Encoder) throws
   @objc deinit
 }
 extension DirectCallUser {
@@ -74,8 +97,6 @@ extension DirectCall {
   @objc dynamic public func end(closeHandler: SendBirdCalls.VoidHandler?)
   @objc dynamic public func muteMicrophone()
   @objc dynamic public func unmuteMicrophone()
-  @objc dynamic public func startVideo()
-  @objc dynamic public func stopVideo()
   @objc dynamic public func updateCustomItems(customItems: [Swift.String : Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
   @objc dynamic public func deleteCustomItems(customItemKeys: [Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
   @objc dynamic public func deleteAllCustomItems(completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
@@ -103,6 +124,8 @@ extension SBCLogger {
   }
 }
 extension DirectCall {
+  @objc dynamic public func startVideo()
+  @objc dynamic public func stopVideo()
   @objc dynamic public func updateLocalVideoView(_ videoView: SendBirdCalls.SendBirdVideoView)
   @objc dynamic public func updateRemoteVideoView(_ videoView: SendBirdCalls.SendBirdVideoView)
   @objc dynamic public var availableVideoDevices: [SendBirdCalls.VideoDevice] {
@@ -113,6 +136,11 @@ extension DirectCall {
   }
   @objc dynamic public func selectVideoDevice(_ device: SendBirdCalls.VideoDevice, completionHandler: @escaping SendBirdCalls.ErrorHandler)
   @objc dynamic public func switchCamera(completionHandler: @escaping SendBirdCalls.ErrorHandler)
+  @objc dynamic public func startRecording(options: SendBirdCalls.RecordingOptions, recordingStartedHandler: @escaping SendBirdCalls.RecordingStartedHandler)
+  @discardableResult
+  @objc dynamic public func stopRecording(recordingId: Swift.String) -> Swift.Bool
+  @objc dynamic public func captureRemoteVideoView(completionHandler: @escaping SendBirdCalls.CaptureVideoViewHandler)
+  @objc dynamic public func captureLocalVideoView(completionHandler: @escaping SendBirdCalls.CaptureVideoViewHandler)
 }
 @objc(SBCAuthenticateParams) public class AuthenticateParams : ObjectiveC.NSObject {
   @objc public var userId: Swift.String
@@ -227,13 +255,18 @@ public typealias AuthenticateHandler = (SendBirdCalls.User?, SendBirdCalls.SBCEr
 public typealias DirectCallHandler = (SendBirdCalls.DirectCall?, SendBirdCalls.SBCError?) -> Swift.Void
 public typealias CustomItemsHandler = ([Swift.String : Swift.String]?, [Swift.String]?, SendBirdCalls.SBCError?) -> Swift.Void
 public typealias ErrorHandler = (SendBirdCalls.SBCError?) -> Swift.Void
+public typealias CaptureVideoViewHandler = (UIKit.UIImage?, SendBirdCalls.SBCError?) -> Swift.Void
 public typealias VoidHandler = () -> Swift.Void
 public typealias CallLogsResultHandler = ([SendBirdCalls.DirectCallLog]?, SendBirdCalls.SBCError?) -> Swift.Void
 public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
+public typealias RecordingStartedHandler = (Swift.String?, SendBirdCalls.SBCError?) -> Swift.Void
 @objc(SBCVideoView) public class SendBirdVideoView : WebRTC.RTCMTLVideoView {
   @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
+}
+extension SendBirdVideoView {
+  @objc override dynamic public func renderFrame(_ frame: WebRTC.RTCVideoFrame?)
 }
 @objc(SBCUser) public class User : ObjectiveC.NSObject, Swift.Codable {
   @objc final public let userId: Swift.String
@@ -251,8 +284,8 @@ public typealias PushRegistryHandler = (Foundation.UUID?) -> Swift.Void
     }
   required public init(from decoder: Swift.Decoder) throws
   @objc override dynamic public init()
-  @objc deinit
   public func encode(to encoder: Swift.Encoder) throws
+  @objc deinit
 }
 extension User {
   @objc override dynamic public var hash: Swift.Int {
@@ -262,6 +295,10 @@ extension User {
 }
 extension User : Foundation.NSCopying {
   @objc dynamic public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
+}
+@objc(SBCSendBirdRecordingDelegate) public protocol SendBirdRecordingDelegate : AnyObject {
+  @objc func didSaveRecording(call: SendBirdCalls.DirectCall, recordingId: Swift.String, options: SendBirdCalls.RecordingOptions, outputURL: Foundation.URL)
+  @objc func didFailToSaveRecording(call: SendBirdCalls.DirectCall, recordingId: Swift.String, error: SendBirdCalls.SBCError)
 }
 @objc public class SBCError : Foundation.NSError {
   @objc(SBCErrorCode) public enum ErrorCode : Swift.Int, Swift.RawRepresentable, Swift.Codable {
@@ -284,6 +321,15 @@ extension User : Foundation.NSCopying {
     case changingVideoDeviceNotSupported = 1800403
     case changingVideoDeviceInProgress = 1800404
     case changingVideoDeviceFailed = 1800405
+    case captureNotAllowedOnAudioCall = 1800600
+    case videoViewNotReady = 1800601
+    case videoCallNotConnectedYet = 1800602
+    case failedToGetImageFromVideoStream = 1800603
+    case callNotConnectedYet = 1800610
+    case wrongRecordingTypeForAudioCall = 1800611
+    case recordingAlreadyInProgress = 1800612
+    case failedToStartRecording = 1800614
+    case failedToStopRecording = 1800615
     case serverInternalError = 1400999
     case invalidCallStatus = 1400101
     case callDoesNotExist = 1400102
@@ -317,9 +363,21 @@ extension User : Foundation.NSCopying {
   @objc optional func didUpdateCustomItems(call: SendBirdCalls.DirectCall, updatedKeys: [Swift.String])
   @objc optional func didDeleteCustomItems(call: SendBirdCalls.DirectCall, deletedKeys: [Swift.String])
 }
+@objc(SBCSoundType) public enum SoundType : Swift.Int {
+  case dialing
+  case ringing
+  case reconnecting
+  case reconnected
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
 @objc(SBCDirectCall) public class DirectCall : ObjectiveC.NSObject {
   @objc(SBCDirectCallUserRole) public enum UserRole : Swift.Int, Swift.RawRepresentable {
-    case caller, callee
+    case caller
+    case callee
     public init(stringValue: Swift.String?)
     public typealias RawValue = Swift.Int
     public init?(rawValue: Swift.Int)
@@ -397,6 +455,9 @@ extension User : Foundation.NSCopying {
     get
     }
   @objc weak public var delegate: SendBirdCalls.DirectCallDelegate?
+  public var isRecording: Swift.Bool {
+    get
+  }
   @objc override dynamic public init()
   @objc deinit
 }
@@ -447,7 +508,12 @@ extension DialParams : Foundation.NSCopying {
   @objc public static func addDelegate(_ delegate: SendBirdCalls.SendBirdCallDelegate, identifier: Swift.String)
   @objc public static func removeDelegate(identifier: Swift.String)
   @objc public static func removeAllDelegates()
+  @objc public static func addRecordingDelegate(_ delegate: SendBirdCalls.SendBirdRecordingDelegate, identifier: Swift.String)
+  @objc public static func removeRecordingDelegate(identifier: Swift.String)
+  @objc public static func removeAllRecordingDelegates()
   @objc(callForCallId:) public static func getCall(forCallId callId: Swift.String) -> SendBirdCalls.DirectCall?
+  @objc(callForUUID:) public static func getCall(forUUID callUUID: Foundation.UUID) -> SendBirdCalls.DirectCall?
+  @objc public static func getOngoingCallCount() -> Swift.Int
   @objc public static var currentUser: SendBirdCalls.User? {
     @objc get
   }
@@ -471,11 +537,10 @@ extension DialParams : Foundation.NSCopying {
   @objc public static func deleteAllCustomItems(callId: Swift.String, completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
   @objc public static func audioSessionDidActivate(_ audioSession: AVFoundation.AVAudioSession)
   @objc public static func audioSessionDidDeactivate(_ audioSession: AVFoundation.AVAudioSession)
+  @objc public static func addDirectCallSound(_ name: Swift.String, bundle: Foundation.Bundle = .main, forType type: SendBirdCalls.SoundType)
+  @objc public static func addDirectCallSound(_ url: Foundation.URL, forType type: SendBirdCalls.SoundType)
+  @objc public static func removeDirectCallSound(forType type: SendBirdCalls.SoundType)
   @objc deinit
-}
-extension SendBirdCall {
-  @objc(callForUUID:) public static func getCall(forUUID callUUID: Foundation.UUID) -> SendBirdCalls.DirectCall?
-  @objc public static func getOngoingCallCount() -> Swift.Int
 }
 @objc(SBCAcceptParams) public class AcceptParams : ObjectiveC.NSObject {
   @objc public var callOptions: SendBirdCalls.CallOptions
@@ -483,6 +548,8 @@ extension SendBirdCall {
   @objc override dynamic public init()
   @objc deinit
 }
+extension SendBirdCalls.RecordingOptions.RecordingType : Swift.Equatable {}
+extension SendBirdCalls.RecordingOptions.RecordingType : Swift.Hashable {}
 extension SendBirdCalls.DirectCallEndResult : Swift.Equatable {}
 extension SendBirdCalls.DirectCallEndResult : Swift.Hashable {}
 extension SendBirdCalls.VideoDevice.Position : Swift.Equatable {}
@@ -493,4 +560,6 @@ extension SendBirdCalls.DirectCallLogListQuery.UserRoleFilter : Swift.Equatable 
 extension SendBirdCalls.DirectCallLogListQuery.UserRoleFilter : Swift.Hashable {}
 extension SendBirdCalls.SBCError.ErrorCode : Swift.Equatable {}
 extension SendBirdCalls.SBCError.ErrorCode : Swift.Hashable {}
+extension SendBirdCalls.SoundType : Swift.Hashable {}
+extension SendBirdCalls.SoundType : Swift.RawRepresentable {}
 extension SendBirdCalls.DirectCall.UserRole : Swift.Hashable {}

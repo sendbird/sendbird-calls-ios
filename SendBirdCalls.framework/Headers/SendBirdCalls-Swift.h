@@ -310,6 +310,7 @@ SWIFT_CLASS_NAMED("CallOptions")
 
 
 @interface SBCCallOptions (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>CallOptions</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -357,6 +358,7 @@ SWIFT_CLASS_NAMED("DialParams")
 
 
 @interface SBCDialParams (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>DialParams</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -523,7 +525,13 @@ SWIFT_CLASS_NAMED("DirectCall")
 ///   </li>
 /// </ul>
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
+/// The user who made the call.
+/// since:
+/// 1.0.0
   SBCDirectCallUserRoleCaller = 0,
+/// The user who received the call.
+/// since:
+/// 1.0.0
   SBCDirectCallUserRoleCallee = 1,
 };
 
@@ -531,6 +539,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>DirectCall</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -540,85 +549,15 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCall</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
 
-@class SBCVideoDevice;
 @class SBCError;
-
-@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
-/// Updates local <code>SendBirdVideoView</code>
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
-///   </li>
-/// </ul>
-/// \code
-///
-/// - Since: 1.0.0
-///
-///
-/// \endcode\param videoView <code>SendBirdVideoView</code> object.
-///
-- (void)updateLocalVideoView:(SBCVideoView * _Nonnull)videoView;
-/// Updates remote <code>SendBirdVideoView</code>
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
-///   </li>
-/// </ul>
-/// \param videoView <code>SendBirdVideoView</code> object.
-///
-- (void)updateRemoteVideoView:(SBCVideoView * _Nonnull)videoView;
-/// List of available video devices that support video capture.
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-@property (nonatomic, readonly, copy) NSArray<SBCVideoDevice *> * _Nonnull availableVideoDevices;
-/// Current video device using with capture device.
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-@property (nonatomic, readonly, strong) SBCVideoDevice * _Nullable currentVideoDevice;
-/// Changes current video device asynchronously and notifies callback on completion.
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-/// \param device <code>VideoDevice</code> object.
-///
-/// \param completionHandler Callback completionHandler. Contains error.
-///
-- (void)selectVideoDevice:(SBCVideoDevice * _Nonnull)device completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
-/// Toggles the selection between the front and the back camera.
-/// since:
-/// 1.0.3
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-/// \param completionHandler Callback completionHandler. Contains error.
-///
-- (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
-@end
-
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Accepts the incoming direct call. SendBirdCalls will continue to process the call with the server.
@@ -702,6 +641,37 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \endcodesince:
 /// 1.0.0
 - (void)unmuteMicrophone;
+/// Updates custom items of the call.
+/// since:
+/// 1.0.0
+/// \param customItems Custom items of [String: String] to be updated or inserted.
+///
+/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+///
+- (void)updateCustomItemsWithCustomItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+/// Deletes custom items of the call.
+/// since:
+/// 1.0.0
+/// \param customItemKeys Keys of the custom item that you want to delete.
+///
+/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+///
+- (void)deleteCustomItemsWithCustomItemKeys:(NSArray<NSString *> * _Nonnull)customItemKeys completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+/// Deletes all custom items of the call.
+/// since:
+/// 1.0.0
+/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+///
+- (void)deleteAllCustomItemsWithCompletionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+@end
+
+
+
+@class SBCVideoDevice;
+@class SBCRecordingOptions;
+@class UIImage;
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Starts local video. If the callee changes video settings, the caller is notified via the <code>DirectCallDelegate.didRemoteVideoSettingsChange()</code> delegate.
 /// \code
 /// // Start my local video
@@ -744,31 +714,138 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \endcodesince:
 /// 1.0.0
 - (void)stopVideo;
-/// Updates custom items of the call.
+/// Updates local <code>SendBirdVideoView</code>
 /// since:
 /// 1.0.0
-/// \param customItems Custom items of [String: String] to be updated or inserted.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
+///   </li>
+/// </ul>
+/// \param videoView <code>SendBirdVideoView</code> object.
 ///
-/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
-///
-- (void)updateCustomItemsWithCustomItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
-/// Deletes custom items of the call.
+- (void)updateLocalVideoView:(SBCVideoView * _Nonnull)videoView;
+/// Updates remote <code>SendBirdVideoView</code>
 /// since:
 /// 1.0.0
-/// \param customItemKeys Keys of the custom item that you want to delete.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
+///   </li>
+/// </ul>
+/// \param videoView <code>SendBirdVideoView</code> object.
 ///
-/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
-///
-- (void)deleteCustomItemsWithCustomItemKeys:(NSArray<NSString *> * _Nonnull)customItemKeys completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
-/// Deletes all custom items of the call.
+- (void)updateRemoteVideoView:(SBCVideoView * _Nonnull)videoView;
+/// List of available video devices that support video capture.
 /// since:
 /// 1.0.0
-/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+@property (nonatomic, readonly, copy) NSArray<SBCVideoDevice *> * _Nonnull availableVideoDevices;
+/// Current video device using with capture device.
+/// since:
+/// 1.0.0
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+@property (nonatomic, readonly, strong) SBCVideoDevice * _Nullable currentVideoDevice;
+/// Changes current video device asynchronously and notifies callback on completion.
+/// since:
+/// 1.0.0
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+/// \param device <code>VideoDevice</code> object.
 ///
-- (void)deleteAllCustomItemsWithCompletionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+/// \param completionHandler Callback completionHandler. Contains error.
+///
+- (void)selectVideoDevice:(SBCVideoDevice * _Nonnull)device completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+/// Toggles the selection between the front and the back camera.
+/// \code
+/// func flipCamera(call: DirectCall) {
+///    call.switchCamera { error in
+///        // do something when error has occurred.
+///    }
+/// }
+///
+/// \endcodesince:
+/// 1.0.3
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+/// \param completionHandler Callback completionHandler. Contains error.
+///
+- (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+/// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
+/// \code
+/// let options = RecordingOptions(recordingType: .localRemoteAudios, directoryPath: FileManager.default.getDocumentsDirectory())
+///
+/// call.startRecording(options: options) { recorderId, error in
+///     if let id = recorderId {
+///         // Recording successfully started
+///     }
+/// }
+///
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param options An option that is used when creating a recording session. It contains information about the type of the recording and its settings.
+///
+/// \param recordingStartedHandler A handler that receives the <code>recordingId</code> and an error depending on the result.
+///
+- (void)startRecordingWithOptions:(SBCRecordingOptions * _Nonnull)options recordingStartedHandler:(void (^ _Nonnull)(NSString * _Nullable, SBCError * _Nullable))recordingStartedHandler;
+/// Stops a media recording session with the specified <code>recordingId</code>, and depending on the result of the recording, calls the <code>didSaveRecording</code> method of a <code>SendBirdRecordingDelegate</code>.
+/// \code
+/// call.stopRecording(recorderId: recorderId)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param recordingId A unique identifier returned through the <code>recordingStartedHandler</code> when the <code>startRecording</code> method is called.
+///
+///
+/// returns:
+/// (discardable) Boolean value that indicates whether the specified recordingId is valid.
+- (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
+/// Takes a snapshot of remote video view.
+/// \code
+/// self.call.captureRemoteVideoView { [weak self] (image, error) in
+///     if let error = error {
+///        // error handling.
+///        return
+///     }
+///     self?.snapshotImageView.image = image
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param completionHandler Callback completion handler that takes snapshot image or error.
+///
+- (void)captureRemoteVideoViewWithCompletionHandler:(void (^ _Nonnull)(UIImage * _Nullable, SBCError * _Nullable))completionHandler;
+/// Takes a snapshot of local video view.
+/// \code
+/// self.call.captureLocalVideoView { [weak self] (image, error) in
+///     if let error = error {
+///        // error handling.
+///        return
+///     }
+///     self?.snapshotImageView.image = image
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param completionHandler Callback completion handler that takes snapshot image or error.
+///
+- (void)captureLocalVideoViewWithCompletionHandler:(void (^ _Nonnull)(UIImage * _Nullable, SBCError * _Nullable))completionHandler;
 @end
-
-
 
 
 
@@ -1006,7 +1083,9 @@ SWIFT_CLASS_NAMED("DirectCallLog")
 
 
 @interface SBCDirectCallLog (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCallLog</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCallLog</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -1038,6 +1117,9 @@ SWIFT_CLASS_NAMED("DirectCallLogListQuery")
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly) enum UserRoleFilter myRole;
+/// Returns <code>endResults</code> as a <code>NSArray</code>.
+/// since:
+/// 1.0.0
 @property (nonatomic, readonly, strong) NSArray * _Nonnull endResultsArray;
 /// The number of call logs to return at once. This is read-only property. If you want to set the limit, see <a href="x-source-tag://limit">Param.limit</a>
 /// note:
@@ -1109,6 +1191,7 @@ SWIFT_CLASS_NAMED("Params")
 /// since:
 /// 1.0.0
 @property (nonatomic) enum UserRoleFilter myRole;
+/// Returns <code>endResults</code> as a <code>NSArray</code>.
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly, strong) NSArray * _Nonnull endResultsArray;
@@ -1130,6 +1213,8 @@ SWIFT_CLASS_NAMED("Params")
 /// since:
 /// 1.0.0
 @property (nonatomic) int32_t limit;
+/// since:
+/// 1.0.0
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -1164,6 +1249,9 @@ SWIFT_CLASS_NAMED("User")
 @end
 
 
+/// User class specific for direct call.
+/// since:
+/// 1.0.0
 SWIFT_CLASS_NAMED("DirectCallUser")
 @interface SBCDirectCallUser : SBCUser
 /// Shows whether the user is caller or callee.
@@ -1174,12 +1262,66 @@ SWIFT_CLASS_NAMED("DirectCallUser")
 
 
 @interface SBCDirectCallUser (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCallUser</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCallUser</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+/// Returns a copied instance of the <code>DirectCallUser</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
+
+
+
+
+
+enum SBCRecordingType : NSInteger;
+
+/// Recording option that is used when starting a recording session.
+/// since:
+/// 1.3.0
+SWIFT_CLASS_NAMED("RecordingOptions")
+@interface SBCRecordingOptions : NSObject
+/// Used to specify a type of recording that specifies which participant or media to record such as <code>remoteAudioAndVideo</code>.
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly) enum SBCRecordingType recordingType;
+/// Used to specify the base directory path of where the recorded file will be saved
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly, copy) NSURL * _Nonnull directoryPath;
+/// Used to specify a name of the recorded file. If unspecified, it will be saved as <code>{type}_{callId}_{timestamp}</code>.
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly, copy) NSString * _Nullable fileName;
+- (nonnull instancetype)initWithRecordingType:(enum SBCRecordingType)recordingType directoryPath:(NSURL * _Nonnull)directoryPath fileName:(NSString * _Nullable)fileName OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingType, "RecordingType", open) {
+/// An option to record the video and audio of the remote user
+/// since:
+/// 1.3.0
+  SBCRecordingTypeRemoteAudioAndVideo = 0,
+/// An option to record the audio of the remote user.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeRemoteAudioOnly = 1,
+/// An option to record both audios of the local and remote users.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeLocalRemoteAudios = 2,
+/// An option to record both audios of the local and remote users, and the video of the remote user.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeLocalAudioRemoteAudioAndVideo = 3,
+/// An option to record both audios of the local and remote users, and the video of the local user.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeLocalAudioAndVideoRemoteAudio = 4,
+};
 
 @class NSCoder;
 
@@ -1189,6 +1331,8 @@ SWIFT_CLASS_NAMED("DirectCallUser")
 SWIFT_CLASS("_TtC13SendBirdCalls8SBCError")
 @interface SBCError : NSError
 - (nonnull instancetype)initWithDomain:(NSString * _Nonnull)domain code:(NSInteger)code userInfo:(NSDictionary<NSString *, id> * _Nullable)userInfo SWIFT_UNAVAILABLE;
+/// since:
+/// 1.0.0
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -1250,6 +1394,33 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.0.0
   SBCErrorCodeChangingVideoDeviceFailed = 1800405,
+/// since:
+/// 1.3.0
+  SBCErrorCodeCaptureNotAllowedOnAudioCall = 1800600,
+/// since:
+/// 1.3.0
+  SBCErrorCodeVideoViewNotReady = 1800601,
+/// since:
+/// 1.3.0
+  SBCErrorCodeVideoCallNotConnectedYet = 1800602,
+/// since:
+/// 1.3.0
+  SBCErrorCodeFailedToGetImageFromVideoStream = 1800603,
+/// since:
+/// 1.3.0
+  SBCErrorCodeCallNotConnectedYet = 1800610,
+/// since:
+/// 1.3.0
+  SBCErrorCodeWrongRecordingTypeForAudioCall = 1800611,
+/// since:
+/// 1.3.0
+  SBCErrorCodeRecordingAlreadyInProgress = 1800612,
+/// since:
+/// 1.3.0
+  SBCErrorCodeFailedToStartRecording = 1800614,
+/// since:
+/// 1.3.0
+  SBCErrorCodeFailedToStopRecording = 1800615,
 /// since:
 /// 1.0.6
   SBCErrorCodeServerInternalError = 1400999,
@@ -1375,18 +1546,34 @@ SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 ///   </li>
 /// </ul>
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCLoggerLevel, "Level", open) {
+/// Informational messages that are general to the application.
+/// since:
+/// 1.1.0
   SBCLoggerLevelInfo = 0,
+/// Potentially problematic situation that may indicate potential problems.
+/// since:
+/// 1.1.0
   SBCLoggerLevelWarning = 1,
+/// Error events that may represent the failure of normal program execution.
+/// since:
+/// 1.1.0
   SBCLoggerLevelError = 2,
+/// No logging.
+/// since:
+/// 1.1.0
   SBCLoggerLevelNone = 3,
 };
 
 @class UIView;
 @protocol SBCSendBirdCallDelegate;
+@protocol SBCSendBirdRecordingDelegate;
 @class PKPushRegistry;
 @class PKPushPayload;
 @class UIApplication;
+@class NSBundle;
+enum SBCSoundType : NSInteger;
 
+/// SendBirdCall
 SWIFT_CLASS_NAMED("SendBirdCall")
 @interface SBCSendBirdCall : NSObject
 /// The app id of your SendBirdCalls application. Configure the app id using <a href="x-source-tag://configure(appId)">configure(appId:)</a>. This is get-only property.
@@ -1496,6 +1683,35 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 /// since:
 /// 1.0.0
 + (void)removeAllDelegates;
+/// Adds a <code>SendBirdRecordingDelegate</code> to the SDK which is invoked when a recording session is finished successfully.
+/// \code
+/// SendBirdCall.addRecordingDelegate(self, identifier: UNIQUE_HANDLER_ID)
+///
+/// func didSaveRecording(call: DirectCall, recordingId: String, options: RecordingOptions, outputURL: URL) {
+///    // Handle successful recording
+/// }
+///
+/// func didFailToSaveRecording(call: DirectCall, recordingId: String, error: SBCError) {
+///    // Handle failed recording
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param delegate A <code>RecordingDelegate</code> to add to the SDK.
+///
+/// \param identifier A unique identifier for the <code>RecordingDelegate</code>.
+///
++ (void)addRecordingDelegate:(id <SBCSendBirdRecordingDelegate> _Nonnull)delegate identifier:(NSString * _Nonnull)identifier;
+/// Removes a <code>SendBirdRecordingDelegate</code> that has the specified identifier from the SDK.
+/// since:
+/// 1.3.0
+/// \param identifier A unique identifier of a <code>RecordingDelegate</code> to remove from the SDK.
+///
++ (void)removeRecordingDelegateWithIdentifier:(NSString * _Nonnull)identifier;
+/// Removes all <code>SendBirdRecordingDelegates</code> from the SDK.
+/// since:
+/// 1.3.0
++ (void)removeAllRecordingDelegates;
 /// Returns call for call ID.
 /// since:
 /// 1.0.0
@@ -1506,6 +1722,20 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 ///
 /// <code>DirectCall</code> object with corresponding call ID. It can be <code>nil</code>.
 + (SBCDirectCall * _Nullable)callForCallId:(NSString * _Nonnull)callId SWIFT_WARN_UNUSED_RESULT;
+/// Returns call for a given UUID.
+/// since:
+/// 1.0.0
+/// \param uuid Call UUID.
+///
+///
+/// returns:
+///
+/// <code>DirectCall</code> object with corresponding call ID. It can be <code>nil</code>.
++ (SBCDirectCall * _Nullable)callForUUID:(NSUUID * _Nonnull)callUUID SWIFT_WARN_UNUSED_RESULT;
+/// Returns number of ongoing calls.
+/// since:
+/// 1.2.0
++ (NSInteger)getOngoingCallCount SWIFT_WARN_UNUSED_RESULT;
 /// Returns the currently authenticated user.
 /// since:
 /// 1.0.0
@@ -1795,6 +2025,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 ///     }
 /// }
 ///
+/// // MARK: - Audio Session
+///
 ///
 /// \endcodesince:
 /// 1.0.2
@@ -1810,20 +2042,41 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \endcodesince:
 /// 1.0.2
 + (void)audioSessionDidDeactivate:(AVAudioSession * _Nonnull)audioSession;
+/// Adds sound used in <code>DirectCall</code>  such as ringtone and some sound effects with its file name and bundle.
+/// \code
+/// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param name The name of your audio file. Please explicit its extension: “dialing.mp3”
+///
+/// \param bundle The bundle object. The default is main bundle.
+///
+/// \param type The type of sound.
+///
++ (void)addDirectCallSound:(NSString * _Nonnull)name bundle:(NSBundle * _Nonnull)bundle forType:(enum SBCSoundType)type;
+/// Adds sound used in <code>DirectCall</code>  such as ringtone and some sound effects with URL. If you use bundle to play sound, <code>addDirectCallSound(_:bundle:forType:)</code> is recommended.
+/// \code
+/// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param url The URL of your audio file.
+///
+/// \param type The key respresenting the type of sound.
+///
++ (void)addDirectCallSound:(NSURL * _Nonnull)url forType:(enum SBCSoundType)type;
+/// Removes sound used in <code>DirectCall</code> with <code>SoundType</code> value.
+/// \code
+/// SendBirdCall.removeDirectCallSound(forType: .dialing)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param type The type of sound you want to remove.
+///
++ (void)removeDirectCallSoundForType:(enum SBCSoundType)type;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-@end
-
-
-@interface SBCSendBirdCall (SWIFT_EXTENSION(SendBirdCalls))
-/// Returns call for a given UUID. Returns nil if such call doesn’t exist.
-/// since:
-/// 1.0.0
-+ (SBCDirectCall * _Nullable)callForUUID:(NSUUID * _Nonnull)callUUID SWIFT_WARN_UNUSED_RESULT;
-/// Returns number of ongoing calls.
-/// since:
-/// 1.2.0
-+ (NSInteger)getOngoingCallCount SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -1845,6 +2098,48 @@ SWIFT_PROTOCOL_NAMED("SendBirdCallDelegate")
 /// \param call <code>DirectCall</code> object.
 ///
 - (void)didStartRinging:(SBCDirectCall * _Nonnull)call;
+@end
+
+
+/// Device-wide recordingDelegate for SendBirdCall.
+/// since:
+/// 1.3.0
+SWIFT_PROTOCOL_NAMED("SendBirdRecordingDelegate")
+@protocol SBCSendBirdRecordingDelegate
+/// Notifies that a recording session has been saved successfully. This receives information about the recording through the following parameters.
+/// \code
+/// class MyClass: SendBirdRecordingDelegate {
+///    func didSaveRecording(call: DirectCall, recordingId: String, options: RecordingOptions, outputURL: URL) {
+///         // Handle successful recording
+///     }
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param call A recorded direct call.
+///
+/// \param recordingId A unique identifier of the recording session created in <code>startRecording</code>.
+///
+/// \param options An option that is used when starting a recording session.
+///
+/// \param outputURL A URL which the recorded file is saved.
+///
+- (void)didSaveRecordingWithCall:(SBCDirectCall * _Nonnull)call recordingId:(NSString * _Nonnull)recordingId options:(SBCRecordingOptions * _Nonnull)options outputURL:(NSURL * _Nonnull)outputURL;
+/// Notifies that a recording session has not been saved. This receives information about the recording through the following parameters.
+/// \code
+/// class MyClass: SendBirdRecordingDelegate {
+///    func didFailToSaveRecording(call: DirectCall, recordingId: String, error: SBCError) {
+///        // Handle failed recording.
+///    }
+/// }
+///
+/// \endcode\param call A recorded direct call.
+///
+/// \param recordingId A unique identifier of the recording session created in <code>startRecording</code>.
+///
+/// \param error An error that occurred while saving a recording.
+///
+- (void)didFailToSaveRecordingWithCall:(SBCDirectCall * _Nonnull)call recordingId:(NSString * _Nonnull)recordingId error:(SBCError * _Nonnull)error;
 @end
 
 
@@ -1881,15 +2176,31 @@ SWIFT_CLASS_NAMED("SendBirdVideoView")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
+@class RTCVideoFrame;
+
+@interface SBCVideoView (SWIFT_EXTENSION(SendBirdCalls))
+- (void)renderFrame:(RTCVideoFrame * _Nullable)frame;
+@end
+
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCSoundType, "SoundType", open) {
+  SBCSoundTypeDialing = 0,
+  SBCSoundTypeRinging = 1,
+  SBCSoundTypeReconnecting = 2,
+  SBCSoundTypeReconnected = 3,
+};
+
 
 
 @interface SBCUser (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>User</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
 @interface SBCUser (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>User</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>User</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -2271,6 +2582,7 @@ SWIFT_CLASS_NAMED("CallOptions")
 
 
 @interface SBCCallOptions (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>CallOptions</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -2318,6 +2630,7 @@ SWIFT_CLASS_NAMED("DialParams")
 
 
 @interface SBCDialParams (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>DialParams</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -2484,7 +2797,13 @@ SWIFT_CLASS_NAMED("DirectCall")
 ///   </li>
 /// </ul>
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
+/// The user who made the call.
+/// since:
+/// 1.0.0
   SBCDirectCallUserRoleCaller = 0,
+/// The user who received the call.
+/// since:
+/// 1.0.0
   SBCDirectCallUserRoleCallee = 1,
 };
 
@@ -2492,6 +2811,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>DirectCall</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -2501,85 +2821,15 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCall</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
 
-@class SBCVideoDevice;
 @class SBCError;
-
-@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
-/// Updates local <code>SendBirdVideoView</code>
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
-///   </li>
-/// </ul>
-/// \code
-///
-/// - Since: 1.0.0
-///
-///
-/// \endcode\param videoView <code>SendBirdVideoView</code> object.
-///
-- (void)updateLocalVideoView:(SBCVideoView * _Nonnull)videoView;
-/// Updates remote <code>SendBirdVideoView</code>
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
-///   </li>
-/// </ul>
-/// \param videoView <code>SendBirdVideoView</code> object.
-///
-- (void)updateRemoteVideoView:(SBCVideoView * _Nonnull)videoView;
-/// List of available video devices that support video capture.
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-@property (nonatomic, readonly, copy) NSArray<SBCVideoDevice *> * _Nonnull availableVideoDevices;
-/// Current video device using with capture device.
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-@property (nonatomic, readonly, strong) SBCVideoDevice * _Nullable currentVideoDevice;
-/// Changes current video device asynchronously and notifies callback on completion.
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-/// \param device <code>VideoDevice</code> object.
-///
-/// \param completionHandler Callback completionHandler. Contains error.
-///
-- (void)selectVideoDevice:(SBCVideoDevice * _Nonnull)device completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
-/// Toggles the selection between the front and the back camera.
-/// since:
-/// 1.0.3
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-/// \param completionHandler Callback completionHandler. Contains error.
-///
-- (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
-@end
-
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Accepts the incoming direct call. SendBirdCalls will continue to process the call with the server.
@@ -2663,6 +2913,37 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \endcodesince:
 /// 1.0.0
 - (void)unmuteMicrophone;
+/// Updates custom items of the call.
+/// since:
+/// 1.0.0
+/// \param customItems Custom items of [String: String] to be updated or inserted.
+///
+/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+///
+- (void)updateCustomItemsWithCustomItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+/// Deletes custom items of the call.
+/// since:
+/// 1.0.0
+/// \param customItemKeys Keys of the custom item that you want to delete.
+///
+/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+///
+- (void)deleteCustomItemsWithCustomItemKeys:(NSArray<NSString *> * _Nonnull)customItemKeys completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+/// Deletes all custom items of the call.
+/// since:
+/// 1.0.0
+/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+///
+- (void)deleteAllCustomItemsWithCompletionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+@end
+
+
+
+@class SBCVideoDevice;
+@class SBCRecordingOptions;
+@class UIImage;
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Starts local video. If the callee changes video settings, the caller is notified via the <code>DirectCallDelegate.didRemoteVideoSettingsChange()</code> delegate.
 /// \code
 /// // Start my local video
@@ -2705,31 +2986,138 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \endcodesince:
 /// 1.0.0
 - (void)stopVideo;
-/// Updates custom items of the call.
+/// Updates local <code>SendBirdVideoView</code>
 /// since:
 /// 1.0.0
-/// \param customItems Custom items of [String: String] to be updated or inserted.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
+///   </li>
+/// </ul>
+/// \param videoView <code>SendBirdVideoView</code> object.
 ///
-/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
-///
-- (void)updateCustomItemsWithCustomItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
-/// Deletes custom items of the call.
+- (void)updateLocalVideoView:(SBCVideoView * _Nonnull)videoView;
+/// Updates remote <code>SendBirdVideoView</code>
 /// since:
 /// 1.0.0
-/// \param customItemKeys Keys of the custom item that you want to delete.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
+///   </li>
+/// </ul>
+/// \param videoView <code>SendBirdVideoView</code> object.
 ///
-/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
-///
-- (void)deleteCustomItemsWithCustomItemKeys:(NSArray<NSString *> * _Nonnull)customItemKeys completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
-/// Deletes all custom items of the call.
+- (void)updateRemoteVideoView:(SBCVideoView * _Nonnull)videoView;
+/// List of available video devices that support video capture.
 /// since:
 /// 1.0.0
-/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+@property (nonatomic, readonly, copy) NSArray<SBCVideoDevice *> * _Nonnull availableVideoDevices;
+/// Current video device using with capture device.
+/// since:
+/// 1.0.0
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+@property (nonatomic, readonly, strong) SBCVideoDevice * _Nullable currentVideoDevice;
+/// Changes current video device asynchronously and notifies callback on completion.
+/// since:
+/// 1.0.0
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+/// \param device <code>VideoDevice</code> object.
 ///
-- (void)deleteAllCustomItemsWithCompletionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+/// \param completionHandler Callback completionHandler. Contains error.
+///
+- (void)selectVideoDevice:(SBCVideoDevice * _Nonnull)device completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+/// Toggles the selection between the front and the back camera.
+/// \code
+/// func flipCamera(call: DirectCall) {
+///    call.switchCamera { error in
+///        // do something when error has occurred.
+///    }
+/// }
+///
+/// \endcodesince:
+/// 1.0.3
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+/// \param completionHandler Callback completionHandler. Contains error.
+///
+- (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+/// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
+/// \code
+/// let options = RecordingOptions(recordingType: .localRemoteAudios, directoryPath: FileManager.default.getDocumentsDirectory())
+///
+/// call.startRecording(options: options) { recorderId, error in
+///     if let id = recorderId {
+///         // Recording successfully started
+///     }
+/// }
+///
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param options An option that is used when creating a recording session. It contains information about the type of the recording and its settings.
+///
+/// \param recordingStartedHandler A handler that receives the <code>recordingId</code> and an error depending on the result.
+///
+- (void)startRecordingWithOptions:(SBCRecordingOptions * _Nonnull)options recordingStartedHandler:(void (^ _Nonnull)(NSString * _Nullable, SBCError * _Nullable))recordingStartedHandler;
+/// Stops a media recording session with the specified <code>recordingId</code>, and depending on the result of the recording, calls the <code>didSaveRecording</code> method of a <code>SendBirdRecordingDelegate</code>.
+/// \code
+/// call.stopRecording(recorderId: recorderId)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param recordingId A unique identifier returned through the <code>recordingStartedHandler</code> when the <code>startRecording</code> method is called.
+///
+///
+/// returns:
+/// (discardable) Boolean value that indicates whether the specified recordingId is valid.
+- (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
+/// Takes a snapshot of remote video view.
+/// \code
+/// self.call.captureRemoteVideoView { [weak self] (image, error) in
+///     if let error = error {
+///        // error handling.
+///        return
+///     }
+///     self?.snapshotImageView.image = image
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param completionHandler Callback completion handler that takes snapshot image or error.
+///
+- (void)captureRemoteVideoViewWithCompletionHandler:(void (^ _Nonnull)(UIImage * _Nullable, SBCError * _Nullable))completionHandler;
+/// Takes a snapshot of local video view.
+/// \code
+/// self.call.captureLocalVideoView { [weak self] (image, error) in
+///     if let error = error {
+///        // error handling.
+///        return
+///     }
+///     self?.snapshotImageView.image = image
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param completionHandler Callback completion handler that takes snapshot image or error.
+///
+- (void)captureLocalVideoViewWithCompletionHandler:(void (^ _Nonnull)(UIImage * _Nullable, SBCError * _Nullable))completionHandler;
 @end
-
-
 
 
 
@@ -2967,7 +3355,9 @@ SWIFT_CLASS_NAMED("DirectCallLog")
 
 
 @interface SBCDirectCallLog (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCallLog</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCallLog</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -2999,6 +3389,9 @@ SWIFT_CLASS_NAMED("DirectCallLogListQuery")
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly) enum UserRoleFilter myRole;
+/// Returns <code>endResults</code> as a <code>NSArray</code>.
+/// since:
+/// 1.0.0
 @property (nonatomic, readonly, strong) NSArray * _Nonnull endResultsArray;
 /// The number of call logs to return at once. This is read-only property. If you want to set the limit, see <a href="x-source-tag://limit">Param.limit</a>
 /// note:
@@ -3070,6 +3463,7 @@ SWIFT_CLASS_NAMED("Params")
 /// since:
 /// 1.0.0
 @property (nonatomic) enum UserRoleFilter myRole;
+/// Returns <code>endResults</code> as a <code>NSArray</code>.
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly, strong) NSArray * _Nonnull endResultsArray;
@@ -3091,6 +3485,8 @@ SWIFT_CLASS_NAMED("Params")
 /// since:
 /// 1.0.0
 @property (nonatomic) int32_t limit;
+/// since:
+/// 1.0.0
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -3125,6 +3521,9 @@ SWIFT_CLASS_NAMED("User")
 @end
 
 
+/// User class specific for direct call.
+/// since:
+/// 1.0.0
 SWIFT_CLASS_NAMED("DirectCallUser")
 @interface SBCDirectCallUser : SBCUser
 /// Shows whether the user is caller or callee.
@@ -3135,12 +3534,66 @@ SWIFT_CLASS_NAMED("DirectCallUser")
 
 
 @interface SBCDirectCallUser (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCallUser</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCallUser</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+/// Returns a copied instance of the <code>DirectCallUser</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
+
+
+
+
+
+enum SBCRecordingType : NSInteger;
+
+/// Recording option that is used when starting a recording session.
+/// since:
+/// 1.3.0
+SWIFT_CLASS_NAMED("RecordingOptions")
+@interface SBCRecordingOptions : NSObject
+/// Used to specify a type of recording that specifies which participant or media to record such as <code>remoteAudioAndVideo</code>.
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly) enum SBCRecordingType recordingType;
+/// Used to specify the base directory path of where the recorded file will be saved
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly, copy) NSURL * _Nonnull directoryPath;
+/// Used to specify a name of the recorded file. If unspecified, it will be saved as <code>{type}_{callId}_{timestamp}</code>.
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly, copy) NSString * _Nullable fileName;
+- (nonnull instancetype)initWithRecordingType:(enum SBCRecordingType)recordingType directoryPath:(NSURL * _Nonnull)directoryPath fileName:(NSString * _Nullable)fileName OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingType, "RecordingType", open) {
+/// An option to record the video and audio of the remote user
+/// since:
+/// 1.3.0
+  SBCRecordingTypeRemoteAudioAndVideo = 0,
+/// An option to record the audio of the remote user.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeRemoteAudioOnly = 1,
+/// An option to record both audios of the local and remote users.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeLocalRemoteAudios = 2,
+/// An option to record both audios of the local and remote users, and the video of the remote user.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeLocalAudioRemoteAudioAndVideo = 3,
+/// An option to record both audios of the local and remote users, and the video of the local user.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeLocalAudioAndVideoRemoteAudio = 4,
+};
 
 @class NSCoder;
 
@@ -3150,6 +3603,8 @@ SWIFT_CLASS_NAMED("DirectCallUser")
 SWIFT_CLASS("_TtC13SendBirdCalls8SBCError")
 @interface SBCError : NSError
 - (nonnull instancetype)initWithDomain:(NSString * _Nonnull)domain code:(NSInteger)code userInfo:(NSDictionary<NSString *, id> * _Nullable)userInfo SWIFT_UNAVAILABLE;
+/// since:
+/// 1.0.0
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -3211,6 +3666,33 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.0.0
   SBCErrorCodeChangingVideoDeviceFailed = 1800405,
+/// since:
+/// 1.3.0
+  SBCErrorCodeCaptureNotAllowedOnAudioCall = 1800600,
+/// since:
+/// 1.3.0
+  SBCErrorCodeVideoViewNotReady = 1800601,
+/// since:
+/// 1.3.0
+  SBCErrorCodeVideoCallNotConnectedYet = 1800602,
+/// since:
+/// 1.3.0
+  SBCErrorCodeFailedToGetImageFromVideoStream = 1800603,
+/// since:
+/// 1.3.0
+  SBCErrorCodeCallNotConnectedYet = 1800610,
+/// since:
+/// 1.3.0
+  SBCErrorCodeWrongRecordingTypeForAudioCall = 1800611,
+/// since:
+/// 1.3.0
+  SBCErrorCodeRecordingAlreadyInProgress = 1800612,
+/// since:
+/// 1.3.0
+  SBCErrorCodeFailedToStartRecording = 1800614,
+/// since:
+/// 1.3.0
+  SBCErrorCodeFailedToStopRecording = 1800615,
 /// since:
 /// 1.0.6
   SBCErrorCodeServerInternalError = 1400999,
@@ -3336,18 +3818,34 @@ SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 ///   </li>
 /// </ul>
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCLoggerLevel, "Level", open) {
+/// Informational messages that are general to the application.
+/// since:
+/// 1.1.0
   SBCLoggerLevelInfo = 0,
+/// Potentially problematic situation that may indicate potential problems.
+/// since:
+/// 1.1.0
   SBCLoggerLevelWarning = 1,
+/// Error events that may represent the failure of normal program execution.
+/// since:
+/// 1.1.0
   SBCLoggerLevelError = 2,
+/// No logging.
+/// since:
+/// 1.1.0
   SBCLoggerLevelNone = 3,
 };
 
 @class UIView;
 @protocol SBCSendBirdCallDelegate;
+@protocol SBCSendBirdRecordingDelegate;
 @class PKPushRegistry;
 @class PKPushPayload;
 @class UIApplication;
+@class NSBundle;
+enum SBCSoundType : NSInteger;
 
+/// SendBirdCall
 SWIFT_CLASS_NAMED("SendBirdCall")
 @interface SBCSendBirdCall : NSObject
 /// The app id of your SendBirdCalls application. Configure the app id using <a href="x-source-tag://configure(appId)">configure(appId:)</a>. This is get-only property.
@@ -3457,6 +3955,35 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 /// since:
 /// 1.0.0
 + (void)removeAllDelegates;
+/// Adds a <code>SendBirdRecordingDelegate</code> to the SDK which is invoked when a recording session is finished successfully.
+/// \code
+/// SendBirdCall.addRecordingDelegate(self, identifier: UNIQUE_HANDLER_ID)
+///
+/// func didSaveRecording(call: DirectCall, recordingId: String, options: RecordingOptions, outputURL: URL) {
+///    // Handle successful recording
+/// }
+///
+/// func didFailToSaveRecording(call: DirectCall, recordingId: String, error: SBCError) {
+///    // Handle failed recording
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param delegate A <code>RecordingDelegate</code> to add to the SDK.
+///
+/// \param identifier A unique identifier for the <code>RecordingDelegate</code>.
+///
++ (void)addRecordingDelegate:(id <SBCSendBirdRecordingDelegate> _Nonnull)delegate identifier:(NSString * _Nonnull)identifier;
+/// Removes a <code>SendBirdRecordingDelegate</code> that has the specified identifier from the SDK.
+/// since:
+/// 1.3.0
+/// \param identifier A unique identifier of a <code>RecordingDelegate</code> to remove from the SDK.
+///
++ (void)removeRecordingDelegateWithIdentifier:(NSString * _Nonnull)identifier;
+/// Removes all <code>SendBirdRecordingDelegates</code> from the SDK.
+/// since:
+/// 1.3.0
++ (void)removeAllRecordingDelegates;
 /// Returns call for call ID.
 /// since:
 /// 1.0.0
@@ -3467,6 +3994,20 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 ///
 /// <code>DirectCall</code> object with corresponding call ID. It can be <code>nil</code>.
 + (SBCDirectCall * _Nullable)callForCallId:(NSString * _Nonnull)callId SWIFT_WARN_UNUSED_RESULT;
+/// Returns call for a given UUID.
+/// since:
+/// 1.0.0
+/// \param uuid Call UUID.
+///
+///
+/// returns:
+///
+/// <code>DirectCall</code> object with corresponding call ID. It can be <code>nil</code>.
++ (SBCDirectCall * _Nullable)callForUUID:(NSUUID * _Nonnull)callUUID SWIFT_WARN_UNUSED_RESULT;
+/// Returns number of ongoing calls.
+/// since:
+/// 1.2.0
++ (NSInteger)getOngoingCallCount SWIFT_WARN_UNUSED_RESULT;
 /// Returns the currently authenticated user.
 /// since:
 /// 1.0.0
@@ -3756,6 +4297,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 ///     }
 /// }
 ///
+/// // MARK: - Audio Session
+///
 ///
 /// \endcodesince:
 /// 1.0.2
@@ -3771,20 +4314,41 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \endcodesince:
 /// 1.0.2
 + (void)audioSessionDidDeactivate:(AVAudioSession * _Nonnull)audioSession;
+/// Adds sound used in <code>DirectCall</code>  such as ringtone and some sound effects with its file name and bundle.
+/// \code
+/// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param name The name of your audio file. Please explicit its extension: “dialing.mp3”
+///
+/// \param bundle The bundle object. The default is main bundle.
+///
+/// \param type The type of sound.
+///
++ (void)addDirectCallSound:(NSString * _Nonnull)name bundle:(NSBundle * _Nonnull)bundle forType:(enum SBCSoundType)type;
+/// Adds sound used in <code>DirectCall</code>  such as ringtone and some sound effects with URL. If you use bundle to play sound, <code>addDirectCallSound(_:bundle:forType:)</code> is recommended.
+/// \code
+/// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param url The URL of your audio file.
+///
+/// \param type The key respresenting the type of sound.
+///
++ (void)addDirectCallSound:(NSURL * _Nonnull)url forType:(enum SBCSoundType)type;
+/// Removes sound used in <code>DirectCall</code> with <code>SoundType</code> value.
+/// \code
+/// SendBirdCall.removeDirectCallSound(forType: .dialing)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param type The type of sound you want to remove.
+///
++ (void)removeDirectCallSoundForType:(enum SBCSoundType)type;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-@end
-
-
-@interface SBCSendBirdCall (SWIFT_EXTENSION(SendBirdCalls))
-/// Returns call for a given UUID. Returns nil if such call doesn’t exist.
-/// since:
-/// 1.0.0
-+ (SBCDirectCall * _Nullable)callForUUID:(NSUUID * _Nonnull)callUUID SWIFT_WARN_UNUSED_RESULT;
-/// Returns number of ongoing calls.
-/// since:
-/// 1.2.0
-+ (NSInteger)getOngoingCallCount SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -3806,6 +4370,48 @@ SWIFT_PROTOCOL_NAMED("SendBirdCallDelegate")
 /// \param call <code>DirectCall</code> object.
 ///
 - (void)didStartRinging:(SBCDirectCall * _Nonnull)call;
+@end
+
+
+/// Device-wide recordingDelegate for SendBirdCall.
+/// since:
+/// 1.3.0
+SWIFT_PROTOCOL_NAMED("SendBirdRecordingDelegate")
+@protocol SBCSendBirdRecordingDelegate
+/// Notifies that a recording session has been saved successfully. This receives information about the recording through the following parameters.
+/// \code
+/// class MyClass: SendBirdRecordingDelegate {
+///    func didSaveRecording(call: DirectCall, recordingId: String, options: RecordingOptions, outputURL: URL) {
+///         // Handle successful recording
+///     }
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param call A recorded direct call.
+///
+/// \param recordingId A unique identifier of the recording session created in <code>startRecording</code>.
+///
+/// \param options An option that is used when starting a recording session.
+///
+/// \param outputURL A URL which the recorded file is saved.
+///
+- (void)didSaveRecordingWithCall:(SBCDirectCall * _Nonnull)call recordingId:(NSString * _Nonnull)recordingId options:(SBCRecordingOptions * _Nonnull)options outputURL:(NSURL * _Nonnull)outputURL;
+/// Notifies that a recording session has not been saved. This receives information about the recording through the following parameters.
+/// \code
+/// class MyClass: SendBirdRecordingDelegate {
+///    func didFailToSaveRecording(call: DirectCall, recordingId: String, error: SBCError) {
+///        // Handle failed recording.
+///    }
+/// }
+///
+/// \endcode\param call A recorded direct call.
+///
+/// \param recordingId A unique identifier of the recording session created in <code>startRecording</code>.
+///
+/// \param error An error that occurred while saving a recording.
+///
+- (void)didFailToSaveRecordingWithCall:(SBCDirectCall * _Nonnull)call recordingId:(NSString * _Nonnull)recordingId error:(SBCError * _Nonnull)error;
 @end
 
 @protocol RTCVideoViewShading;
@@ -3844,15 +4450,31 @@ SWIFT_CLASS_NAMED("SendBirdVideoView")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
+@class RTCVideoFrame;
+
+@interface SBCVideoView (SWIFT_EXTENSION(SendBirdCalls))
+- (void)renderFrame:(RTCVideoFrame * _Nullable)frame;
+@end
+
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCSoundType, "SoundType", open) {
+  SBCSoundTypeDialing = 0,
+  SBCSoundTypeRinging = 1,
+  SBCSoundTypeReconnecting = 2,
+  SBCSoundTypeReconnected = 3,
+};
+
 
 
 @interface SBCUser (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>User</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
 @interface SBCUser (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>User</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>User</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -4236,6 +4858,7 @@ SWIFT_CLASS_NAMED("CallOptions")
 
 
 @interface SBCCallOptions (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>CallOptions</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -4283,6 +4906,7 @@ SWIFT_CLASS_NAMED("DialParams")
 
 
 @interface SBCDialParams (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>DialParams</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -4449,7 +5073,13 @@ SWIFT_CLASS_NAMED("DirectCall")
 ///   </li>
 /// </ul>
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
+/// The user who made the call.
+/// since:
+/// 1.0.0
   SBCDirectCallUserRoleCaller = 0,
+/// The user who received the call.
+/// since:
+/// 1.0.0
   SBCDirectCallUserRoleCallee = 1,
 };
 
@@ -4457,6 +5087,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>DirectCall</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -4466,85 +5097,15 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCall</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
 
-@class SBCVideoDevice;
 @class SBCError;
-
-@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
-/// Updates local <code>SendBirdVideoView</code>
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
-///   </li>
-/// </ul>
-/// \code
-///
-/// - Since: 1.0.0
-///
-///
-/// \endcode\param videoView <code>SendBirdVideoView</code> object.
-///
-- (void)updateLocalVideoView:(SBCVideoView * _Nonnull)videoView;
-/// Updates remote <code>SendBirdVideoView</code>
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
-///   </li>
-/// </ul>
-/// \param videoView <code>SendBirdVideoView</code> object.
-///
-- (void)updateRemoteVideoView:(SBCVideoView * _Nonnull)videoView;
-/// List of available video devices that support video capture.
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-@property (nonatomic, readonly, copy) NSArray<SBCVideoDevice *> * _Nonnull availableVideoDevices;
-/// Current video device using with capture device.
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-@property (nonatomic, readonly, strong) SBCVideoDevice * _Nullable currentVideoDevice;
-/// Changes current video device asynchronously and notifies callback on completion.
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-/// \param device <code>VideoDevice</code> object.
-///
-/// \param completionHandler Callback completionHandler. Contains error.
-///
-- (void)selectVideoDevice:(SBCVideoDevice * _Nonnull)device completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
-/// Toggles the selection between the front and the back camera.
-/// since:
-/// 1.0.3
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-/// \param completionHandler Callback completionHandler. Contains error.
-///
-- (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
-@end
-
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Accepts the incoming direct call. SendBirdCalls will continue to process the call with the server.
@@ -4628,6 +5189,37 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \endcodesince:
 /// 1.0.0
 - (void)unmuteMicrophone;
+/// Updates custom items of the call.
+/// since:
+/// 1.0.0
+/// \param customItems Custom items of [String: String] to be updated or inserted.
+///
+/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+///
+- (void)updateCustomItemsWithCustomItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+/// Deletes custom items of the call.
+/// since:
+/// 1.0.0
+/// \param customItemKeys Keys of the custom item that you want to delete.
+///
+/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+///
+- (void)deleteCustomItemsWithCustomItemKeys:(NSArray<NSString *> * _Nonnull)customItemKeys completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+/// Deletes all custom items of the call.
+/// since:
+/// 1.0.0
+/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+///
+- (void)deleteAllCustomItemsWithCompletionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+@end
+
+
+
+@class SBCVideoDevice;
+@class SBCRecordingOptions;
+@class UIImage;
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Starts local video. If the callee changes video settings, the caller is notified via the <code>DirectCallDelegate.didRemoteVideoSettingsChange()</code> delegate.
 /// \code
 /// // Start my local video
@@ -4670,31 +5262,138 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \endcodesince:
 /// 1.0.0
 - (void)stopVideo;
-/// Updates custom items of the call.
+/// Updates local <code>SendBirdVideoView</code>
 /// since:
 /// 1.0.0
-/// \param customItems Custom items of [String: String] to be updated or inserted.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
+///   </li>
+/// </ul>
+/// \param videoView <code>SendBirdVideoView</code> object.
 ///
-/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
-///
-- (void)updateCustomItemsWithCustomItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
-/// Deletes custom items of the call.
+- (void)updateLocalVideoView:(SBCVideoView * _Nonnull)videoView;
+/// Updates remote <code>SendBirdVideoView</code>
 /// since:
 /// 1.0.0
-/// \param customItemKeys Keys of the custom item that you want to delete.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
+///   </li>
+/// </ul>
+/// \param videoView <code>SendBirdVideoView</code> object.
 ///
-/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
-///
-- (void)deleteCustomItemsWithCustomItemKeys:(NSArray<NSString *> * _Nonnull)customItemKeys completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
-/// Deletes all custom items of the call.
+- (void)updateRemoteVideoView:(SBCVideoView * _Nonnull)videoView;
+/// List of available video devices that support video capture.
 /// since:
 /// 1.0.0
-/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+@property (nonatomic, readonly, copy) NSArray<SBCVideoDevice *> * _Nonnull availableVideoDevices;
+/// Current video device using with capture device.
+/// since:
+/// 1.0.0
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+@property (nonatomic, readonly, strong) SBCVideoDevice * _Nullable currentVideoDevice;
+/// Changes current video device asynchronously and notifies callback on completion.
+/// since:
+/// 1.0.0
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+/// \param device <code>VideoDevice</code> object.
 ///
-- (void)deleteAllCustomItemsWithCompletionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+/// \param completionHandler Callback completionHandler. Contains error.
+///
+- (void)selectVideoDevice:(SBCVideoDevice * _Nonnull)device completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+/// Toggles the selection between the front and the back camera.
+/// \code
+/// func flipCamera(call: DirectCall) {
+///    call.switchCamera { error in
+///        // do something when error has occurred.
+///    }
+/// }
+///
+/// \endcodesince:
+/// 1.0.3
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+/// \param completionHandler Callback completionHandler. Contains error.
+///
+- (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+/// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
+/// \code
+/// let options = RecordingOptions(recordingType: .localRemoteAudios, directoryPath: FileManager.default.getDocumentsDirectory())
+///
+/// call.startRecording(options: options) { recorderId, error in
+///     if let id = recorderId {
+///         // Recording successfully started
+///     }
+/// }
+///
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param options An option that is used when creating a recording session. It contains information about the type of the recording and its settings.
+///
+/// \param recordingStartedHandler A handler that receives the <code>recordingId</code> and an error depending on the result.
+///
+- (void)startRecordingWithOptions:(SBCRecordingOptions * _Nonnull)options recordingStartedHandler:(void (^ _Nonnull)(NSString * _Nullable, SBCError * _Nullable))recordingStartedHandler;
+/// Stops a media recording session with the specified <code>recordingId</code>, and depending on the result of the recording, calls the <code>didSaveRecording</code> method of a <code>SendBirdRecordingDelegate</code>.
+/// \code
+/// call.stopRecording(recorderId: recorderId)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param recordingId A unique identifier returned through the <code>recordingStartedHandler</code> when the <code>startRecording</code> method is called.
+///
+///
+/// returns:
+/// (discardable) Boolean value that indicates whether the specified recordingId is valid.
+- (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
+/// Takes a snapshot of remote video view.
+/// \code
+/// self.call.captureRemoteVideoView { [weak self] (image, error) in
+///     if let error = error {
+///        // error handling.
+///        return
+///     }
+///     self?.snapshotImageView.image = image
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param completionHandler Callback completion handler that takes snapshot image or error.
+///
+- (void)captureRemoteVideoViewWithCompletionHandler:(void (^ _Nonnull)(UIImage * _Nullable, SBCError * _Nullable))completionHandler;
+/// Takes a snapshot of local video view.
+/// \code
+/// self.call.captureLocalVideoView { [weak self] (image, error) in
+///     if let error = error {
+///        // error handling.
+///        return
+///     }
+///     self?.snapshotImageView.image = image
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param completionHandler Callback completion handler that takes snapshot image or error.
+///
+- (void)captureLocalVideoViewWithCompletionHandler:(void (^ _Nonnull)(UIImage * _Nullable, SBCError * _Nullable))completionHandler;
 @end
-
-
 
 
 
@@ -4932,7 +5631,9 @@ SWIFT_CLASS_NAMED("DirectCallLog")
 
 
 @interface SBCDirectCallLog (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCallLog</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCallLog</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -4964,6 +5665,9 @@ SWIFT_CLASS_NAMED("DirectCallLogListQuery")
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly) enum UserRoleFilter myRole;
+/// Returns <code>endResults</code> as a <code>NSArray</code>.
+/// since:
+/// 1.0.0
 @property (nonatomic, readonly, strong) NSArray * _Nonnull endResultsArray;
 /// The number of call logs to return at once. This is read-only property. If you want to set the limit, see <a href="x-source-tag://limit">Param.limit</a>
 /// note:
@@ -5035,6 +5739,7 @@ SWIFT_CLASS_NAMED("Params")
 /// since:
 /// 1.0.0
 @property (nonatomic) enum UserRoleFilter myRole;
+/// Returns <code>endResults</code> as a <code>NSArray</code>.
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly, strong) NSArray * _Nonnull endResultsArray;
@@ -5056,6 +5761,8 @@ SWIFT_CLASS_NAMED("Params")
 /// since:
 /// 1.0.0
 @property (nonatomic) int32_t limit;
+/// since:
+/// 1.0.0
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -5090,6 +5797,9 @@ SWIFT_CLASS_NAMED("User")
 @end
 
 
+/// User class specific for direct call.
+/// since:
+/// 1.0.0
 SWIFT_CLASS_NAMED("DirectCallUser")
 @interface SBCDirectCallUser : SBCUser
 /// Shows whether the user is caller or callee.
@@ -5100,12 +5810,66 @@ SWIFT_CLASS_NAMED("DirectCallUser")
 
 
 @interface SBCDirectCallUser (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCallUser</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCallUser</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+/// Returns a copied instance of the <code>DirectCallUser</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
+
+
+
+
+
+enum SBCRecordingType : NSInteger;
+
+/// Recording option that is used when starting a recording session.
+/// since:
+/// 1.3.0
+SWIFT_CLASS_NAMED("RecordingOptions")
+@interface SBCRecordingOptions : NSObject
+/// Used to specify a type of recording that specifies which participant or media to record such as <code>remoteAudioAndVideo</code>.
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly) enum SBCRecordingType recordingType;
+/// Used to specify the base directory path of where the recorded file will be saved
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly, copy) NSURL * _Nonnull directoryPath;
+/// Used to specify a name of the recorded file. If unspecified, it will be saved as <code>{type}_{callId}_{timestamp}</code>.
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly, copy) NSString * _Nullable fileName;
+- (nonnull instancetype)initWithRecordingType:(enum SBCRecordingType)recordingType directoryPath:(NSURL * _Nonnull)directoryPath fileName:(NSString * _Nullable)fileName OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingType, "RecordingType", open) {
+/// An option to record the video and audio of the remote user
+/// since:
+/// 1.3.0
+  SBCRecordingTypeRemoteAudioAndVideo = 0,
+/// An option to record the audio of the remote user.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeRemoteAudioOnly = 1,
+/// An option to record both audios of the local and remote users.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeLocalRemoteAudios = 2,
+/// An option to record both audios of the local and remote users, and the video of the remote user.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeLocalAudioRemoteAudioAndVideo = 3,
+/// An option to record both audios of the local and remote users, and the video of the local user.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeLocalAudioAndVideoRemoteAudio = 4,
+};
 
 @class NSCoder;
 
@@ -5115,6 +5879,8 @@ SWIFT_CLASS_NAMED("DirectCallUser")
 SWIFT_CLASS("_TtC13SendBirdCalls8SBCError")
 @interface SBCError : NSError
 - (nonnull instancetype)initWithDomain:(NSString * _Nonnull)domain code:(NSInteger)code userInfo:(NSDictionary<NSString *, id> * _Nullable)userInfo SWIFT_UNAVAILABLE;
+/// since:
+/// 1.0.0
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -5176,6 +5942,33 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.0.0
   SBCErrorCodeChangingVideoDeviceFailed = 1800405,
+/// since:
+/// 1.3.0
+  SBCErrorCodeCaptureNotAllowedOnAudioCall = 1800600,
+/// since:
+/// 1.3.0
+  SBCErrorCodeVideoViewNotReady = 1800601,
+/// since:
+/// 1.3.0
+  SBCErrorCodeVideoCallNotConnectedYet = 1800602,
+/// since:
+/// 1.3.0
+  SBCErrorCodeFailedToGetImageFromVideoStream = 1800603,
+/// since:
+/// 1.3.0
+  SBCErrorCodeCallNotConnectedYet = 1800610,
+/// since:
+/// 1.3.0
+  SBCErrorCodeWrongRecordingTypeForAudioCall = 1800611,
+/// since:
+/// 1.3.0
+  SBCErrorCodeRecordingAlreadyInProgress = 1800612,
+/// since:
+/// 1.3.0
+  SBCErrorCodeFailedToStartRecording = 1800614,
+/// since:
+/// 1.3.0
+  SBCErrorCodeFailedToStopRecording = 1800615,
 /// since:
 /// 1.0.6
   SBCErrorCodeServerInternalError = 1400999,
@@ -5301,18 +6094,34 @@ SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 ///   </li>
 /// </ul>
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCLoggerLevel, "Level", open) {
+/// Informational messages that are general to the application.
+/// since:
+/// 1.1.0
   SBCLoggerLevelInfo = 0,
+/// Potentially problematic situation that may indicate potential problems.
+/// since:
+/// 1.1.0
   SBCLoggerLevelWarning = 1,
+/// Error events that may represent the failure of normal program execution.
+/// since:
+/// 1.1.0
   SBCLoggerLevelError = 2,
+/// No logging.
+/// since:
+/// 1.1.0
   SBCLoggerLevelNone = 3,
 };
 
 @class UIView;
 @protocol SBCSendBirdCallDelegate;
+@protocol SBCSendBirdRecordingDelegate;
 @class PKPushRegistry;
 @class PKPushPayload;
 @class UIApplication;
+@class NSBundle;
+enum SBCSoundType : NSInteger;
 
+/// SendBirdCall
 SWIFT_CLASS_NAMED("SendBirdCall")
 @interface SBCSendBirdCall : NSObject
 /// The app id of your SendBirdCalls application. Configure the app id using <a href="x-source-tag://configure(appId)">configure(appId:)</a>. This is get-only property.
@@ -5422,6 +6231,35 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 /// since:
 /// 1.0.0
 + (void)removeAllDelegates;
+/// Adds a <code>SendBirdRecordingDelegate</code> to the SDK which is invoked when a recording session is finished successfully.
+/// \code
+/// SendBirdCall.addRecordingDelegate(self, identifier: UNIQUE_HANDLER_ID)
+///
+/// func didSaveRecording(call: DirectCall, recordingId: String, options: RecordingOptions, outputURL: URL) {
+///    // Handle successful recording
+/// }
+///
+/// func didFailToSaveRecording(call: DirectCall, recordingId: String, error: SBCError) {
+///    // Handle failed recording
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param delegate A <code>RecordingDelegate</code> to add to the SDK.
+///
+/// \param identifier A unique identifier for the <code>RecordingDelegate</code>.
+///
++ (void)addRecordingDelegate:(id <SBCSendBirdRecordingDelegate> _Nonnull)delegate identifier:(NSString * _Nonnull)identifier;
+/// Removes a <code>SendBirdRecordingDelegate</code> that has the specified identifier from the SDK.
+/// since:
+/// 1.3.0
+/// \param identifier A unique identifier of a <code>RecordingDelegate</code> to remove from the SDK.
+///
++ (void)removeRecordingDelegateWithIdentifier:(NSString * _Nonnull)identifier;
+/// Removes all <code>SendBirdRecordingDelegates</code> from the SDK.
+/// since:
+/// 1.3.0
++ (void)removeAllRecordingDelegates;
 /// Returns call for call ID.
 /// since:
 /// 1.0.0
@@ -5432,6 +6270,20 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 ///
 /// <code>DirectCall</code> object with corresponding call ID. It can be <code>nil</code>.
 + (SBCDirectCall * _Nullable)callForCallId:(NSString * _Nonnull)callId SWIFT_WARN_UNUSED_RESULT;
+/// Returns call for a given UUID.
+/// since:
+/// 1.0.0
+/// \param uuid Call UUID.
+///
+///
+/// returns:
+///
+/// <code>DirectCall</code> object with corresponding call ID. It can be <code>nil</code>.
++ (SBCDirectCall * _Nullable)callForUUID:(NSUUID * _Nonnull)callUUID SWIFT_WARN_UNUSED_RESULT;
+/// Returns number of ongoing calls.
+/// since:
+/// 1.2.0
++ (NSInteger)getOngoingCallCount SWIFT_WARN_UNUSED_RESULT;
 /// Returns the currently authenticated user.
 /// since:
 /// 1.0.0
@@ -5721,6 +6573,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 ///     }
 /// }
 ///
+/// // MARK: - Audio Session
+///
 ///
 /// \endcodesince:
 /// 1.0.2
@@ -5736,20 +6590,41 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \endcodesince:
 /// 1.0.2
 + (void)audioSessionDidDeactivate:(AVAudioSession * _Nonnull)audioSession;
+/// Adds sound used in <code>DirectCall</code>  such as ringtone and some sound effects with its file name and bundle.
+/// \code
+/// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param name The name of your audio file. Please explicit its extension: “dialing.mp3”
+///
+/// \param bundle The bundle object. The default is main bundle.
+///
+/// \param type The type of sound.
+///
++ (void)addDirectCallSound:(NSString * _Nonnull)name bundle:(NSBundle * _Nonnull)bundle forType:(enum SBCSoundType)type;
+/// Adds sound used in <code>DirectCall</code>  such as ringtone and some sound effects with URL. If you use bundle to play sound, <code>addDirectCallSound(_:bundle:forType:)</code> is recommended.
+/// \code
+/// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param url The URL of your audio file.
+///
+/// \param type The key respresenting the type of sound.
+///
++ (void)addDirectCallSound:(NSURL * _Nonnull)url forType:(enum SBCSoundType)type;
+/// Removes sound used in <code>DirectCall</code> with <code>SoundType</code> value.
+/// \code
+/// SendBirdCall.removeDirectCallSound(forType: .dialing)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param type The type of sound you want to remove.
+///
++ (void)removeDirectCallSoundForType:(enum SBCSoundType)type;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-@end
-
-
-@interface SBCSendBirdCall (SWIFT_EXTENSION(SendBirdCalls))
-/// Returns call for a given UUID. Returns nil if such call doesn’t exist.
-/// since:
-/// 1.0.0
-+ (SBCDirectCall * _Nullable)callForUUID:(NSUUID * _Nonnull)callUUID SWIFT_WARN_UNUSED_RESULT;
-/// Returns number of ongoing calls.
-/// since:
-/// 1.2.0
-+ (NSInteger)getOngoingCallCount SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -5771,6 +6646,48 @@ SWIFT_PROTOCOL_NAMED("SendBirdCallDelegate")
 /// \param call <code>DirectCall</code> object.
 ///
 - (void)didStartRinging:(SBCDirectCall * _Nonnull)call;
+@end
+
+
+/// Device-wide recordingDelegate for SendBirdCall.
+/// since:
+/// 1.3.0
+SWIFT_PROTOCOL_NAMED("SendBirdRecordingDelegate")
+@protocol SBCSendBirdRecordingDelegate
+/// Notifies that a recording session has been saved successfully. This receives information about the recording through the following parameters.
+/// \code
+/// class MyClass: SendBirdRecordingDelegate {
+///    func didSaveRecording(call: DirectCall, recordingId: String, options: RecordingOptions, outputURL: URL) {
+///         // Handle successful recording
+///     }
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param call A recorded direct call.
+///
+/// \param recordingId A unique identifier of the recording session created in <code>startRecording</code>.
+///
+/// \param options An option that is used when starting a recording session.
+///
+/// \param outputURL A URL which the recorded file is saved.
+///
+- (void)didSaveRecordingWithCall:(SBCDirectCall * _Nonnull)call recordingId:(NSString * _Nonnull)recordingId options:(SBCRecordingOptions * _Nonnull)options outputURL:(NSURL * _Nonnull)outputURL;
+/// Notifies that a recording session has not been saved. This receives information about the recording through the following parameters.
+/// \code
+/// class MyClass: SendBirdRecordingDelegate {
+///    func didFailToSaveRecording(call: DirectCall, recordingId: String, error: SBCError) {
+///        // Handle failed recording.
+///    }
+/// }
+///
+/// \endcode\param call A recorded direct call.
+///
+/// \param recordingId A unique identifier of the recording session created in <code>startRecording</code>.
+///
+/// \param error An error that occurred while saving a recording.
+///
+- (void)didFailToSaveRecordingWithCall:(SBCDirectCall * _Nonnull)call recordingId:(NSString * _Nonnull)recordingId error:(SBCError * _Nonnull)error;
 @end
 
 @protocol RTCVideoViewShading;
@@ -5809,15 +6726,31 @@ SWIFT_CLASS_NAMED("SendBirdVideoView")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
+@class RTCVideoFrame;
+
+@interface SBCVideoView (SWIFT_EXTENSION(SendBirdCalls))
+- (void)renderFrame:(RTCVideoFrame * _Nullable)frame;
+@end
+
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCSoundType, "SoundType", open) {
+  SBCSoundTypeDialing = 0,
+  SBCSoundTypeRinging = 1,
+  SBCSoundTypeReconnecting = 2,
+  SBCSoundTypeReconnected = 3,
+};
+
 
 
 @interface SBCUser (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>User</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
 @interface SBCUser (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>User</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>User</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -6199,6 +7132,7 @@ SWIFT_CLASS_NAMED("CallOptions")
 
 
 @interface SBCCallOptions (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>CallOptions</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -6246,6 +7180,7 @@ SWIFT_CLASS_NAMED("DialParams")
 
 
 @interface SBCDialParams (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>DialParams</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -6412,7 +7347,13 @@ SWIFT_CLASS_NAMED("DirectCall")
 ///   </li>
 /// </ul>
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
+/// The user who made the call.
+/// since:
+/// 1.0.0
   SBCDirectCallUserRoleCaller = 0,
+/// The user who received the call.
+/// since:
+/// 1.0.0
   SBCDirectCallUserRoleCallee = 1,
 };
 
@@ -6420,6 +7361,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>DirectCall</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -6429,85 +7371,15 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCall</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
 
-@class SBCVideoDevice;
 @class SBCError;
-
-@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
-/// Updates local <code>SendBirdVideoView</code>
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
-///   </li>
-/// </ul>
-/// \code
-///
-/// - Since: 1.0.0
-///
-///
-/// \endcode\param videoView <code>SendBirdVideoView</code> object.
-///
-- (void)updateLocalVideoView:(SBCVideoView * _Nonnull)videoView;
-/// Updates remote <code>SendBirdVideoView</code>
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
-///   </li>
-/// </ul>
-/// \param videoView <code>SendBirdVideoView</code> object.
-///
-- (void)updateRemoteVideoView:(SBCVideoView * _Nonnull)videoView;
-/// List of available video devices that support video capture.
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-@property (nonatomic, readonly, copy) NSArray<SBCVideoDevice *> * _Nonnull availableVideoDevices;
-/// Current video device using with capture device.
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-@property (nonatomic, readonly, strong) SBCVideoDevice * _Nullable currentVideoDevice;
-/// Changes current video device asynchronously and notifies callback on completion.
-/// since:
-/// 1.0.0
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-/// \param device <code>VideoDevice</code> object.
-///
-/// \param completionHandler Callback completionHandler. Contains error.
-///
-- (void)selectVideoDevice:(SBCVideoDevice * _Nonnull)device completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
-/// Toggles the selection between the front and the back camera.
-/// since:
-/// 1.0.3
-/// <ul>
-///   <li>
-///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
-///   </li>
-/// </ul>
-/// \param completionHandler Callback completionHandler. Contains error.
-///
-- (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
-@end
-
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Accepts the incoming direct call. SendBirdCalls will continue to process the call with the server.
@@ -6591,6 +7463,37 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \endcodesince:
 /// 1.0.0
 - (void)unmuteMicrophone;
+/// Updates custom items of the call.
+/// since:
+/// 1.0.0
+/// \param customItems Custom items of [String: String] to be updated or inserted.
+///
+/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+///
+- (void)updateCustomItemsWithCustomItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+/// Deletes custom items of the call.
+/// since:
+/// 1.0.0
+/// \param customItemKeys Keys of the custom item that you want to delete.
+///
+/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+///
+- (void)deleteCustomItemsWithCustomItemKeys:(NSArray<NSString *> * _Nonnull)customItemKeys completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+/// Deletes all custom items of the call.
+/// since:
+/// 1.0.0
+/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+///
+- (void)deleteAllCustomItemsWithCompletionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+@end
+
+
+
+@class SBCVideoDevice;
+@class SBCRecordingOptions;
+@class UIImage;
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Starts local video. If the callee changes video settings, the caller is notified via the <code>DirectCallDelegate.didRemoteVideoSettingsChange()</code> delegate.
 /// \code
 /// // Start my local video
@@ -6633,31 +7536,138 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \endcodesince:
 /// 1.0.0
 - (void)stopVideo;
-/// Updates custom items of the call.
+/// Updates local <code>SendBirdVideoView</code>
 /// since:
 /// 1.0.0
-/// \param customItems Custom items of [String: String] to be updated or inserted.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
+///   </li>
+/// </ul>
+/// \param videoView <code>SendBirdVideoView</code> object.
 ///
-/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
-///
-- (void)updateCustomItemsWithCustomItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
-/// Deletes custom items of the call.
+- (void)updateLocalVideoView:(SBCVideoView * _Nonnull)videoView;
+/// Updates remote <code>SendBirdVideoView</code>
 /// since:
 /// 1.0.0
-/// \param customItemKeys Keys of the custom item that you want to delete.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://SendBirdVideoView">SendBirdVideoView</a>
+///   </li>
+/// </ul>
+/// \param videoView <code>SendBirdVideoView</code> object.
 ///
-/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
-///
-- (void)deleteCustomItemsWithCustomItemKeys:(NSArray<NSString *> * _Nonnull)customItemKeys completionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
-/// Deletes all custom items of the call.
+- (void)updateRemoteVideoView:(SBCVideoView * _Nonnull)videoView;
+/// List of available video devices that support video capture.
 /// since:
 /// 1.0.0
-/// \param completionHandler Callback completionHandler. Contains custom items, changes custom items, and error.
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+@property (nonatomic, readonly, copy) NSArray<SBCVideoDevice *> * _Nonnull availableVideoDevices;
+/// Current video device using with capture device.
+/// since:
+/// 1.0.0
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+@property (nonatomic, readonly, strong) SBCVideoDevice * _Nullable currentVideoDevice;
+/// Changes current video device asynchronously and notifies callback on completion.
+/// since:
+/// 1.0.0
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+/// \param device <code>VideoDevice</code> object.
 ///
-- (void)deleteAllCustomItemsWithCompletionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
+/// \param completionHandler Callback completionHandler. Contains error.
+///
+- (void)selectVideoDevice:(SBCVideoDevice * _Nonnull)device completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+/// Toggles the selection between the front and the back camera.
+/// \code
+/// func flipCamera(call: DirectCall) {
+///    call.switchCamera { error in
+///        // do something when error has occurred.
+///    }
+/// }
+///
+/// \endcodesince:
+/// 1.0.3
+/// <ul>
+///   <li>
+///     See Also: <a href="x-source-tag://VideoDevice">VideoDevice</a>
+///   </li>
+/// </ul>
+/// \param completionHandler Callback completionHandler. Contains error.
+///
+- (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+/// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
+/// \code
+/// let options = RecordingOptions(recordingType: .localRemoteAudios, directoryPath: FileManager.default.getDocumentsDirectory())
+///
+/// call.startRecording(options: options) { recorderId, error in
+///     if let id = recorderId {
+///         // Recording successfully started
+///     }
+/// }
+///
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param options An option that is used when creating a recording session. It contains information about the type of the recording and its settings.
+///
+/// \param recordingStartedHandler A handler that receives the <code>recordingId</code> and an error depending on the result.
+///
+- (void)startRecordingWithOptions:(SBCRecordingOptions * _Nonnull)options recordingStartedHandler:(void (^ _Nonnull)(NSString * _Nullable, SBCError * _Nullable))recordingStartedHandler;
+/// Stops a media recording session with the specified <code>recordingId</code>, and depending on the result of the recording, calls the <code>didSaveRecording</code> method of a <code>SendBirdRecordingDelegate</code>.
+/// \code
+/// call.stopRecording(recorderId: recorderId)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param recordingId A unique identifier returned through the <code>recordingStartedHandler</code> when the <code>startRecording</code> method is called.
+///
+///
+/// returns:
+/// (discardable) Boolean value that indicates whether the specified recordingId is valid.
+- (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
+/// Takes a snapshot of remote video view.
+/// \code
+/// self.call.captureRemoteVideoView { [weak self] (image, error) in
+///     if let error = error {
+///        // error handling.
+///        return
+///     }
+///     self?.snapshotImageView.image = image
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param completionHandler Callback completion handler that takes snapshot image or error.
+///
+- (void)captureRemoteVideoViewWithCompletionHandler:(void (^ _Nonnull)(UIImage * _Nullable, SBCError * _Nullable))completionHandler;
+/// Takes a snapshot of local video view.
+/// \code
+/// self.call.captureLocalVideoView { [weak self] (image, error) in
+///     if let error = error {
+///        // error handling.
+///        return
+///     }
+///     self?.snapshotImageView.image = image
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param completionHandler Callback completion handler that takes snapshot image or error.
+///
+- (void)captureLocalVideoViewWithCompletionHandler:(void (^ _Nonnull)(UIImage * _Nullable, SBCError * _Nullable))completionHandler;
 @end
-
-
 
 
 
@@ -6895,7 +7905,9 @@ SWIFT_CLASS_NAMED("DirectCallLog")
 
 
 @interface SBCDirectCallLog (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCallLog</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCallLog</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -6927,6 +7939,9 @@ SWIFT_CLASS_NAMED("DirectCallLogListQuery")
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly) enum UserRoleFilter myRole;
+/// Returns <code>endResults</code> as a <code>NSArray</code>.
+/// since:
+/// 1.0.0
 @property (nonatomic, readonly, strong) NSArray * _Nonnull endResultsArray;
 /// The number of call logs to return at once. This is read-only property. If you want to set the limit, see <a href="x-source-tag://limit">Param.limit</a>
 /// note:
@@ -6998,6 +8013,7 @@ SWIFT_CLASS_NAMED("Params")
 /// since:
 /// 1.0.0
 @property (nonatomic) enum UserRoleFilter myRole;
+/// Returns <code>endResults</code> as a <code>NSArray</code>.
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly, strong) NSArray * _Nonnull endResultsArray;
@@ -7019,6 +8035,8 @@ SWIFT_CLASS_NAMED("Params")
 /// since:
 /// 1.0.0
 @property (nonatomic) int32_t limit;
+/// since:
+/// 1.0.0
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -7053,6 +8071,9 @@ SWIFT_CLASS_NAMED("User")
 @end
 
 
+/// User class specific for direct call.
+/// since:
+/// 1.0.0
 SWIFT_CLASS_NAMED("DirectCallUser")
 @interface SBCDirectCallUser : SBCUser
 /// Shows whether the user is caller or callee.
@@ -7063,12 +8084,66 @@ SWIFT_CLASS_NAMED("DirectCallUser")
 
 
 @interface SBCDirectCallUser (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCallUser</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCallUser</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+/// Returns a copied instance of the <code>DirectCallUser</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
+
+
+
+
+
+enum SBCRecordingType : NSInteger;
+
+/// Recording option that is used when starting a recording session.
+/// since:
+/// 1.3.0
+SWIFT_CLASS_NAMED("RecordingOptions")
+@interface SBCRecordingOptions : NSObject
+/// Used to specify a type of recording that specifies which participant or media to record such as <code>remoteAudioAndVideo</code>.
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly) enum SBCRecordingType recordingType;
+/// Used to specify the base directory path of where the recorded file will be saved
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly, copy) NSURL * _Nonnull directoryPath;
+/// Used to specify a name of the recorded file. If unspecified, it will be saved as <code>{type}_{callId}_{timestamp}</code>.
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly, copy) NSString * _Nullable fileName;
+- (nonnull instancetype)initWithRecordingType:(enum SBCRecordingType)recordingType directoryPath:(NSURL * _Nonnull)directoryPath fileName:(NSString * _Nullable)fileName OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingType, "RecordingType", open) {
+/// An option to record the video and audio of the remote user
+/// since:
+/// 1.3.0
+  SBCRecordingTypeRemoteAudioAndVideo = 0,
+/// An option to record the audio of the remote user.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeRemoteAudioOnly = 1,
+/// An option to record both audios of the local and remote users.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeLocalRemoteAudios = 2,
+/// An option to record both audios of the local and remote users, and the video of the remote user.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeLocalAudioRemoteAudioAndVideo = 3,
+/// An option to record both audios of the local and remote users, and the video of the local user.
+/// since:
+/// 1.3.0
+  SBCRecordingTypeLocalAudioAndVideoRemoteAudio = 4,
+};
 
 @class NSCoder;
 
@@ -7078,6 +8153,8 @@ SWIFT_CLASS_NAMED("DirectCallUser")
 SWIFT_CLASS("_TtC13SendBirdCalls8SBCError")
 @interface SBCError : NSError
 - (nonnull instancetype)initWithDomain:(NSString * _Nonnull)domain code:(NSInteger)code userInfo:(NSDictionary<NSString *, id> * _Nullable)userInfo SWIFT_UNAVAILABLE;
+/// since:
+/// 1.0.0
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -7139,6 +8216,33 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.0.0
   SBCErrorCodeChangingVideoDeviceFailed = 1800405,
+/// since:
+/// 1.3.0
+  SBCErrorCodeCaptureNotAllowedOnAudioCall = 1800600,
+/// since:
+/// 1.3.0
+  SBCErrorCodeVideoViewNotReady = 1800601,
+/// since:
+/// 1.3.0
+  SBCErrorCodeVideoCallNotConnectedYet = 1800602,
+/// since:
+/// 1.3.0
+  SBCErrorCodeFailedToGetImageFromVideoStream = 1800603,
+/// since:
+/// 1.3.0
+  SBCErrorCodeCallNotConnectedYet = 1800610,
+/// since:
+/// 1.3.0
+  SBCErrorCodeWrongRecordingTypeForAudioCall = 1800611,
+/// since:
+/// 1.3.0
+  SBCErrorCodeRecordingAlreadyInProgress = 1800612,
+/// since:
+/// 1.3.0
+  SBCErrorCodeFailedToStartRecording = 1800614,
+/// since:
+/// 1.3.0
+  SBCErrorCodeFailedToStopRecording = 1800615,
 /// since:
 /// 1.0.6
   SBCErrorCodeServerInternalError = 1400999,
@@ -7264,18 +8368,34 @@ SWIFT_CLASS("_TtC13SendBirdCalls9SBCLogger")
 ///   </li>
 /// </ul>
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCLoggerLevel, "Level", open) {
+/// Informational messages that are general to the application.
+/// since:
+/// 1.1.0
   SBCLoggerLevelInfo = 0,
+/// Potentially problematic situation that may indicate potential problems.
+/// since:
+/// 1.1.0
   SBCLoggerLevelWarning = 1,
+/// Error events that may represent the failure of normal program execution.
+/// since:
+/// 1.1.0
   SBCLoggerLevelError = 2,
+/// No logging.
+/// since:
+/// 1.1.0
   SBCLoggerLevelNone = 3,
 };
 
 @class UIView;
 @protocol SBCSendBirdCallDelegate;
+@protocol SBCSendBirdRecordingDelegate;
 @class PKPushRegistry;
 @class PKPushPayload;
 @class UIApplication;
+@class NSBundle;
+enum SBCSoundType : NSInteger;
 
+/// SendBirdCall
 SWIFT_CLASS_NAMED("SendBirdCall")
 @interface SBCSendBirdCall : NSObject
 /// The app id of your SendBirdCalls application. Configure the app id using <a href="x-source-tag://configure(appId)">configure(appId:)</a>. This is get-only property.
@@ -7385,6 +8505,35 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 /// since:
 /// 1.0.0
 + (void)removeAllDelegates;
+/// Adds a <code>SendBirdRecordingDelegate</code> to the SDK which is invoked when a recording session is finished successfully.
+/// \code
+/// SendBirdCall.addRecordingDelegate(self, identifier: UNIQUE_HANDLER_ID)
+///
+/// func didSaveRecording(call: DirectCall, recordingId: String, options: RecordingOptions, outputURL: URL) {
+///    // Handle successful recording
+/// }
+///
+/// func didFailToSaveRecording(call: DirectCall, recordingId: String, error: SBCError) {
+///    // Handle failed recording
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param delegate A <code>RecordingDelegate</code> to add to the SDK.
+///
+/// \param identifier A unique identifier for the <code>RecordingDelegate</code>.
+///
++ (void)addRecordingDelegate:(id <SBCSendBirdRecordingDelegate> _Nonnull)delegate identifier:(NSString * _Nonnull)identifier;
+/// Removes a <code>SendBirdRecordingDelegate</code> that has the specified identifier from the SDK.
+/// since:
+/// 1.3.0
+/// \param identifier A unique identifier of a <code>RecordingDelegate</code> to remove from the SDK.
+///
++ (void)removeRecordingDelegateWithIdentifier:(NSString * _Nonnull)identifier;
+/// Removes all <code>SendBirdRecordingDelegates</code> from the SDK.
+/// since:
+/// 1.3.0
++ (void)removeAllRecordingDelegates;
 /// Returns call for call ID.
 /// since:
 /// 1.0.0
@@ -7395,6 +8544,20 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 ///
 /// <code>DirectCall</code> object with corresponding call ID. It can be <code>nil</code>.
 + (SBCDirectCall * _Nullable)callForCallId:(NSString * _Nonnull)callId SWIFT_WARN_UNUSED_RESULT;
+/// Returns call for a given UUID.
+/// since:
+/// 1.0.0
+/// \param uuid Call UUID.
+///
+///
+/// returns:
+///
+/// <code>DirectCall</code> object with corresponding call ID. It can be <code>nil</code>.
++ (SBCDirectCall * _Nullable)callForUUID:(NSUUID * _Nonnull)callUUID SWIFT_WARN_UNUSED_RESULT;
+/// Returns number of ongoing calls.
+/// since:
+/// 1.2.0
++ (NSInteger)getOngoingCallCount SWIFT_WARN_UNUSED_RESULT;
 /// Returns the currently authenticated user.
 /// since:
 /// 1.0.0
@@ -7684,6 +8847,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 ///     }
 /// }
 ///
+/// // MARK: - Audio Session
+///
 ///
 /// \endcodesince:
 /// 1.0.2
@@ -7699,20 +8864,41 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \endcodesince:
 /// 1.0.2
 + (void)audioSessionDidDeactivate:(AVAudioSession * _Nonnull)audioSession;
+/// Adds sound used in <code>DirectCall</code>  such as ringtone and some sound effects with its file name and bundle.
+/// \code
+/// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param name The name of your audio file. Please explicit its extension: “dialing.mp3”
+///
+/// \param bundle The bundle object. The default is main bundle.
+///
+/// \param type The type of sound.
+///
++ (void)addDirectCallSound:(NSString * _Nonnull)name bundle:(NSBundle * _Nonnull)bundle forType:(enum SBCSoundType)type;
+/// Adds sound used in <code>DirectCall</code>  such as ringtone and some sound effects with URL. If you use bundle to play sound, <code>addDirectCallSound(_:bundle:forType:)</code> is recommended.
+/// \code
+/// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param url The URL of your audio file.
+///
+/// \param type The key respresenting the type of sound.
+///
++ (void)addDirectCallSound:(NSURL * _Nonnull)url forType:(enum SBCSoundType)type;
+/// Removes sound used in <code>DirectCall</code> with <code>SoundType</code> value.
+/// \code
+/// SendBirdCall.removeDirectCallSound(forType: .dialing)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param type The type of sound you want to remove.
+///
++ (void)removeDirectCallSoundForType:(enum SBCSoundType)type;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-@end
-
-
-@interface SBCSendBirdCall (SWIFT_EXTENSION(SendBirdCalls))
-/// Returns call for a given UUID. Returns nil if such call doesn’t exist.
-/// since:
-/// 1.0.0
-+ (SBCDirectCall * _Nullable)callForUUID:(NSUUID * _Nonnull)callUUID SWIFT_WARN_UNUSED_RESULT;
-/// Returns number of ongoing calls.
-/// since:
-/// 1.2.0
-+ (NSInteger)getOngoingCallCount SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -7734,6 +8920,48 @@ SWIFT_PROTOCOL_NAMED("SendBirdCallDelegate")
 /// \param call <code>DirectCall</code> object.
 ///
 - (void)didStartRinging:(SBCDirectCall * _Nonnull)call;
+@end
+
+
+/// Device-wide recordingDelegate for SendBirdCall.
+/// since:
+/// 1.3.0
+SWIFT_PROTOCOL_NAMED("SendBirdRecordingDelegate")
+@protocol SBCSendBirdRecordingDelegate
+/// Notifies that a recording session has been saved successfully. This receives information about the recording through the following parameters.
+/// \code
+/// class MyClass: SendBirdRecordingDelegate {
+///    func didSaveRecording(call: DirectCall, recordingId: String, options: RecordingOptions, outputURL: URL) {
+///         // Handle successful recording
+///     }
+/// }
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param call A recorded direct call.
+///
+/// \param recordingId A unique identifier of the recording session created in <code>startRecording</code>.
+///
+/// \param options An option that is used when starting a recording session.
+///
+/// \param outputURL A URL which the recorded file is saved.
+///
+- (void)didSaveRecordingWithCall:(SBCDirectCall * _Nonnull)call recordingId:(NSString * _Nonnull)recordingId options:(SBCRecordingOptions * _Nonnull)options outputURL:(NSURL * _Nonnull)outputURL;
+/// Notifies that a recording session has not been saved. This receives information about the recording through the following parameters.
+/// \code
+/// class MyClass: SendBirdRecordingDelegate {
+///    func didFailToSaveRecording(call: DirectCall, recordingId: String, error: SBCError) {
+///        // Handle failed recording.
+///    }
+/// }
+///
+/// \endcode\param call A recorded direct call.
+///
+/// \param recordingId A unique identifier of the recording session created in <code>startRecording</code>.
+///
+/// \param error An error that occurred while saving a recording.
+///
+- (void)didFailToSaveRecordingWithCall:(SBCDirectCall * _Nonnull)call recordingId:(NSString * _Nonnull)recordingId error:(SBCError * _Nonnull)error;
 @end
 
 @protocol RTCVideoViewShading;
@@ -7772,15 +9000,31 @@ SWIFT_CLASS_NAMED("SendBirdVideoView")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
+@class RTCVideoFrame;
+
+@interface SBCVideoView (SWIFT_EXTENSION(SendBirdCalls))
+- (void)renderFrame:(RTCVideoFrame * _Nullable)frame;
+@end
+
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCSoundType, "SoundType", open) {
+  SBCSoundTypeDialing = 0,
+  SBCSoundTypeRinging = 1,
+  SBCSoundTypeReconnecting = 2,
+  SBCSoundTypeReconnected = 3,
+};
+
 
 
 @interface SBCUser (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
+/// Returns a copied instance of the <code>User</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
 @interface SBCUser (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>User</code>.
 @property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>User</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
