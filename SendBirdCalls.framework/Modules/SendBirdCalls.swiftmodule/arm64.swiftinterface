@@ -27,7 +27,7 @@ import zlib
   @objc final public let directoryPath: Foundation.URL
   @objc final public let fileName: Swift.String?
   @objc public init(recordingType: SendBirdCalls.RecordingOptions.RecordingType, directoryPath: Foundation.URL, fileName: Swift.String? = nil)
-  @objc(SBCRecordingType) public enum RecordingType : Swift.Int, Swift.RawRepresentable {
+  @objc(SBCRecordingType) public enum RecordingType : Swift.Int, Swift.RawRepresentable, Swift.Codable {
     public typealias RawValue = Swift.String
     case remoteAudioAndVideo
     case remoteAudioOnly
@@ -41,6 +41,15 @@ import zlib
   }
   @objc override dynamic public init()
   @objc deinit
+}
+@objc(SBCRecordingStatus) public enum RecordingStatus : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+  case recording
+  case none
+  public typealias RawValue = Swift.String
+  public init?(rawValue: Swift.String)
+  public var rawValue: Swift.String {
+    get
+  }
 }
 @objc(SBCDirectCallUser) public class DirectCallUser : SendBirdCalls.User {
   @objc final public let role: SendBirdCalls.DirectCall.UserRole
@@ -136,9 +145,6 @@ extension DirectCall {
   }
   @objc dynamic public func selectVideoDevice(_ device: SendBirdCalls.VideoDevice, completionHandler: @escaping SendBirdCalls.ErrorHandler)
   @objc dynamic public func switchCamera(completionHandler: @escaping SendBirdCalls.ErrorHandler)
-  @objc dynamic public func startRecording(options: SendBirdCalls.RecordingOptions, recordingStartedHandler: @escaping SendBirdCalls.RecordingStartedHandler)
-  @discardableResult
-  @objc dynamic public func stopRecording(recordingId: Swift.String) -> Swift.Bool
   @objc dynamic public func captureRemoteVideoView(completionHandler: @escaping SendBirdCalls.CaptureVideoViewHandler)
   @objc dynamic public func captureLocalVideoView(completionHandler: @escaping SendBirdCalls.CaptureVideoViewHandler)
 }
@@ -342,8 +348,8 @@ extension User : Foundation.NSCopying {
     }
     public init?(rawValue: Swift.Int)
   }
-  public var errorCode: SendBirdCalls.SBCError.ErrorCode {
-    get
+  @objc public var errorCode: SendBirdCalls.SBCError.ErrorCode {
+    @objc get
   }
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
@@ -362,6 +368,7 @@ extension User : Foundation.NSCopying {
   @objc optional func didAudioDeviceChange(_ call: SendBirdCalls.DirectCall, session: AVFoundation.AVAudioSession, previousRoute: AVFoundation.AVAudioSessionRouteDescription, reason: AVFoundation.AVAudioSession.RouteChangeReason)
   @objc optional func didUpdateCustomItems(call: SendBirdCalls.DirectCall, updatedKeys: [Swift.String])
   @objc optional func didDeleteCustomItems(call: SendBirdCalls.DirectCall, deletedKeys: [Swift.String])
+  @objc optional func didRemoteRecordingStatusChange(_ call: SendBirdCalls.DirectCall)
 }
 @objc(SBCSoundType) public enum SoundType : Swift.Int {
   case dialing
@@ -409,11 +416,11 @@ extension User : Foundation.NSCopying {
   @objc public var myRole: SendBirdCalls.DirectCall.UserRole {
     get
     }
-  public var callLog: SendBirdCalls.DirectCallLog? {
-    get
+  @objc public var callLog: SendBirdCalls.DirectCallLog? {
+    @objc get
   }
-  public var endedBy: SendBirdCalls.DirectCallUser? {
-    get
+  @objc public var endedBy: SendBirdCalls.DirectCallUser? {
+    @objc get
   }
   @objc public var endResult: SendBirdCalls.DirectCallEndResult {
     @objc get
@@ -455,9 +462,16 @@ extension User : Foundation.NSCopying {
     get
     }
   @objc weak public var delegate: SendBirdCalls.DirectCallDelegate?
-  public var isRecording: Swift.Bool {
-    get
+  @available(*, deprecated, message: "isRecording has been changed to `localRecordingStatus`. ")
+  @objc public var isRecording: Swift.Bool {
+    @objc get
   }
+  @objc public var localRecordingStatus: SendBirdCalls.RecordingStatus {
+    @objc get
+  }
+  @objc public var remoteRecordingStatus: SendBirdCalls.RecordingStatus {
+    get
+    }
   @objc override dynamic public init()
   @objc deinit
 }
@@ -542,6 +556,11 @@ extension DialParams : Foundation.NSCopying {
   @objc public static func removeDirectCallSound(forType type: SendBirdCalls.SoundType)
   @objc deinit
 }
+extension DirectCall {
+  @objc dynamic public func startRecording(options: SendBirdCalls.RecordingOptions, recordingStartedHandler: @escaping SendBirdCalls.RecordingStartedHandler)
+  @discardableResult
+  @objc dynamic public func stopRecording(recordingId: Swift.String) -> Swift.Bool
+}
 @objc(SBCAcceptParams) public class AcceptParams : ObjectiveC.NSObject {
   @objc public var callOptions: SendBirdCalls.CallOptions
   @objc public init(callOptions: SendBirdCalls.CallOptions = CallOptions())
@@ -550,6 +569,8 @@ extension DialParams : Foundation.NSCopying {
 }
 extension SendBirdCalls.RecordingOptions.RecordingType : Swift.Equatable {}
 extension SendBirdCalls.RecordingOptions.RecordingType : Swift.Hashable {}
+extension SendBirdCalls.RecordingStatus : Swift.Equatable {}
+extension SendBirdCalls.RecordingStatus : Swift.Hashable {}
 extension SendBirdCalls.DirectCallEndResult : Swift.Equatable {}
 extension SendBirdCalls.DirectCallEndResult : Swift.Hashable {}
 extension SendBirdCalls.VideoDevice.Position : Swift.Equatable {}

@@ -1,5 +1,14 @@
 # Change Log
 
+### 1.4.0 (Nov 2, 2020 UTC)
+* Added Remote Recording Progress Event.
+    * Added `DirectCallDelegate.didRemoteRecordingStatusChange(call: DirectCall)`.
+    * Added `RecordingStatus` enumeration.
+    * Added `DirectCall.localRecordingStatus`.
+    * Added `DirectCall.remoteRecordingStatus`.
+    * Deprecated `DirectCall.isRecording`. Please see `DirectCall.localRecordingStatus` instead.
+* Improved stability.
+
 ### 1.3.0 (Sep 23, 2020)
 * Added media recording feature
     * `SendBirdRecordingDelegate` protocol.

@@ -364,8 +364,10 @@ SWIFT_CLASS_NAMED("DialParams")
 
 @class SBCDirectCallUser;
 enum SBCDirectCallUserRole : NSInteger;
+@class SBCDirectCallLog;
 enum SBCDirectCallEndResult : NSInteger;
 @protocol SBCDirectCallDelegate;
+enum SBCRecordingStatus : NSInteger;
 
 /// DirectCall class for a call between two participants. Every call is identified with a unique key.
 SWIFT_CLASS_NAMED("DirectCall")
@@ -410,6 +412,14 @@ SWIFT_CLASS_NAMED("DirectCall")
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly) enum SBCDirectCallUserRole myRole;
+/// Presents <code>DirectCallLog</code> instance that is a history of the call. The value is <code>nil</code> before the call is ended. The value just after ending can be different from the value after syncing with the server.
+/// since:
+/// 1.1.0
+@property (nonatomic, readonly, strong) SBCDirectCallLog * _Nullable callLog;
+/// User that ended the call. Only exists for ended calls.
+/// since:
+/// 1.0.0
+@property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable endedBy;
 /// End Result of the ended call.
 /// since:
 /// 1.0.0
@@ -504,6 +514,18 @@ SWIFT_CLASS_NAMED("DirectCall")
 /// \endcodesince:
 /// 1.0.0
 @property (nonatomic, weak) id <SBCDirectCallDelegate> _Nullable delegate;
+/// Boolean value indicating whether the call is currently being recorded.
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly) BOOL isRecording SWIFT_DEPRECATED_MSG("isRecording has been changed to `localRecordingStatus`. ");
+/// Value indicating the local recording status of the call.
+/// since:
+/// 1.4.0
+@property (nonatomic, readonly) enum SBCRecordingStatus localRecordingStatus;
+/// Value indicating the remote recording status of the call.
+/// since:
+/// 1.4.0
+@property (nonatomic, readonly) enum SBCRecordingStatus remoteRecordingStatus;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -557,7 +579,44 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+@class SBCRecordingOptions;
 @class SBCError;
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
+/// \code
+/// let options = RecordingOptions(recordingType: .localRemoteAudios, directoryPath: FileManager.default.getDocumentsDirectory())
+///
+/// call.startRecording(options: options) { recorderId, error in
+///     if let id = recorderId {
+///         // Recording successfully started
+///     }
+/// }
+///
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param options An option that is used when creating a recording session. It contains information about the type of the recording and its settings.
+///
+/// \param recordingStartedHandler A handler that receives the <code>recordingId</code> and an error depending on the result.
+///
+- (void)startRecordingWithOptions:(SBCRecordingOptions * _Nonnull)options recordingStartedHandler:(void (^ _Nonnull)(NSString * _Nullable, SBCError * _Nullable))recordingStartedHandler;
+/// Stops a media recording session with the specified <code>recordingId</code>, and depending on the result of the recording, calls the <code>didSaveRecording</code> method of a <code>SendBirdRecordingDelegate</code>.
+/// \code
+/// call.stopRecording(recorderId: recorderId)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param recordingId A unique identifier returned through the <code>recordingStartedHandler</code> when the <code>startRecording</code> method is called.
+///
+///
+/// returns:
+/// (discardable) Boolean value that indicates whether the specified recordingId is valid.
+- (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
+@end
+
+
+
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Accepts the incoming direct call. SendBirdCalls will continue to process the call with the server.
@@ -668,7 +727,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 @class SBCVideoDevice;
-@class SBCRecordingOptions;
 @class UIImage;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
@@ -785,36 +843,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \param completionHandler Callback completionHandler. Contains error.
 ///
 - (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
-/// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
-/// \code
-/// let options = RecordingOptions(recordingType: .localRemoteAudios, directoryPath: FileManager.default.getDocumentsDirectory())
-///
-/// call.startRecording(options: options) { recorderId, error in
-///     if let id = recorderId {
-///         // Recording successfully started
-///     }
-/// }
-///
-///
-/// \endcodesince:
-/// 1.3.0
-/// \param options An option that is used when creating a recording session. It contains information about the type of the recording and its settings.
-///
-/// \param recordingStartedHandler A handler that receives the <code>recordingId</code> and an error depending on the result.
-///
-- (void)startRecordingWithOptions:(SBCRecordingOptions * _Nonnull)options recordingStartedHandler:(void (^ _Nonnull)(NSString * _Nullable, SBCError * _Nullable))recordingStartedHandler;
-/// Stops a media recording session with the specified <code>recordingId</code>, and depending on the result of the recording, calls the <code>didSaveRecording</code> method of a <code>SendBirdRecordingDelegate</code>.
-/// \code
-/// call.stopRecording(recorderId: recorderId)
-///
-/// \endcodesince:
-/// 1.3.0
-/// \param recordingId A unique identifier returned through the <code>recordingStartedHandler</code> when the <code>startRecording</code> method is called.
-///
-///
-/// returns:
-/// (discardable) Boolean value that indicates whether the specified recordingId is valid.
-- (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
 /// Takes a snapshot of remote video view.
 /// \code
 /// self.call.captureRemoteVideoView { [weak self] (image, error) in
@@ -970,6 +998,12 @@ SWIFT_PROTOCOL_NAMED("DirectCallDelegate")
 /// \param deletedKeys keys that have deleted.
 ///
 - (void)didDeleteCustomItemsWithCall:(SBCDirectCall * _Nonnull)call deletedKeys:(NSArray<NSString *> * _Nonnull)deletedKeys;
+/// Called when the other user’s recording status is changed. You can check the recording status of the other user with <code>DirectCall.remoteRecordingStatus</code>.
+/// since:
+/// 1.4.0
+/// \param call DirectCall that has updated remote recording status.
+///
+- (void)didRemoteRecordingStatusChange:(SBCDirectCall * _Nonnull)call;
 @end
 
 /// End results for DirectCall. Indicates reasons for failure or completion. Value for an ongoing call is <code>none</code>.
@@ -1323,6 +1357,15 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingType, "RecordingType", open) {
   SBCRecordingTypeLocalAudioAndVideoRemoteAudio = 4,
 };
 
+/// Recording status that indicates the recording status of a call.
+/// since:
+/// 1.4.0
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingStatus, "RecordingStatus", open) {
+  SBCRecordingStatusRecording = 0,
+  SBCRecordingStatusNone = 1,
+};
+
+enum SBCErrorCode : NSInteger;
 @class NSCoder;
 
 /// Custom Error class for SendBirdCalls. Subclass of NSError.
@@ -1330,6 +1373,10 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingType, "RecordingType", open) {
 /// 1.0.0
 SWIFT_CLASS("_TtC13SendBirdCalls8SBCError")
 @interface SBCError : NSError
+/// Error Code that represents the type of the error.
+/// since:
+/// 1.0.6
+@property (nonatomic, readonly) enum SBCErrorCode errorCode;
 - (nonnull instancetype)initWithDomain:(NSString * _Nonnull)domain code:(NSInteger)code userInfo:(NSDictionary<NSString *, id> * _Nullable)userInfo SWIFT_UNAVAILABLE;
 /// since:
 /// 1.0.0
@@ -2182,10 +2229,25 @@ SWIFT_CLASS_NAMED("SendBirdVideoView")
 - (void)renderFrame:(RTCVideoFrame * _Nullable)frame;
 @end
 
+/// The sound types.
+/// since:
+/// 1.3.0
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCSoundType, "SoundType", open) {
+/// Refers to a sound that is played on a caller’s side when the caller makes a call to a callee.
+/// since:
+/// 1.3.0
   SBCSoundTypeDialing = 0,
+/// Refers to a sound that is played on a callee’s side when receiving a call.
+/// since:
+/// 1.3.0
   SBCSoundTypeRinging = 1,
+/// Refers to a sound that is played when a connection is lost, but immediately tries to reconnect. Users are also allowed to customize the ringtone.
+/// since:
+/// 1.3.0
   SBCSoundTypeReconnecting = 2,
+/// Refers to a sound that is played when a connection is re-established.
+/// since:
+/// 1.3.0
   SBCSoundTypeReconnected = 3,
 };
 
@@ -2636,8 +2698,10 @@ SWIFT_CLASS_NAMED("DialParams")
 
 @class SBCDirectCallUser;
 enum SBCDirectCallUserRole : NSInteger;
+@class SBCDirectCallLog;
 enum SBCDirectCallEndResult : NSInteger;
 @protocol SBCDirectCallDelegate;
+enum SBCRecordingStatus : NSInteger;
 
 /// DirectCall class for a call between two participants. Every call is identified with a unique key.
 SWIFT_CLASS_NAMED("DirectCall")
@@ -2682,6 +2746,14 @@ SWIFT_CLASS_NAMED("DirectCall")
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly) enum SBCDirectCallUserRole myRole;
+/// Presents <code>DirectCallLog</code> instance that is a history of the call. The value is <code>nil</code> before the call is ended. The value just after ending can be different from the value after syncing with the server.
+/// since:
+/// 1.1.0
+@property (nonatomic, readonly, strong) SBCDirectCallLog * _Nullable callLog;
+/// User that ended the call. Only exists for ended calls.
+/// since:
+/// 1.0.0
+@property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable endedBy;
 /// End Result of the ended call.
 /// since:
 /// 1.0.0
@@ -2776,6 +2848,18 @@ SWIFT_CLASS_NAMED("DirectCall")
 /// \endcodesince:
 /// 1.0.0
 @property (nonatomic, weak) id <SBCDirectCallDelegate> _Nullable delegate;
+/// Boolean value indicating whether the call is currently being recorded.
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly) BOOL isRecording SWIFT_DEPRECATED_MSG("isRecording has been changed to `localRecordingStatus`. ");
+/// Value indicating the local recording status of the call.
+/// since:
+/// 1.4.0
+@property (nonatomic, readonly) enum SBCRecordingStatus localRecordingStatus;
+/// Value indicating the remote recording status of the call.
+/// since:
+/// 1.4.0
+@property (nonatomic, readonly) enum SBCRecordingStatus remoteRecordingStatus;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -2829,7 +2913,44 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+@class SBCRecordingOptions;
 @class SBCError;
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
+/// \code
+/// let options = RecordingOptions(recordingType: .localRemoteAudios, directoryPath: FileManager.default.getDocumentsDirectory())
+///
+/// call.startRecording(options: options) { recorderId, error in
+///     if let id = recorderId {
+///         // Recording successfully started
+///     }
+/// }
+///
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param options An option that is used when creating a recording session. It contains information about the type of the recording and its settings.
+///
+/// \param recordingStartedHandler A handler that receives the <code>recordingId</code> and an error depending on the result.
+///
+- (void)startRecordingWithOptions:(SBCRecordingOptions * _Nonnull)options recordingStartedHandler:(void (^ _Nonnull)(NSString * _Nullable, SBCError * _Nullable))recordingStartedHandler;
+/// Stops a media recording session with the specified <code>recordingId</code>, and depending on the result of the recording, calls the <code>didSaveRecording</code> method of a <code>SendBirdRecordingDelegate</code>.
+/// \code
+/// call.stopRecording(recorderId: recorderId)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param recordingId A unique identifier returned through the <code>recordingStartedHandler</code> when the <code>startRecording</code> method is called.
+///
+///
+/// returns:
+/// (discardable) Boolean value that indicates whether the specified recordingId is valid.
+- (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
+@end
+
+
+
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Accepts the incoming direct call. SendBirdCalls will continue to process the call with the server.
@@ -2940,7 +3061,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 @class SBCVideoDevice;
-@class SBCRecordingOptions;
 @class UIImage;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
@@ -3057,36 +3177,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \param completionHandler Callback completionHandler. Contains error.
 ///
 - (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
-/// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
-/// \code
-/// let options = RecordingOptions(recordingType: .localRemoteAudios, directoryPath: FileManager.default.getDocumentsDirectory())
-///
-/// call.startRecording(options: options) { recorderId, error in
-///     if let id = recorderId {
-///         // Recording successfully started
-///     }
-/// }
-///
-///
-/// \endcodesince:
-/// 1.3.0
-/// \param options An option that is used when creating a recording session. It contains information about the type of the recording and its settings.
-///
-/// \param recordingStartedHandler A handler that receives the <code>recordingId</code> and an error depending on the result.
-///
-- (void)startRecordingWithOptions:(SBCRecordingOptions * _Nonnull)options recordingStartedHandler:(void (^ _Nonnull)(NSString * _Nullable, SBCError * _Nullable))recordingStartedHandler;
-/// Stops a media recording session with the specified <code>recordingId</code>, and depending on the result of the recording, calls the <code>didSaveRecording</code> method of a <code>SendBirdRecordingDelegate</code>.
-/// \code
-/// call.stopRecording(recorderId: recorderId)
-///
-/// \endcodesince:
-/// 1.3.0
-/// \param recordingId A unique identifier returned through the <code>recordingStartedHandler</code> when the <code>startRecording</code> method is called.
-///
-///
-/// returns:
-/// (discardable) Boolean value that indicates whether the specified recordingId is valid.
-- (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
 /// Takes a snapshot of remote video view.
 /// \code
 /// self.call.captureRemoteVideoView { [weak self] (image, error) in
@@ -3242,6 +3332,12 @@ SWIFT_PROTOCOL_NAMED("DirectCallDelegate")
 /// \param deletedKeys keys that have deleted.
 ///
 - (void)didDeleteCustomItemsWithCall:(SBCDirectCall * _Nonnull)call deletedKeys:(NSArray<NSString *> * _Nonnull)deletedKeys;
+/// Called when the other user’s recording status is changed. You can check the recording status of the other user with <code>DirectCall.remoteRecordingStatus</code>.
+/// since:
+/// 1.4.0
+/// \param call DirectCall that has updated remote recording status.
+///
+- (void)didRemoteRecordingStatusChange:(SBCDirectCall * _Nonnull)call;
 @end
 
 /// End results for DirectCall. Indicates reasons for failure or completion. Value for an ongoing call is <code>none</code>.
@@ -3595,6 +3691,15 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingType, "RecordingType", open) {
   SBCRecordingTypeLocalAudioAndVideoRemoteAudio = 4,
 };
 
+/// Recording status that indicates the recording status of a call.
+/// since:
+/// 1.4.0
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingStatus, "RecordingStatus", open) {
+  SBCRecordingStatusRecording = 0,
+  SBCRecordingStatusNone = 1,
+};
+
+enum SBCErrorCode : NSInteger;
 @class NSCoder;
 
 /// Custom Error class for SendBirdCalls. Subclass of NSError.
@@ -3602,6 +3707,10 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingType, "RecordingType", open) {
 /// 1.0.0
 SWIFT_CLASS("_TtC13SendBirdCalls8SBCError")
 @interface SBCError : NSError
+/// Error Code that represents the type of the error.
+/// since:
+/// 1.0.6
+@property (nonatomic, readonly) enum SBCErrorCode errorCode;
 - (nonnull instancetype)initWithDomain:(NSString * _Nonnull)domain code:(NSInteger)code userInfo:(NSDictionary<NSString *, id> * _Nullable)userInfo SWIFT_UNAVAILABLE;
 /// since:
 /// 1.0.0
@@ -4456,10 +4565,25 @@ SWIFT_CLASS_NAMED("SendBirdVideoView")
 - (void)renderFrame:(RTCVideoFrame * _Nullable)frame;
 @end
 
+/// The sound types.
+/// since:
+/// 1.3.0
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCSoundType, "SoundType", open) {
+/// Refers to a sound that is played on a caller’s side when the caller makes a call to a callee.
+/// since:
+/// 1.3.0
   SBCSoundTypeDialing = 0,
+/// Refers to a sound that is played on a callee’s side when receiving a call.
+/// since:
+/// 1.3.0
   SBCSoundTypeRinging = 1,
+/// Refers to a sound that is played when a connection is lost, but immediately tries to reconnect. Users are also allowed to customize the ringtone.
+/// since:
+/// 1.3.0
   SBCSoundTypeReconnecting = 2,
+/// Refers to a sound that is played when a connection is re-established.
+/// since:
+/// 1.3.0
   SBCSoundTypeReconnected = 3,
 };
 
@@ -4912,8 +5036,10 @@ SWIFT_CLASS_NAMED("DialParams")
 
 @class SBCDirectCallUser;
 enum SBCDirectCallUserRole : NSInteger;
+@class SBCDirectCallLog;
 enum SBCDirectCallEndResult : NSInteger;
 @protocol SBCDirectCallDelegate;
+enum SBCRecordingStatus : NSInteger;
 
 /// DirectCall class for a call between two participants. Every call is identified with a unique key.
 SWIFT_CLASS_NAMED("DirectCall")
@@ -4958,6 +5084,14 @@ SWIFT_CLASS_NAMED("DirectCall")
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly) enum SBCDirectCallUserRole myRole;
+/// Presents <code>DirectCallLog</code> instance that is a history of the call. The value is <code>nil</code> before the call is ended. The value just after ending can be different from the value after syncing with the server.
+/// since:
+/// 1.1.0
+@property (nonatomic, readonly, strong) SBCDirectCallLog * _Nullable callLog;
+/// User that ended the call. Only exists for ended calls.
+/// since:
+/// 1.0.0
+@property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable endedBy;
 /// End Result of the ended call.
 /// since:
 /// 1.0.0
@@ -5052,6 +5186,18 @@ SWIFT_CLASS_NAMED("DirectCall")
 /// \endcodesince:
 /// 1.0.0
 @property (nonatomic, weak) id <SBCDirectCallDelegate> _Nullable delegate;
+/// Boolean value indicating whether the call is currently being recorded.
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly) BOOL isRecording SWIFT_DEPRECATED_MSG("isRecording has been changed to `localRecordingStatus`. ");
+/// Value indicating the local recording status of the call.
+/// since:
+/// 1.4.0
+@property (nonatomic, readonly) enum SBCRecordingStatus localRecordingStatus;
+/// Value indicating the remote recording status of the call.
+/// since:
+/// 1.4.0
+@property (nonatomic, readonly) enum SBCRecordingStatus remoteRecordingStatus;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -5105,7 +5251,44 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+@class SBCRecordingOptions;
 @class SBCError;
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
+/// \code
+/// let options = RecordingOptions(recordingType: .localRemoteAudios, directoryPath: FileManager.default.getDocumentsDirectory())
+///
+/// call.startRecording(options: options) { recorderId, error in
+///     if let id = recorderId {
+///         // Recording successfully started
+///     }
+/// }
+///
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param options An option that is used when creating a recording session. It contains information about the type of the recording and its settings.
+///
+/// \param recordingStartedHandler A handler that receives the <code>recordingId</code> and an error depending on the result.
+///
+- (void)startRecordingWithOptions:(SBCRecordingOptions * _Nonnull)options recordingStartedHandler:(void (^ _Nonnull)(NSString * _Nullable, SBCError * _Nullable))recordingStartedHandler;
+/// Stops a media recording session with the specified <code>recordingId</code>, and depending on the result of the recording, calls the <code>didSaveRecording</code> method of a <code>SendBirdRecordingDelegate</code>.
+/// \code
+/// call.stopRecording(recorderId: recorderId)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param recordingId A unique identifier returned through the <code>recordingStartedHandler</code> when the <code>startRecording</code> method is called.
+///
+///
+/// returns:
+/// (discardable) Boolean value that indicates whether the specified recordingId is valid.
+- (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
+@end
+
+
+
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Accepts the incoming direct call. SendBirdCalls will continue to process the call with the server.
@@ -5216,7 +5399,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 @class SBCVideoDevice;
-@class SBCRecordingOptions;
 @class UIImage;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
@@ -5333,36 +5515,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \param completionHandler Callback completionHandler. Contains error.
 ///
 - (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
-/// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
-/// \code
-/// let options = RecordingOptions(recordingType: .localRemoteAudios, directoryPath: FileManager.default.getDocumentsDirectory())
-///
-/// call.startRecording(options: options) { recorderId, error in
-///     if let id = recorderId {
-///         // Recording successfully started
-///     }
-/// }
-///
-///
-/// \endcodesince:
-/// 1.3.0
-/// \param options An option that is used when creating a recording session. It contains information about the type of the recording and its settings.
-///
-/// \param recordingStartedHandler A handler that receives the <code>recordingId</code> and an error depending on the result.
-///
-- (void)startRecordingWithOptions:(SBCRecordingOptions * _Nonnull)options recordingStartedHandler:(void (^ _Nonnull)(NSString * _Nullable, SBCError * _Nullable))recordingStartedHandler;
-/// Stops a media recording session with the specified <code>recordingId</code>, and depending on the result of the recording, calls the <code>didSaveRecording</code> method of a <code>SendBirdRecordingDelegate</code>.
-/// \code
-/// call.stopRecording(recorderId: recorderId)
-///
-/// \endcodesince:
-/// 1.3.0
-/// \param recordingId A unique identifier returned through the <code>recordingStartedHandler</code> when the <code>startRecording</code> method is called.
-///
-///
-/// returns:
-/// (discardable) Boolean value that indicates whether the specified recordingId is valid.
-- (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
 /// Takes a snapshot of remote video view.
 /// \code
 /// self.call.captureRemoteVideoView { [weak self] (image, error) in
@@ -5518,6 +5670,12 @@ SWIFT_PROTOCOL_NAMED("DirectCallDelegate")
 /// \param deletedKeys keys that have deleted.
 ///
 - (void)didDeleteCustomItemsWithCall:(SBCDirectCall * _Nonnull)call deletedKeys:(NSArray<NSString *> * _Nonnull)deletedKeys;
+/// Called when the other user’s recording status is changed. You can check the recording status of the other user with <code>DirectCall.remoteRecordingStatus</code>.
+/// since:
+/// 1.4.0
+/// \param call DirectCall that has updated remote recording status.
+///
+- (void)didRemoteRecordingStatusChange:(SBCDirectCall * _Nonnull)call;
 @end
 
 /// End results for DirectCall. Indicates reasons for failure or completion. Value for an ongoing call is <code>none</code>.
@@ -5871,6 +6029,15 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingType, "RecordingType", open) {
   SBCRecordingTypeLocalAudioAndVideoRemoteAudio = 4,
 };
 
+/// Recording status that indicates the recording status of a call.
+/// since:
+/// 1.4.0
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingStatus, "RecordingStatus", open) {
+  SBCRecordingStatusRecording = 0,
+  SBCRecordingStatusNone = 1,
+};
+
+enum SBCErrorCode : NSInteger;
 @class NSCoder;
 
 /// Custom Error class for SendBirdCalls. Subclass of NSError.
@@ -5878,6 +6045,10 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingType, "RecordingType", open) {
 /// 1.0.0
 SWIFT_CLASS("_TtC13SendBirdCalls8SBCError")
 @interface SBCError : NSError
+/// Error Code that represents the type of the error.
+/// since:
+/// 1.0.6
+@property (nonatomic, readonly) enum SBCErrorCode errorCode;
 - (nonnull instancetype)initWithDomain:(NSString * _Nonnull)domain code:(NSInteger)code userInfo:(NSDictionary<NSString *, id> * _Nullable)userInfo SWIFT_UNAVAILABLE;
 /// since:
 /// 1.0.0
@@ -6732,10 +6903,25 @@ SWIFT_CLASS_NAMED("SendBirdVideoView")
 - (void)renderFrame:(RTCVideoFrame * _Nullable)frame;
 @end
 
+/// The sound types.
+/// since:
+/// 1.3.0
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCSoundType, "SoundType", open) {
+/// Refers to a sound that is played on a caller’s side when the caller makes a call to a callee.
+/// since:
+/// 1.3.0
   SBCSoundTypeDialing = 0,
+/// Refers to a sound that is played on a callee’s side when receiving a call.
+/// since:
+/// 1.3.0
   SBCSoundTypeRinging = 1,
+/// Refers to a sound that is played when a connection is lost, but immediately tries to reconnect. Users are also allowed to customize the ringtone.
+/// since:
+/// 1.3.0
   SBCSoundTypeReconnecting = 2,
+/// Refers to a sound that is played when a connection is re-established.
+/// since:
+/// 1.3.0
   SBCSoundTypeReconnected = 3,
 };
 
@@ -7186,8 +7372,10 @@ SWIFT_CLASS_NAMED("DialParams")
 
 @class SBCDirectCallUser;
 enum SBCDirectCallUserRole : NSInteger;
+@class SBCDirectCallLog;
 enum SBCDirectCallEndResult : NSInteger;
 @protocol SBCDirectCallDelegate;
+enum SBCRecordingStatus : NSInteger;
 
 /// DirectCall class for a call between two participants. Every call is identified with a unique key.
 SWIFT_CLASS_NAMED("DirectCall")
@@ -7232,6 +7420,14 @@ SWIFT_CLASS_NAMED("DirectCall")
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly) enum SBCDirectCallUserRole myRole;
+/// Presents <code>DirectCallLog</code> instance that is a history of the call. The value is <code>nil</code> before the call is ended. The value just after ending can be different from the value after syncing with the server.
+/// since:
+/// 1.1.0
+@property (nonatomic, readonly, strong) SBCDirectCallLog * _Nullable callLog;
+/// User that ended the call. Only exists for ended calls.
+/// since:
+/// 1.0.0
+@property (nonatomic, readonly, strong) SBCDirectCallUser * _Nullable endedBy;
 /// End Result of the ended call.
 /// since:
 /// 1.0.0
@@ -7326,6 +7522,18 @@ SWIFT_CLASS_NAMED("DirectCall")
 /// \endcodesince:
 /// 1.0.0
 @property (nonatomic, weak) id <SBCDirectCallDelegate> _Nullable delegate;
+/// Boolean value indicating whether the call is currently being recorded.
+/// since:
+/// 1.3.0
+@property (nonatomic, readonly) BOOL isRecording SWIFT_DEPRECATED_MSG("isRecording has been changed to `localRecordingStatus`. ");
+/// Value indicating the local recording status of the call.
+/// since:
+/// 1.4.0
+@property (nonatomic, readonly) enum SBCRecordingStatus localRecordingStatus;
+/// Value indicating the remote recording status of the call.
+/// since:
+/// 1.4.0
+@property (nonatomic, readonly) enum SBCRecordingStatus remoteRecordingStatus;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -7379,7 +7587,44 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+@class SBCRecordingOptions;
 @class SBCError;
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
+/// \code
+/// let options = RecordingOptions(recordingType: .localRemoteAudios, directoryPath: FileManager.default.getDocumentsDirectory())
+///
+/// call.startRecording(options: options) { recorderId, error in
+///     if let id = recorderId {
+///         // Recording successfully started
+///     }
+/// }
+///
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param options An option that is used when creating a recording session. It contains information about the type of the recording and its settings.
+///
+/// \param recordingStartedHandler A handler that receives the <code>recordingId</code> and an error depending on the result.
+///
+- (void)startRecordingWithOptions:(SBCRecordingOptions * _Nonnull)options recordingStartedHandler:(void (^ _Nonnull)(NSString * _Nullable, SBCError * _Nullable))recordingStartedHandler;
+/// Stops a media recording session with the specified <code>recordingId</code>, and depending on the result of the recording, calls the <code>didSaveRecording</code> method of a <code>SendBirdRecordingDelegate</code>.
+/// \code
+/// call.stopRecording(recorderId: recorderId)
+///
+/// \endcodesince:
+/// 1.3.0
+/// \param recordingId A unique identifier returned through the <code>recordingStartedHandler</code> when the <code>startRecording</code> method is called.
+///
+///
+/// returns:
+/// (discardable) Boolean value that indicates whether the specified recordingId is valid.
+- (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
+@end
+
+
+
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Accepts the incoming direct call. SendBirdCalls will continue to process the call with the server.
@@ -7490,7 +7735,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 @class SBCVideoDevice;
-@class SBCRecordingOptions;
 @class UIImage;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
@@ -7607,36 +7851,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// \param completionHandler Callback completionHandler. Contains error.
 ///
 - (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
-/// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
-/// \code
-/// let options = RecordingOptions(recordingType: .localRemoteAudios, directoryPath: FileManager.default.getDocumentsDirectory())
-///
-/// call.startRecording(options: options) { recorderId, error in
-///     if let id = recorderId {
-///         // Recording successfully started
-///     }
-/// }
-///
-///
-/// \endcodesince:
-/// 1.3.0
-/// \param options An option that is used when creating a recording session. It contains information about the type of the recording and its settings.
-///
-/// \param recordingStartedHandler A handler that receives the <code>recordingId</code> and an error depending on the result.
-///
-- (void)startRecordingWithOptions:(SBCRecordingOptions * _Nonnull)options recordingStartedHandler:(void (^ _Nonnull)(NSString * _Nullable, SBCError * _Nullable))recordingStartedHandler;
-/// Stops a media recording session with the specified <code>recordingId</code>, and depending on the result of the recording, calls the <code>didSaveRecording</code> method of a <code>SendBirdRecordingDelegate</code>.
-/// \code
-/// call.stopRecording(recorderId: recorderId)
-///
-/// \endcodesince:
-/// 1.3.0
-/// \param recordingId A unique identifier returned through the <code>recordingStartedHandler</code> when the <code>startRecording</code> method is called.
-///
-///
-/// returns:
-/// (discardable) Boolean value that indicates whether the specified recordingId is valid.
-- (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
 /// Takes a snapshot of remote video view.
 /// \code
 /// self.call.captureRemoteVideoView { [weak self] (image, error) in
@@ -7792,6 +8006,12 @@ SWIFT_PROTOCOL_NAMED("DirectCallDelegate")
 /// \param deletedKeys keys that have deleted.
 ///
 - (void)didDeleteCustomItemsWithCall:(SBCDirectCall * _Nonnull)call deletedKeys:(NSArray<NSString *> * _Nonnull)deletedKeys;
+/// Called when the other user’s recording status is changed. You can check the recording status of the other user with <code>DirectCall.remoteRecordingStatus</code>.
+/// since:
+/// 1.4.0
+/// \param call DirectCall that has updated remote recording status.
+///
+- (void)didRemoteRecordingStatusChange:(SBCDirectCall * _Nonnull)call;
 @end
 
 /// End results for DirectCall. Indicates reasons for failure or completion. Value for an ongoing call is <code>none</code>.
@@ -8145,6 +8365,15 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingType, "RecordingType", open) {
   SBCRecordingTypeLocalAudioAndVideoRemoteAudio = 4,
 };
 
+/// Recording status that indicates the recording status of a call.
+/// since:
+/// 1.4.0
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingStatus, "RecordingStatus", open) {
+  SBCRecordingStatusRecording = 0,
+  SBCRecordingStatusNone = 1,
+};
+
+enum SBCErrorCode : NSInteger;
 @class NSCoder;
 
 /// Custom Error class for SendBirdCalls. Subclass of NSError.
@@ -8152,6 +8381,10 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingType, "RecordingType", open) {
 /// 1.0.0
 SWIFT_CLASS("_TtC13SendBirdCalls8SBCError")
 @interface SBCError : NSError
+/// Error Code that represents the type of the error.
+/// since:
+/// 1.0.6
+@property (nonatomic, readonly) enum SBCErrorCode errorCode;
 - (nonnull instancetype)initWithDomain:(NSString * _Nonnull)domain code:(NSInteger)code userInfo:(NSDictionary<NSString *, id> * _Nullable)userInfo SWIFT_UNAVAILABLE;
 /// since:
 /// 1.0.0
@@ -9006,10 +9239,25 @@ SWIFT_CLASS_NAMED("SendBirdVideoView")
 - (void)renderFrame:(RTCVideoFrame * _Nullable)frame;
 @end
 
+/// The sound types.
+/// since:
+/// 1.3.0
 typedef SWIFT_ENUM_NAMED(NSInteger, SBCSoundType, "SoundType", open) {
+/// Refers to a sound that is played on a caller’s side when the caller makes a call to a callee.
+/// since:
+/// 1.3.0
   SBCSoundTypeDialing = 0,
+/// Refers to a sound that is played on a callee’s side when receiving a call.
+/// since:
+/// 1.3.0
   SBCSoundTypeRinging = 1,
+/// Refers to a sound that is played when a connection is lost, but immediately tries to reconnect. Users are also allowed to customize the ringtone.
+/// since:
+/// 1.3.0
   SBCSoundTypeReconnecting = 2,
+/// Refers to a sound that is played when a connection is re-established.
+/// since:
+/// 1.3.0
   SBCSoundTypeReconnected = 3,
 };
 
