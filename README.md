@@ -531,8 +531,8 @@ extension AppDelegate: DirectCallDelegate {
 ### iOS SDK Sizes
 | File       | Raw Files | Compiled Size |
 |------------|-----------|---------------|
-| Calls SDK  | 51.6 MB   | 5.45 MB       |
-| WebRTC SDK | 1.02 GB   | 11.1 MB       |
+| Calls SDK  | 59.9 MB   | 6.18 MB       |
+| WebRTC SDK | 1.05 GB   | 11.2 MB       |
 
 *Last Updated: Sep 3rd, 2020*
 
