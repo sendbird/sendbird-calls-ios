@@ -135,7 +135,7 @@ To receive push notifications, the app also must have **Push Notifications** ena
 
 > For more information about VoIP push notification and PushKit, see Apple's [CallKit](https://developer.apple.com/documentation/callkit) and [PushKit](https://developer.apple.com/documentation/pushkit)
 
-### Configure the App’s `Info.plist` File
+### Configure the app’s `Info.plist` File
 
 iOS requires that apps display authorization message to grant the app access to the camera and microphone.
 
@@ -197,7 +197,7 @@ class AppDelegate: PKPushRegistryDelegate {
 
 The SDK provides two types of event handlers for various events that client apps may respond to: `SendBirdCallDelegate` and `DirectCallDelegate.`
 
-#### SendBirdCallDelegate
+#### - SendBirdCallDelegate
 
 Register a device-specific `SendBirdCallDelegate` event handler using the `SendBirdCall.addDelegate(:)` method. Prior to adding `SendBirdCallDelegate`, users will be unable to handle the `didStartRinging(:)` delegate event. It is recommended to add the event handler during initialization because it is a prerequisite for detecting `didStartRinging(:)` delegate event. `SendBirdCallDelegate` is removed upon app termination. The code below shows the way device-wide events such as incoming calls are handled once the `SendBirdCallDelegate` is added. 
 
@@ -212,7 +212,7 @@ func didStartRinging(_ call: DirectCall) {
 |---|---|
 |didStartRinging()|Incoming calls are received in the callee’s device.|
 
-#### DirectCallDelegate
+#### - DirectCallDelegate
 
 Register a call-specific `DirectCallDelegate` event delegate using `call.delegate`. Responding to call-specific events, such as establishing a successful call connection, is then managed as shown below.
 
@@ -297,7 +297,6 @@ let directCall = SendBirdCall.dial(with: dialParams) { directCall, error in
 
 directCall.delegate = self
 ```
-
 
 ### Receive a call
 
@@ -399,7 +398,7 @@ class MyClass: DirectCallDelegate {
 
 ### Deauthenticate a user and unregistering a VoIP push token
 
-#### Deauthenticate a user
+#### - Deauthenticate a user
 
 When users log out of their call client apps, they must be deauthenticated with `SendBirdCall.deauthenticate(voipPushToken:completionHandler:)` method. Failing to include the VoIP push token will result in the logged-out user continually receiving incoming calls despite the app being closed.
 
@@ -418,7 +417,7 @@ class MyClass {
 }
 ```
 
-#### Unregister one or all VoIP push tokens
+#### - Unregister one or all VoIP push tokens
 
 Users will no longer receive call notifications after the VoIP push token has been unregistered through the `unregisterVoIPPush(token:completionHandler:)` method. To stop sending notifications to all of the user’s logged in devices, call the `unregisterAllVoIPPushTokens(completionHandler:)` method.
 
@@ -523,7 +522,7 @@ SendBirdCall.setCallConnectionTimeout(30)
 
 ### Sound effects
 
-#### Sound types
+#### - Sound types
 
 |Type|Description|
 |---|---|
@@ -534,7 +533,7 @@ SendBirdCall.setCallConnectionTimeout(30)
 
 ### Add sound
 
-#### addDirectCallSound(_:forType:) 
+#### - addDirectCallSound(_:forType:) 
 
 |Method|Description|
 |---|---|
@@ -545,7 +544,7 @@ SendBirdCall.setCallConnectionTimeout(30)
 |url|string|Specifies the URL of your audio file.|
 |forType|SoundType|Specifies the sound type to be used according to the event.|
 
-#### addDirectCallSound(_:bundle:forType:)
+#### - addDirectCallSound(_:bundle:forType:)
 
 |Method|Description|
 |---|---|
@@ -556,7 +555,6 @@ SendBirdCall.setCallConnectionTimeout(30)
 |name|String|Specifies the name of the audio file. Make sure to specify a file extension as well. For example: dialing.mp3 |
 |bundle|Bundle|Specifies the bundle object. The default is the main bundle.|
 |forType|SoundType| Specifies the sound type to be used according to the event.|
-
 
 ### Remove sound
 
