@@ -29,7 +29,7 @@ Sendbird Calls SDK for iOS provides a framework to make and receive voice and vi
 
 ## Before getting started
 
-This section shows the prerequisites you need for testing Sendbird Calls SDK for iOS.
+This section shows the prerequisites you need know to use Sendbird Calls SDK for iOS.
 
 ### Requirements
 
