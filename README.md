@@ -1,55 +1,74 @@
-# SendBirdCalls for iOS
+# [Sendbird](https://sendbird.com) Calls SDK for iOS
 
 ![iOS 9.0+](https://img.shields.io/badge/iOS-9.0+-lightgray.svg) [![Languages](https://img.shields.io/badge/language-swift-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Languages](https://img.shields.io/badge/language-objc-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Coverage](https://img.shields.io/badge/coverage-88.70%25-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios) [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SendBirdCalls.svg)](https://img.shields.io/cocoapods/v/SendBirdCalls.svg) [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios/blob/master/LICENSE.md) 
-  
+
+## Table of contents
+
+  1. [Introduction](#introduction)
+  1. [Before getting started](#before-getting-started)
+  1. [Getting started](#getting-started)
+  1. [Send your first message](#send-your-first-message)
+
+<br />
+
 ## Introduction
-`SendBird Calls` is the latest addition to our product portfolio. It enables real-time calls between users within a SendBird application. SDKs are provided for iOS, Android, and JavaScript. Using any one of these, developers can quickly integrate voice and video call functions into their own client apps, allowing users to make and receive web-based real-time voice and video calls on the SendBird platform.
 
-> If you need any helps or have any issue / question, please visit [our community](https://community.sendbird.com) 
+SendBird Calls is the latest addition to our product portfolio. It enables real-time calls between users within a Sendbird application. SDKs are provided for iOS, Android, and JavaScript. Using any one of these, developers can quickly integrate voice and video call functions into their own client apps, allowing users to make and receive web-based real-time voice and video calls on the Sendbird platform.
 
-## Functional Overview
-The SendBird Calls iOS SDK provides a framework to make and receive voice and video calls. “Direct calls” in the SDK refers to one-to-one calls, comparable to “direct messages” (DMs) in messaging services. To make a direct voice or video call, the caller specifies the user ID of the intended callee, and dials. Upon dialing, all of the callee’s authenticated devices will receive incoming call notifications. The callee then can choose to accept the call from any one of the devices. When the call is accepted, a connection is established between the caller and the callee. This marks the start of the direct call. Call participants may mute themselves, as well as select the audio and video hardware used in the call. Calls may be ended by either party. The SendBird Dashboard displays call logs in the Calls menu for application owners and admins to review.
+> If you need any help in resolving any issues or have questions, please visit [our community](https://community.sendbird.com) 
 
-## SDK Prerequisites
+### How it works
+
+Sendbird Calls SDK for iOS provides a framework to make and receive voice and video calls. **Direct calls** in the SDK refers to one-to-one calls. To make a direct voice or video call, the caller specifies the user ID of the intended callee, and dials. Upon dialing, all of the callee’s authenticated devices will receive notifications for an incoming call. The callee then can choose to accept the call from any one of the devices. When the call is accepted, a connection is established between the devices of the caller and the callee. This marks the start of a direct call. Call participants can mute themselves, or call with either or both of the audio and video by using output devices such as speaker and microphone for audio, and front, rear camera for video. A call may be ended by either party. The [Sendbird Dashboard](https://dashboard.sendbird.com/auth/signin) displays call logs in the Calls menu for dashboard owners and admins to review.
+
+<br />
+
+## Before getting started
+
+This section shows the prerequisites you need for testing Sendbird Calls SDK for iOS.
+
+### Requirements
+
 * iOS 9.0 or later
 * Swift 4 or later, Objective-C
 * Xcode 9 or later, macOS Sierra or later.
 * Installation of **[Git Large File Storage](https://git-lfs.github.com)**
 
-> **IMPORTANT**: **MAKE SURE to install Git LFS before installing the pod**. Check the size of `WebRTC.framework` in SendBirdWebRTC folder. It MUST be over 800 MB. If the loaded SendBirdWebRTC framework is smaller than that, check the *Git Large File Storage* settings and download again. Refer to [the troubleshooting section](#Library-not-loaded-WebRTC.framework).
+> **IMPORTANT**: **MAKE SURE to install Git LFS before installing the pod**. The size of `WebRTC.framework` in **SendBirdWebRTC** folder must be over 800 MB. If the size of the loaded `SendbirdWebRTC` framework is smaller than 800 MB, check the **Git Large File Storage** settings and download again. For further details, refer to SDK’s [troubleshooting section](#Library-not-loaded-WebRTC.framework).
 
-## SDK Dependencies
-* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios), which can be integrated by CocoaPods, Carthage, or direct install.
+<br />
 
-## Installation
-To use SendBird Calls, first add our custom-built WebRTC framework to the project. [Git Large File Storage](https://git-lfs.github.com) must be installed to use the WebRTC framework along with the SendBirdCalls framework.
+## SDK dependencies
+
+* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios), which can be integrated by `CocoaPods`, `Carthage`, or direct install.
+
+<br />
+
+## Getting started
+
+This section gives you information you need to get started with Sendbird Calls SDK for iOS.
+
+### Install Calls SDK
+
+To use Sendbird Calls, first add our custom-built `WebRTC` framework to the project. [Git Large File Storage](https://git-lfs.github.com) must be installed to use the `WebRTC `framework along with the SendBirdCalls framework.
+
 - Run `brew install git-lfs` in the project directory. 
 
 ### CocoaPods
-[CocoaPods](https://cocoapods.org/) is a dependency manager for Cocoa projects. For usage and installation CocoaPods instructions, visit [their website](https://cocoapods.org/). SendBirdCalls can be integrated into the Xcode project using CocoaPods by doing the following:
-1. Install CocoaPods into the project by running `pod init` in the project directory.
+
+[CocoaPods](https://cocoapods.org/) is a dependency manager for Cocoa projects. The `SendbirdCalls` framework can be integrated into the Xcode project using `CocoaPods` by doing the following.
+
+1. Install `CocoaPods` into the project by running `pod init` in the project directory.
 2. Run `open Podfile`
 3. In the opened Podfile, include `pod ‘SendBirdCalls’` to the configuration under the project target.
-4. Install the SendBirdCalls framework by running `pod install` in the project directory. 
+4. Install the `SendBirdCalls` framework by running `pod install` in the project directory. 
 
-> **Note**: The `SendBirdCalls` SDK relies on the` SendBirdWebRTC` framework. `SendBirdWebRTC` is based on `GoogleWebRTC` and is recompiled with `bitcode` enabled. Since `SendBirdWebRTC` is included in `SendBirdCalls` as a dependency, it doesn't need to be explicitly downloaded.
+For further details on the  usage and installation of CocoaPods instructions, refer to CocoaPods’ [website](https://cocoapods.org/). 
+
+> **Note**: The Sendbird Calls SDK for iOS relies on the` SendBirdWebRTC` framework. `SendBirdWebRTC` is based on `GoogleWebRTC` and is recompiled with `bitcode` enabled. Since `SendBirdWebRTC` is included in `SendBirdCalls` as a dependency, it doesn't need to be explicitly downloaded.
 
 > **IMPORTANT**: After installing the framework, there **MUST** be a 800+MB `SendBirdWebRTC` binary inside `Pods/SendBirdWebRTC.framework`. If not, follow [this troubleshooting guide](#library-not-loaded-webrtcframework).
 
-### Direct Install
-If you do not prefer to use CocoaPods to install Calls SDK, you can choose to integrate SendBirdCalls directly into your project. SendBirdCalls framework is provided as fat `.framework` file and `.xcframework` file. 
-1. Grab the framework file by one of the following:
-    - Direct download from git releases
-    - Git Submodules
-    - Other package managers
-2. Copy the downloaded framework file into your project directory. 
-3. Go to `General` tab of your Xcode Project Navigator, and scroll down to `Frameworks, Libraries, and Embedded Content` menu. 
-4. Click the `+` button, choose `Add other...` drop down menu, and select `Add files...` option. 
-5. From the file navigator, select the framework that you've previously downloaded. 
-6. Select `Embed & Sign` option in the `Embed` menu of the selected framework. 
-
-Because `SendBirdCalls` requires `SendBirdWebRTC` as a dependency, you need to install `SendBirdWebRTC` as well. 
-- Navigate to [SendBirdWebRTC Repository](https://github.com/sendbird/sendbird-webrtc-ios) and perform the above steps 1-6 similarly. 
 
 ### Carthage
 
@@ -84,6 +103,22 @@ Another approach when having multiple dependencies is to use `.xcfilelists`. Thi
 
 For an in depth guide, read on from [Carthage’s ReadMe](https://github.com/Carthage/Carthage#quick-start)
 
+### Direct Install
+If you do not prefer to use CocoaPods to install Calls SDK, you can choose to integrate SendBirdCalls directly into your project. SendBirdCalls framework is provided as fat `.framework` file and `.xcframework` file. 
+1. Grab the framework file by one of the following:
+    - Direct download from git releases
+    - Git Submodules
+    - Other package managers
+2. Copy the downloaded framework file into your project directory. 
+3. Go to `General` tab of your Xcode Project Navigator, and scroll down to `Frameworks, Libraries, and Embedded Content` menu. 
+4. Click the `+` button, choose `Add other...` drop down menu, and select `Add files...` option. 
+5. From the file navigator, select the framework that you've previously downloaded. 
+6. Select `Embed & Sign` option in the `Embed` menu of the selected framework. 
+
+Because `SendBirdCalls` requires `SendBirdWebRTC` as a dependency, you need to install `SendBirdWebRTC` as well. 
+- Navigate to [SendBirdWebRTC Repository](https://github.com/sendbird/sendbird-webrtc-ios) and perform the above steps 1-6 similarly. 
+
+
 ## Configure the Application for the SDK
 
 ### Background Mode
@@ -91,7 +126,6 @@ To support background operation, VoIP-enabled apps must have `Background Mode` e
 
 To receive push notifications, the app also must have `Push Notifications` enabled in the `Xcode Project > Signing&Capabilities` pane. 
 > For more information about VoIP push notification and PushKit, see Apple's [CallKit](https://developer.apple.com/documentation/callkit) and [PushKit](https://developer.apple.com/documentation/pushkit)
-
 
 ### Configure The App’s `Info.plist` File
 iOS requires that apps display authorization message to grant the app access to the camera and microphone:
