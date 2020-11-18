@@ -235,11 +235,7 @@ func didStartReconnecting(_ call: DirectCall)
 
 func didReconnect(_ call: DirectCall)
 
-func didAudioDeviceChange(_ call: DirectCall, 
-                          session: AVAudioSession, 
-                          previousRoute: AVAudioSessionRouteDescription, 
-                          reason: AVAudioSession.RouteChangeReason)
-
+func didAudioDeviceChange(_ call: DirectCall, session: AVAudioSession, previousRoute: AVAudioSessionRouteDescription, reason: AVAudioSession.RouteChangeReason)
 ```
 <br/>
 
