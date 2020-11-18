@@ -648,7 +648,7 @@ extension AppDelegate: DirectCallDelegate {
 | Calls SDK  | 59.9 MB   | 6.18 MB       |
 | WebRTC SDK | 1.05 GB   | 11.2 MB       |
 
-*Last Updated: Sep 3rd, 2020*
+*- Last Updated: Sep 3rd, 2020*
 
 <br />
 
