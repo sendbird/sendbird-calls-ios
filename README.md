@@ -396,7 +396,7 @@ class MyClass: DirectCallDelegate {
 }
 ```
 
-### Deauthenticate a user and unregistering a VoIP push token
+### Deauthenticate a user and unregister a VoIP push token
 
 #### - Deauthenticate a user
 
