@@ -135,7 +135,7 @@ To receive push notifications, the app also must have **Push Notifications** ena
 
 > For more information about VoIP push notification and PushKit, see Apple's [CallKit](https://developer.apple.com/documentation/callkit) and [PushKit](https://developer.apple.com/documentation/pushkit)
 
-### Configure the app’s `Info.plist` File
+### Configure the app’s Info.plist File
 
 iOS requires that apps display authorization message to grant the app access to the camera and microphone.
 
