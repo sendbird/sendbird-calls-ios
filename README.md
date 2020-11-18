@@ -499,7 +499,7 @@ query.next(completionHandler: { [weak query] callLogs, error in
 
 |Method|Description|
 |---|---|
-|next()| Used to query the call history from Sendbird Call server. |
+|next()| Used to query the call history from Sendbird Calls server. |
 |hasNext| If **true**, there are additional call history entries yet to be retrieved. |
 |isLoading| If **true**, the call history is being retrieved from the server.  |
 |limit| Specifies the number of call history entries to return at once. |
