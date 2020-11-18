@@ -7,7 +7,11 @@
   1. [Introduction](#introduction)
   1. [Before getting started](#before-getting-started)
   1. [Getting started](#getting-started)
-  1. [Send your first message](#send-your-first-message)
+  1. [Configure the application for the SDK](#configure-the-application-for-the-sdk)
+  1. [Make your first call](#make-your-first-call)
+  1. [Implementation guide](#implementation-guide)  
+  1. [Appendix](#appendix)
+  1. [Troubleshooting](#troubleshooting)  
 
 <br />
 
@@ -36,9 +40,7 @@ This section shows the prerequisites you need for testing Sendbird Calls SDK for
 
 > **IMPORTANT**: **MAKE SURE to install Git LFS before installing the pod**. The size of `WebRTC.framework` in **SendBirdWebRTC** folder must be over 800 MB. If the size of the loaded `SendbirdWebRTC` framework is smaller than 800 MB, check the **Git Large File Storage** settings and download again. For further details, refer to SDK’s [troubleshooting section](#Library-not-loaded-WebRTC.framework).
 
-<br />
-
-## SDK dependencies
+### SDK dependencies
 
 * [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios), which can be integrated by `CocoaPods`, `Carthage`, or manual set-up.
 
