@@ -316,7 +316,7 @@ class MyClass: SendBirdCallDelegate {
 }
 ```
 
-When the app is in the foreground, incoming call events are received through the SDK’s persistent internal server connection. However, when the app is terminated or in the background, incoming calls are received through PushKit. **PushKit messages received by the SendBirdCall must be delivered to the `SendBirdCall.pushRegistry(_:didReceiveIncomingPushWith:for:)` method**.
+When the app is in the foreground, incoming call events are received through the SDK’s persistent internal server connection. However, when the app is terminated or in the background, incoming calls are received through PushKit. PushKit messages received by the `SendBirdCall` must be delivered to the `SendBirdCall.pushRegistry(_:didReceiveIncomingPushWith:for:)` method.
 
 ```swift
 class MyClass: PKPushRegistryDelegate {
