@@ -7,7 +7,7 @@
   1. [Introduction](#introduction)
   1. [Before getting started](#before-getting-started)
   1. [Getting started](#getting-started)
-  1. [Configure the application for the SDK](#configure-the-application-for-the-sdk)
+  1. [Configuring the application for the SDK](#configuring-the-application-for-the-sdk)
   1. [Making your first call](#making-your-first-call)
   1. [Implementation guide](#implementation-guide)  
   1. [Appendix](#appendix)
@@ -129,7 +129,7 @@ Because `SendBirdCalls` requires `SendBirdWebRTC` as a dependency, you need to i
 
 <br />
 
-## Configure the application for the SDK
+## Configuring the application for the SDK
 
 ### Background Mode
 
