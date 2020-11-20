@@ -17,7 +17,7 @@
 
 ## Introduction
 
-**SendBird Calls** is the latest addition to our product portfolio. It enables real-time calls between users within a Sendbird application. SDKs are provided for iOS, Android, and JavaScript. Using any one of these, developers can quickly integrate voice and video call functions into their own client apps, allowing users to make and receive web-based real-time voice and video calls on the Sendbird platform.
+**Sendbird Calls** is the latest addition to our product portfolio. It enables real-time calls between users within a Sendbird application. SDKs are provided for iOS, Android, and JavaScript. Using any one of these, developers can quickly integrate voice and video call functions into their own client apps, allowing users to make and receive web-based real-time voice and video calls on the Sendbird platform.
 
 > If you need any help in resolving any issues or have questions, please visit [our community](https://community.sendbird.com) 
 
@@ -42,7 +42,7 @@ This section shows the prerequisites you need to check to use Sendbird Calls SDK
 * Xcode 9 or later, macOS Sierra or later.
 * Installation of **[Git Large File Storage](https://git-lfs.github.com)**
 
-> **IMPORTANT**: **MAKE SURE to install Git LFS before installing the pod**. The size of `WebRTC.framework` in **SendBirdWebRTC** folder must be over 800 MB. If the size of the loaded `SendbirdWebRTC` framework is smaller than 800 MB, check the **Git Large File Storage** settings and download again. For further details, refer to SDK’s [troubleshooting section](#Library-not-loaded-WebRTC.framework).
+> **IMPORTANT**: **MAKE SURE to install Git LFS before installing the pod**. The size of `WebRTC.framework` in **SendBirdWebRTC** folder must be over 800 MB. If the size of the loaded `SendbirdWebRTC` framework is smaller than 800 MB, check the **Git Large File Storage** settings and download again. For further details, refer to SDK’s [troubleshooting section](#library-not-loaded-webrtcframework).
 
 ### SDK dependencies
 
