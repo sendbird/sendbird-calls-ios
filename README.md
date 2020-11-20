@@ -8,7 +8,7 @@
   1. [Before getting started](#before-getting-started)
   1. [Getting started](#getting-started)
   1. [Configure the application for the SDK](#configure-the-application-for-the-sdk)
-  1. [Make your first call](#make-your-first-call)
+  1. [Making your first call](#making-your-first-call)
   1. [Implementation guide](#implementation-guide)  
   1. [Appendix](#appendix)
   1. [Troubleshooting](#troubleshooting)  
@@ -42,7 +42,7 @@ This section shows the prerequisites you need to check to use Sendbird Calls SDK
 * Xcode 9 or later, macOS Sierra or later.
 * Installation of **[Git Large File Storage](https://git-lfs.github.com)**
 
-> **IMPORTANT**: **MAKE SURE to install Git LFS before installing the pod**. The size of `WebRTC.framework` in **SendBirdWebRTC** folder must be over 800 MB. If the size of the loaded `SendbirdWebRTC` framework is smaller than 800 MB, check the **Git Large File Storage** settings and download again. For further details, refer to SDK’s [troubleshooting section](#library-not-loaded-webrtcframework).
+> **IMPORTANT**: **MAKE sure to install Git LFS before installing the pod**. The size of `WebRTC.framework` in **SendBirdWebRTC** folder must be over 800 MB. If the size of the loaded `SendbirdWebRTC` framework is smaller than 800 MB, check the **Git Large File Storage** settings and download again. For further details, refer to SDK’s [troubleshooting section](#library-not-loaded-webrtcframework).
 
 ### SDK dependencies
 
@@ -69,16 +69,16 @@ To use Sendbird Calls, first add our custom-built `WebRTC` framework to the proj
 3. In the opened Podfile, include `pod ‘SendBirdCalls’` to the configuration under the project target.
 4. Install the `SendBirdCalls` framework by running `pod install` in the project directory. 
 
-For further details on the  usage and installation of CocoaPods instructions, refer to CocoaPods’ [website](https://cocoapods.org/). 
+For further details on the  usage and installation of `CocoaPods` instructions, refer to CocoaPods’ [website](https://cocoapods.org/). 
 
 > **Note**: The Sendbird Calls SDK for iOS relies on the` SendBirdWebRTC` framework. `SendBirdWebRTC` is based on `GoogleWebRTC` and is recompiled with `bitcode` enabled. Since `SendBirdWebRTC` is included in `SendBirdCalls` as a dependency, it doesn't need to be explicitly downloaded.
 
-> **IMPORTANT**: After installing the framework, there **MUST** be a 800+MB `SendBirdWebRTC` binary inside `Pods/SendBirdWebRTC.framework`. If not, follow [this troubleshooting guide](#library-not-loaded-webrtcframework).
+> **IMPORTANT**: After installing the framework, there **MUST** be a 800+MB `SendBirdWebRTC` binary inside `Pods/SendBirdWebRTC.framework`. If not, follow [this troubleshooting](#library-not-loaded-webrtcframework) guide.
 
 
 ### Carthage
 
-[Carthage](https://github.com/Carthage/Carthage#quick-start) is a another dependency manager for Xcode projects. The `SendBirdCalls` framework can be integrated into your Xcode project with `Carthage` by following these steps:
+[Carthage](https://github.com/Carthage/Carthage#quick-start) is another dependency manager for Xcode projects. The `SendBirdCalls` framework can be integrated into your Xcode project with `Carthage` by following these steps:
 
 1. Get Carthage by running `brew install carthage`, or choose [another installation method](https://github.com/Carthage/Carthage#installing-carthage).
 2. Create a [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) in the same directory `.xcodeproj` or `.xcworkspace` is.
@@ -148,7 +148,7 @@ iOS requires that apps display authorization message to grant the app access to 
 
 <br />
 
-## Make your first call
+## Making your first call
 
 Follow the step-by-step instructions below to authenticate and make your first call. 
 
@@ -164,7 +164,7 @@ SendBirdCall.configure(appId: APP_ID)
 
 ### Step 2: Authenticate a user and register a push token
 
-In order to make and receive calls, authenticate the user with SendBird server with the `SendBirdCall.authenticate(with:)` method and **register a VoIP push token** to Sendbird. Register a VoIP push token by either providing it as an argument to a parameter in the `authenticate()` method during authentication, or by using the `SendBirdCall.registerVoIPPush(token:)` method after authentication has completed. VoIP Push Notification will also enable receiving calls even when the app is in the background or terminated state. A valid APNS certificate also needs to be registered on the [SendBird Dashboard](https://dashboard.sendbird.com/auth/signin): **Application** > **Settings** > **Notifications** > **Add certificate**. For more details on registering push tokens, refer to [SendBirdCalls QuickStart](https://github.com/sendbird/quickstart-calls-ios#registering-push-tokens).
+In order to make and receive calls, authenticate the user with SendBird server with the `SendBirdCall.authenticate(with:)` method and **register a VoIP push token** to Sendbird. Register a VoIP push token by either providing it as an argument to a parameter in the `authenticate()` method during authentication, or by using the `SendBirdCall.registerVoIPPush(token:)` method after authentication has completed. VoIP Push Notification will also enable receiving calls even when the app is in the background or terminated state. A valid APNS certificate also needs to be registered on the [Sendbird Dashboard](https://dashboard.sendbird.com/auth/signin): **Application** > **Settings** > **Notifications** > **Add certificate**. For more details on registering push tokens, refer to [Calls SDK for iOS doc](https://sendbird.com/docs/calls/v1/ios/guides/remote-notifications#2-remote-push-token-registration).
 
 ```swift
 // Authenticate
@@ -616,7 +616,7 @@ extension AppDelegate: DirectCallDelegate {
 }
 ```
 
-### call results
+### Call results
 
 |EndResult|Description|
 |---|---|
