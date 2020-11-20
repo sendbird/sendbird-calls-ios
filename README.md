@@ -164,7 +164,7 @@ SendBirdCall.configure(appId: APP_ID)
 
 ### Step 2: Authenticate a user and register a push token
 
-In order to make and receive calls, authenticate the user with SendBird server with the `SendBirdCall.authenticate(with:)` method and **register a VoIP push token** to Sendbird. Register a VoIP push token by either providing it as an argument to a parameter in the `authenticate()` method during authentication, or by using the `SendBirdCall.registerVoIPPush(token:)` method after authentication has completed. VoIP Push Notification will also enable receiving calls even when the app is in the background or terminated state. A valid APNS certificate also needs to be registered on the [Sendbird Dashboard](https://dashboard.sendbird.com/auth/signin): **Application** > **Settings** > **Notifications** > **Add certificate**. For more details on registering push tokens, refer to [Calls SDK for iOS doc](https://sendbird.com/docs/calls/v1/ios/guides/remote-notifications#2-remote-push-token-registration).
+In order to make and receive calls, authenticate the user with SendBird server with the `SendBirdCall.authenticate(with:)` method and **register a VoIP push token** to Sendbird. Register a VoIP push token by using the `SendBirdCall.registerVoIPPush(token:)` method after authentication has completed. VoIP Push Notification will also enable receiving calls even when the app is in the background or terminated state. A valid APNS certificate also needs to be registered on the [Sendbird Dashboard](https://dashboard.sendbird.com/auth/signin): **Application** > **Settings** > **Notifications** > **Add certificate**. For more details on registering push tokens, refer to [Calls SDK for iOS doc](https://sendbird.com/docs/calls/v1/ios/guides/remote-notifications#2-remote-push-token-registration).
 
 ```swift
 // Authenticate
@@ -274,7 +274,7 @@ directCall.delegate = self
 
 Register `SendBirdCallDelegate` first to receive incoming calls. Accept or decline incoming calls using the `directCall.accept()` or the `directCall.end()` methods. If the call is accepted, a media session will automatically be established by the SDK.
 
-Before accepting any calls, the `directCall.delegate` must be registered upfront in the `SendBirdCallDelegate`. Once registered, `DirectCallDelegate` enables reacting to in-call events through callbacks methods.
+Before accepting any calls, the `directCall.delegate` must be registered upfront in the `SendBirdCallDelegate`. Once registered, `DirectCallDelegate` enables reacting to in-call events through delegate methods.
 
 ```swift
 class MyClass: SendBirdCallDelegate {
@@ -306,7 +306,7 @@ directCall.delegate = self
 
 Register `SendBirdCallDelegate` first to receive incoming calls. Accept or decline incoming calls using the `directCall.accept()` or the `directCall.end()` methods. If the call is accepted, a media session will automatically be established by the SDK.
 
-Before accepting any calls, the `directCall.delegate` must be registered upfront in the `SendBirdCallDelegate`. Once registered, `DirectCallDelegate` enables reacting to in-call events through callbacks methods.
+Before accepting any calls, the `directCall.delegate` must be registered upfront in the `SendBirdCallDelegate`. Once registered, `DirectCallDelegate` enables reacting to in-call events through delegate methods.
 
 ```swift
 class MyClass: SendBirdCallDelegate {
