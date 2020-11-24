@@ -111,7 +111,7 @@ For an in-depth guide, read on from [Carthage’s ReadMe](https://github.com/Car
 
 ### Manual set-up
 
-If you do not prefer to use `CocoaPods` or `Carthage` to install Calls SDK, here is an alternative. You can choose to manually integrate `SendbirdCalls` directly into your project. The `SendbirdCalls` framework is provided as a fat `.framework` file and a `.xcframework` file.
+If you do not prefer to use `CocoaPods` or `Carthage` to install Calls SDK, here is an alternative. You can choose to manually integrate `SendBirdCalls` directly into your project. The `SendBirdCalls` framework is provided as a fat `.framework` file and a `.xcframework` file.
 
 1. Download the framework file by one of the following.
     - Direct download from git releases
