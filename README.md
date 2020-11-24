@@ -135,7 +135,7 @@ Because `SendBirdCalls` requires `SendBirdWebRTC` as a dependency, you need to i
 
 To support background operation, VoIP-enabled apps must have `Background Mode` enabled in the **Xcode Project** > **Signing & Capabilities** pane. Select the checkbox for **Voice over IP**.
 
-To receive push notifications, the app also must have **Push Notifications** enabled in the **Xcode Project **> **Signing & Capabilities** pane. 
+To receive push notifications, the app also must have **Push Notifications** enabled in the **Xcode Project** > **Signing & Capabilities** pane. 
 
 > For more information about VoIP push notification and PushKit, see Apple's [CallKit](https://developer.apple.com/documentation/callkit) and [PushKit](https://developer.apple.com/documentation/pushkit)
 
