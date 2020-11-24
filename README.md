@@ -107,7 +107,7 @@ $(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/WebRTC.framework
 
 Another approach when having multiple dependencies is to use `.xcfilelists`. This is covered when building for `iOS`
 
-For an in-depth guide, read on from [Carthage’s ReadMe](https://github.com/Carthage/Carthage#quick-start). If you encounter any issues when using `Carthage` to install the `SendbirdCalls`, make sure that you are using the latest version of `Carthage`.
+For an in-depth guide, read on from [Carthage’s ReadMe](https://github.com/Carthage/Carthage#quick-start). If you encounter any issues when using `Carthage` to install the `SendBirdCalls`, make sure that you are using the latest version of `Carthage`.
 
 ### Manual set-up
 
