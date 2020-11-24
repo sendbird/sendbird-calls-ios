@@ -42,7 +42,7 @@ This section shows the prerequisites you need to check to use Sendbird Calls SDK
 * Xcode 9 or later, macOS Sierra or later.
 * Installation of **[Git Large File Storage](https://git-lfs.github.com)**
 
-> **IMPORTANT**: **MAKE sure to install Git LFS before installing the pod**. The size of `WebRTC.framework` in **SendBirdWebRTC** folder must be over 800 MB. If the size of the loaded `SendbirdWebRTC` framework is smaller than 800 MB, check the **Git Large File Storage** settings and download again. For further details, refer to SDK’s [troubleshooting section](#library-not-loaded-webrtcframework).
+> **IMPORTANT**: **MAKE sure to install Git LFS before installing the pod**. The size of `WebRTC.framework` in **SendBirdWebRTC** folder must be over 800 MB. If the size of the loaded `SendBirdWebRTC` framework is smaller than 800 MB, check the **Git Large File Storage** settings and download again. For further details, refer to SDK’s [troubleshooting section](#library-not-loaded-webrtcframework).
 
 ### SDK dependencies
 
