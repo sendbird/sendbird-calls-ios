@@ -62,7 +62,7 @@ To use Sendbird Calls, first add our custom-built `WebRTC` framework to the proj
 
 ### CocoaPods
 
-[CocoaPods](https://cocoapods.org/) is a dependency manager for Cocoa projects. The `SendbirdCalls` framework can be integrated into the Xcode project using `CocoaPods` by doing the following.
+[CocoaPods](https://cocoapods.org/) is a dependency manager for Cocoa projects. The `SendBirdCalls` framework can be integrated into the Xcode project using `CocoaPods` by doing the following.
 
 1. Install `CocoaPods` into the project by running `pod init` in the project directory.
 2. Run `open Podfile`
