@@ -132,6 +132,14 @@ extension SBCLogger {
     }
   }
 }
+@objc(SBCChatOptions) public class SendBirdChatOptions : ObjectiveC.NSObject, Swift.Codable {
+  @objc public var channelURL: Swift.String
+  @objc public init(channelURL: Swift.String)
+  @objc override dynamic public init()
+  @objc deinit
+  required public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
 extension DirectCall {
   @objc dynamic public func startVideo()
   @objc dynamic public func stopVideo()
@@ -247,6 +255,8 @@ extension DirectCallLog {
   }
   @objc override dynamic public init()
   @objc deinit
+}
+extension DirectCall {
 }
 extension DirectCall {
   @objc override dynamic public var hash: Swift.Int {
@@ -500,7 +510,9 @@ extension CallOptions : Foundation.NSCopying {
   @objc public var isVideoCall: Swift.Bool
   @objc public var callOptions: SendBirdCalls.CallOptions
   @objc public var customItems: [Swift.String : Swift.String]
-  @objc public init(calleeId: Swift.String, isVideoCall: Swift.Bool = false, callOptions: SendBirdCalls.CallOptions = CallOptions(), customItems: [Swift.String : Swift.String] = [:])
+  @objc public var sendbirdChatOptions: SendBirdCalls.SendBirdChatOptions?
+  @objc public init(calleeId: Swift.String, isVideoCall: Swift.Bool = false, callOptions: SendBirdCalls.CallOptions = CallOptions(), customItems: [Swift.String : Swift.String] = [:], sendbirdChatOptions: SendBirdCalls.SendBirdChatOptions? = nil)
+  @objc convenience public init(calleeId: Swift.String, isVideoCall: Swift.Bool = false, callOptions: SendBirdCalls.CallOptions = CallOptions(), customItems: [Swift.String : Swift.String] = [:])
   @objc convenience public init(calleeId: Swift.String)
   @objc override dynamic public init()
   @objc deinit
@@ -552,6 +564,7 @@ extension DialParams : Foundation.NSCopying {
   @objc public static func audioSessionDidActivate(_ audioSession: AVFoundation.AVAudioSession)
   @objc public static func audioSessionDidDeactivate(_ audioSession: AVFoundation.AVAudioSession)
   @objc public static func addDirectCallSound(_ name: Swift.String, bundle: Foundation.Bundle = .main, forType type: SendBirdCalls.SoundType)
+  @objc(setDirectCallDialingSoundOnWhenSilentMode:) public static func setDirectCallDialingSoundOnWhenSilentMode(isEnabled: Swift.Bool)
   @objc public static func addDirectCallSound(_ url: Foundation.URL, forType type: SendBirdCalls.SoundType)
   @objc public static func removeDirectCallSound(forType type: SendBirdCalls.SoundType)
   @objc deinit

@@ -1,5 +1,16 @@
 # Change Log
 
+### 1.5.0 (Dec 11, 2020 UTC)
+* Added support for integration with Sendbird Chat.
+    * Added `SendBirdChatOptions`.
+    * Added `sendbirdChatOptions` parameter to `DialParams`.
+* Added support for enabling dialing sound in silent mode. 
+    * Added `setDirectCallDialingSoundOnWhenSilentMode(isEnabled:)` to `SendBirdCall` class.
+* Improved WebSocket handling in background.
+* Added support for `Call summary` on the dashboard.
+* Improved backend scalability.
+* Enhanced security for compliance.
+
 ### 1.4.0 (Nov 2, 2020 UTC)
 * Added Remote Recording Progress Event.
     * Added `DirectCallDelegate.didRemoteRecordingStatusChange(call: DirectCall)`.

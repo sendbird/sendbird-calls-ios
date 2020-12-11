@@ -314,6 +314,7 @@ SWIFT_CLASS_NAMED("CallOptions")
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
+@class SBCChatOptions;
 
 /// Parameter for dialing another user. Contains initial configurations for the call.
 /// since:
@@ -336,6 +337,7 @@ SWIFT_CLASS_NAMED("DialParams")
 /// since:
 /// 1.0.0
 @property (nonatomic, copy) NSDictionary<NSString *, NSString *> * _Nonnull customItems;
+@property (nonatomic, strong) SBCChatOptions * _Nullable sendbirdChatOptions;
 /// since:
 /// 1.0.0
 /// \param calleeId The callee’s user ID
@@ -346,7 +348,20 @@ SWIFT_CLASS_NAMED("DialParams")
 ///
 /// \param customItems Custom items for the call. The default value is empty dictionary.
 ///
-- (nonnull instancetype)initWithCalleeId:(NSString * _Nonnull)calleeId isVideoCall:(BOOL)isVideoCall callOptions:(SBCCallOptions * _Nonnull)callOptions customItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems OBJC_DESIGNATED_INITIALIZER;
+/// \param sendbirdChatOptions Options for configuring SendBird Chat.
+///
+- (nonnull instancetype)initWithCalleeId:(NSString * _Nonnull)calleeId isVideoCall:(BOOL)isVideoCall callOptions:(SBCCallOptions * _Nonnull)callOptions customItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems sendbirdChatOptions:(SBCChatOptions * _Nullable)sendbirdChatOptions OBJC_DESIGNATED_INITIALIZER;
+/// since:
+/// 1.5.0
+/// \param calleeId The callee’s user ID
+///
+/// \param isVideoCall <code>Bool</code> value indicating whether the call supports vieo call. The default value is <code>false</code>.
+///
+/// \param callOptions Call options for configuring the outgoing call. The default value is <code>CallOptions()</code> with only audio call capability.
+///
+/// \param customItems Custom items for the call. The default value is empty dictionary.
+///
+- (nonnull instancetype)initWithCalleeId:(NSString * _Nonnull)calleeId isVideoCall:(BOOL)isVideoCall callOptions:(SBCCallOptions * _Nonnull)callOptions customItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems;
 /// since:
 /// 1.0.0
 /// \param calleeId The callee’s user ID
@@ -560,22 +575,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+
+
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
 /// Returns a copied instance of the <code>DirectCall</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
-
-
-
-
-@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
-/// The hash value of <code>DirectCall</code>.
-@property (nonatomic, readonly) NSUInteger hash;
-/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
-@end
 
 
 
@@ -614,6 +621,20 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// (discardable) Boolean value that indicates whether the specified recordingId is valid.
 - (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
 @end
+
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCall</code>.
+@property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+
+
+
+
 
 
 
@@ -723,8 +744,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 ///
 - (void)deleteAllCustomItemsWithCompletionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
 @end
-
-
 
 @class SBCVideoDevice;
 @class UIImage;
@@ -2102,6 +2121,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param type The type of sound.
 ///
 + (void)addDirectCallSound:(NSString * _Nonnull)name bundle:(NSBundle * _Nonnull)bundle forType:(enum SBCSoundType)type;
+/// Enables / disables dial sound used in <code>DirectCall</code> even when the device is in silent mode. Call this method right after <code>addDirectCallSound(_:forType:)</code>.
+/// \code
+/// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
+/// SendBirdCall.setDirectCallDialingSoundOnWhenSilentMode(isEnabled: true) // Will play dial direct call sounds in silent mode
+///
+/// \endcodesince:
+/// 1.5.0
+/// \param isEnabled If it is <code>true</code>, dial sound used in <code>DirectCall</code> will be played in silent mode.
+///
++ (void)setDirectCallDialingSoundOnWhenSilentMode:(BOOL)isEnabled;
 /// Adds sound used in <code>DirectCall</code>  such as ringtone and some sound effects with URL. If you use bundle to play sound, <code>addDirectCallSound(_:bundle:forType:)</code> is recommended.
 /// \code
 /// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
@@ -2145,6 +2174,15 @@ SWIFT_PROTOCOL_NAMED("SendBirdCallDelegate")
 /// \param call <code>DirectCall</code> object.
 ///
 - (void)didStartRinging:(SBCDirectCall * _Nonnull)call;
+@end
+
+
+SWIFT_CLASS_NAMED("SendBirdChatOptions")
+@interface SBCChatOptions : NSObject
+@property (nonatomic, copy) NSString * _Nonnull channelURL;
+- (nonnull instancetype)initWithChannelURL:(NSString * _Nonnull)channelURL OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 
@@ -2648,6 +2686,7 @@ SWIFT_CLASS_NAMED("CallOptions")
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
+@class SBCChatOptions;
 
 /// Parameter for dialing another user. Contains initial configurations for the call.
 /// since:
@@ -2670,6 +2709,7 @@ SWIFT_CLASS_NAMED("DialParams")
 /// since:
 /// 1.0.0
 @property (nonatomic, copy) NSDictionary<NSString *, NSString *> * _Nonnull customItems;
+@property (nonatomic, strong) SBCChatOptions * _Nullable sendbirdChatOptions;
 /// since:
 /// 1.0.0
 /// \param calleeId The callee’s user ID
@@ -2680,7 +2720,20 @@ SWIFT_CLASS_NAMED("DialParams")
 ///
 /// \param customItems Custom items for the call. The default value is empty dictionary.
 ///
-- (nonnull instancetype)initWithCalleeId:(NSString * _Nonnull)calleeId isVideoCall:(BOOL)isVideoCall callOptions:(SBCCallOptions * _Nonnull)callOptions customItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems OBJC_DESIGNATED_INITIALIZER;
+/// \param sendbirdChatOptions Options for configuring SendBird Chat.
+///
+- (nonnull instancetype)initWithCalleeId:(NSString * _Nonnull)calleeId isVideoCall:(BOOL)isVideoCall callOptions:(SBCCallOptions * _Nonnull)callOptions customItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems sendbirdChatOptions:(SBCChatOptions * _Nullable)sendbirdChatOptions OBJC_DESIGNATED_INITIALIZER;
+/// since:
+/// 1.5.0
+/// \param calleeId The callee’s user ID
+///
+/// \param isVideoCall <code>Bool</code> value indicating whether the call supports vieo call. The default value is <code>false</code>.
+///
+/// \param callOptions Call options for configuring the outgoing call. The default value is <code>CallOptions()</code> with only audio call capability.
+///
+/// \param customItems Custom items for the call. The default value is empty dictionary.
+///
+- (nonnull instancetype)initWithCalleeId:(NSString * _Nonnull)calleeId isVideoCall:(BOOL)isVideoCall callOptions:(SBCCallOptions * _Nonnull)callOptions customItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems;
 /// since:
 /// 1.0.0
 /// \param calleeId The callee’s user ID
@@ -2894,22 +2947,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+
+
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
 /// Returns a copied instance of the <code>DirectCall</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
-
-
-
-
-@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
-/// The hash value of <code>DirectCall</code>.
-@property (nonatomic, readonly) NSUInteger hash;
-/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
-@end
 
 
 
@@ -2948,6 +2993,20 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// (discardable) Boolean value that indicates whether the specified recordingId is valid.
 - (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
 @end
+
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCall</code>.
+@property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+
+
+
+
 
 
 
@@ -3057,8 +3116,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 ///
 - (void)deleteAllCustomItemsWithCompletionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
 @end
-
-
 
 @class SBCVideoDevice;
 @class UIImage;
@@ -4436,6 +4493,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param type The type of sound.
 ///
 + (void)addDirectCallSound:(NSString * _Nonnull)name bundle:(NSBundle * _Nonnull)bundle forType:(enum SBCSoundType)type;
+/// Enables / disables dial sound used in <code>DirectCall</code> even when the device is in silent mode. Call this method right after <code>addDirectCallSound(_:forType:)</code>.
+/// \code
+/// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
+/// SendBirdCall.setDirectCallDialingSoundOnWhenSilentMode(isEnabled: true) // Will play dial direct call sounds in silent mode
+///
+/// \endcodesince:
+/// 1.5.0
+/// \param isEnabled If it is <code>true</code>, dial sound used in <code>DirectCall</code> will be played in silent mode.
+///
++ (void)setDirectCallDialingSoundOnWhenSilentMode:(BOOL)isEnabled;
 /// Adds sound used in <code>DirectCall</code>  such as ringtone and some sound effects with URL. If you use bundle to play sound, <code>addDirectCallSound(_:bundle:forType:)</code> is recommended.
 /// \code
 /// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
@@ -4479,6 +4546,15 @@ SWIFT_PROTOCOL_NAMED("SendBirdCallDelegate")
 /// \param call <code>DirectCall</code> object.
 ///
 - (void)didStartRinging:(SBCDirectCall * _Nonnull)call;
+@end
+
+
+SWIFT_CLASS_NAMED("SendBirdChatOptions")
+@interface SBCChatOptions : NSObject
+@property (nonatomic, copy) NSString * _Nonnull channelURL;
+- (nonnull instancetype)initWithChannelURL:(NSString * _Nonnull)channelURL OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 
@@ -4986,6 +5062,7 @@ SWIFT_CLASS_NAMED("CallOptions")
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
+@class SBCChatOptions;
 
 /// Parameter for dialing another user. Contains initial configurations for the call.
 /// since:
@@ -5008,6 +5085,7 @@ SWIFT_CLASS_NAMED("DialParams")
 /// since:
 /// 1.0.0
 @property (nonatomic, copy) NSDictionary<NSString *, NSString *> * _Nonnull customItems;
+@property (nonatomic, strong) SBCChatOptions * _Nullable sendbirdChatOptions;
 /// since:
 /// 1.0.0
 /// \param calleeId The callee’s user ID
@@ -5018,7 +5096,20 @@ SWIFT_CLASS_NAMED("DialParams")
 ///
 /// \param customItems Custom items for the call. The default value is empty dictionary.
 ///
-- (nonnull instancetype)initWithCalleeId:(NSString * _Nonnull)calleeId isVideoCall:(BOOL)isVideoCall callOptions:(SBCCallOptions * _Nonnull)callOptions customItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems OBJC_DESIGNATED_INITIALIZER;
+/// \param sendbirdChatOptions Options for configuring SendBird Chat.
+///
+- (nonnull instancetype)initWithCalleeId:(NSString * _Nonnull)calleeId isVideoCall:(BOOL)isVideoCall callOptions:(SBCCallOptions * _Nonnull)callOptions customItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems sendbirdChatOptions:(SBCChatOptions * _Nullable)sendbirdChatOptions OBJC_DESIGNATED_INITIALIZER;
+/// since:
+/// 1.5.0
+/// \param calleeId The callee’s user ID
+///
+/// \param isVideoCall <code>Bool</code> value indicating whether the call supports vieo call. The default value is <code>false</code>.
+///
+/// \param callOptions Call options for configuring the outgoing call. The default value is <code>CallOptions()</code> with only audio call capability.
+///
+/// \param customItems Custom items for the call. The default value is empty dictionary.
+///
+- (nonnull instancetype)initWithCalleeId:(NSString * _Nonnull)calleeId isVideoCall:(BOOL)isVideoCall callOptions:(SBCCallOptions * _Nonnull)callOptions customItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems;
 /// since:
 /// 1.0.0
 /// \param calleeId The callee’s user ID
@@ -5232,22 +5323,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+
+
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
 /// Returns a copied instance of the <code>DirectCall</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
-
-
-
-
-@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
-/// The hash value of <code>DirectCall</code>.
-@property (nonatomic, readonly) NSUInteger hash;
-/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
-@end
 
 
 
@@ -5286,6 +5369,20 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// (discardable) Boolean value that indicates whether the specified recordingId is valid.
 - (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
 @end
+
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCall</code>.
+@property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+
+
+
+
 
 
 
@@ -5395,8 +5492,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 ///
 - (void)deleteAllCustomItemsWithCompletionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
 @end
-
-
 
 @class SBCVideoDevice;
 @class UIImage;
@@ -6774,6 +6869,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param type The type of sound.
 ///
 + (void)addDirectCallSound:(NSString * _Nonnull)name bundle:(NSBundle * _Nonnull)bundle forType:(enum SBCSoundType)type;
+/// Enables / disables dial sound used in <code>DirectCall</code> even when the device is in silent mode. Call this method right after <code>addDirectCallSound(_:forType:)</code>.
+/// \code
+/// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
+/// SendBirdCall.setDirectCallDialingSoundOnWhenSilentMode(isEnabled: true) // Will play dial direct call sounds in silent mode
+///
+/// \endcodesince:
+/// 1.5.0
+/// \param isEnabled If it is <code>true</code>, dial sound used in <code>DirectCall</code> will be played in silent mode.
+///
++ (void)setDirectCallDialingSoundOnWhenSilentMode:(BOOL)isEnabled;
 /// Adds sound used in <code>DirectCall</code>  such as ringtone and some sound effects with URL. If you use bundle to play sound, <code>addDirectCallSound(_:bundle:forType:)</code> is recommended.
 /// \code
 /// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
@@ -6817,6 +6922,15 @@ SWIFT_PROTOCOL_NAMED("SendBirdCallDelegate")
 /// \param call <code>DirectCall</code> object.
 ///
 - (void)didStartRinging:(SBCDirectCall * _Nonnull)call;
+@end
+
+
+SWIFT_CLASS_NAMED("SendBirdChatOptions")
+@interface SBCChatOptions : NSObject
+@property (nonatomic, copy) NSString * _Nonnull channelURL;
+- (nonnull instancetype)initWithChannelURL:(NSString * _Nonnull)channelURL OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 
@@ -7322,6 +7436,7 @@ SWIFT_CLASS_NAMED("CallOptions")
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
+@class SBCChatOptions;
 
 /// Parameter for dialing another user. Contains initial configurations for the call.
 /// since:
@@ -7344,6 +7459,7 @@ SWIFT_CLASS_NAMED("DialParams")
 /// since:
 /// 1.0.0
 @property (nonatomic, copy) NSDictionary<NSString *, NSString *> * _Nonnull customItems;
+@property (nonatomic, strong) SBCChatOptions * _Nullable sendbirdChatOptions;
 /// since:
 /// 1.0.0
 /// \param calleeId The callee’s user ID
@@ -7354,7 +7470,20 @@ SWIFT_CLASS_NAMED("DialParams")
 ///
 /// \param customItems Custom items for the call. The default value is empty dictionary.
 ///
-- (nonnull instancetype)initWithCalleeId:(NSString * _Nonnull)calleeId isVideoCall:(BOOL)isVideoCall callOptions:(SBCCallOptions * _Nonnull)callOptions customItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems OBJC_DESIGNATED_INITIALIZER;
+/// \param sendbirdChatOptions Options for configuring SendBird Chat.
+///
+- (nonnull instancetype)initWithCalleeId:(NSString * _Nonnull)calleeId isVideoCall:(BOOL)isVideoCall callOptions:(SBCCallOptions * _Nonnull)callOptions customItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems sendbirdChatOptions:(SBCChatOptions * _Nullable)sendbirdChatOptions OBJC_DESIGNATED_INITIALIZER;
+/// since:
+/// 1.5.0
+/// \param calleeId The callee’s user ID
+///
+/// \param isVideoCall <code>Bool</code> value indicating whether the call supports vieo call. The default value is <code>false</code>.
+///
+/// \param callOptions Call options for configuring the outgoing call. The default value is <code>CallOptions()</code> with only audio call capability.
+///
+/// \param customItems Custom items for the call. The default value is empty dictionary.
+///
+- (nonnull instancetype)initWithCalleeId:(NSString * _Nonnull)calleeId isVideoCall:(BOOL)isVideoCall callOptions:(SBCCallOptions * _Nonnull)callOptions customItems:(NSDictionary<NSString *, NSString *> * _Nonnull)customItems;
 /// since:
 /// 1.0.0
 /// \param calleeId The callee’s user ID
@@ -7568,22 +7697,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+
+
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
 /// Returns a copied instance of the <code>DirectCall</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
-
-
-
-
-@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
-/// The hash value of <code>DirectCall</code>.
-@property (nonatomic, readonly) NSUInteger hash;
-/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
-@end
 
 
 
@@ -7622,6 +7743,20 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// (discardable) Boolean value that indicates whether the specified recordingId is valid.
 - (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
 @end
+
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCall</code>.
+@property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+
+
+
+
 
 
 
@@ -7731,8 +7866,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 ///
 - (void)deleteAllCustomItemsWithCompletionHandler:(void (^ _Nonnull)(NSDictionary<NSString *, NSString *> * _Nullable, NSArray<NSString *> * _Nullable, SBCError * _Nullable))completionHandler;
 @end
-
-
 
 @class SBCVideoDevice;
 @class UIImage;
@@ -9110,6 +9243,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param type The type of sound.
 ///
 + (void)addDirectCallSound:(NSString * _Nonnull)name bundle:(NSBundle * _Nonnull)bundle forType:(enum SBCSoundType)type;
+/// Enables / disables dial sound used in <code>DirectCall</code> even when the device is in silent mode. Call this method right after <code>addDirectCallSound(_:forType:)</code>.
+/// \code
+/// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
+/// SendBirdCall.setDirectCallDialingSoundOnWhenSilentMode(isEnabled: true) // Will play dial direct call sounds in silent mode
+///
+/// \endcodesince:
+/// 1.5.0
+/// \param isEnabled If it is <code>true</code>, dial sound used in <code>DirectCall</code> will be played in silent mode.
+///
++ (void)setDirectCallDialingSoundOnWhenSilentMode:(BOOL)isEnabled;
 /// Adds sound used in <code>DirectCall</code>  such as ringtone and some sound effects with URL. If you use bundle to play sound, <code>addDirectCallSound(_:bundle:forType:)</code> is recommended.
 /// \code
 /// SendBirdCall.addDirectCallSound("dialing.mp3", forType: .dialing)
@@ -9153,6 +9296,15 @@ SWIFT_PROTOCOL_NAMED("SendBirdCallDelegate")
 /// \param call <code>DirectCall</code> object.
 ///
 - (void)didStartRinging:(SBCDirectCall * _Nonnull)call;
+@end
+
+
+SWIFT_CLASS_NAMED("SendBirdChatOptions")
+@interface SBCChatOptions : NSObject
+@property (nonatomic, copy) NSString * _Nonnull channelURL;
+- (nonnull instancetype)initWithChannelURL:(NSString * _Nonnull)channelURL OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 
