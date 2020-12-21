@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.5.1 (Dec 21, 2020 UTC)
+* Improved stability.
+
 ### 1.5.0 (Dec 11, 2020 UTC)
 * Added support for integration with Sendbird Chat.
     * Added `SendBirdChatOptions`.
