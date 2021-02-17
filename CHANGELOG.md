@@ -1,5 +1,23 @@
 # Change Log
 
+### 1.6.0-beta (Feb 17, 2021 UTC)
+Supports the early access program for group calling. New concepts introduced in this version center around **rooms** and **participants**.
+* Added New methods to existing classes
+    * Added `createRoom(with:completionHandler:)` in `SendBirdCall`
+    * Added `fetchRoom(by:)` to `SendBirdCall`
+    * Added `getCachedRoom(by:)` to `SendBirdCall`
+* Added new classes
+    * Added `Room`
+    * Added `Room.EnterParams`
+    * Added `Participant`
+    * Added `LocalParticipant`
+    * Added `RemoteParticipant`
+* Added new protocols
+    * Added `RoomDelegate`
+* Added new enums
+    * Added `Room.State`
+    * Added `Participant.State`
+
 ### 1.5.2 (Jan 27, 2021 UTC)
 * Improved stability.
 

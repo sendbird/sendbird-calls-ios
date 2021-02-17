@@ -387,7 +387,7 @@ enum SBCRecordingStatus : NSInteger;
 /// DirectCall class for a call between two participants. Every call is identified with a unique key.
 SWIFT_CLASS_NAMED("DirectCall")
 @interface SBCDirectCall : NSObject
-/// Call ID of the call. This value is generated from our SendBird server and is <code>String</code> representation of a UUID
+/// Call ID of the call. This value is generated from our Sendbird server and is <code>String</code> representation of a UUID
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly, copy) NSString * _Nonnull callId;
@@ -577,6 +577,8 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+
+
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
 /// Returns a copied instance of the <code>DirectCall</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
@@ -585,6 +587,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCall</code>.
+@property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@end
 
 @class SBCRecordingOptions;
 @class SBCError;
@@ -620,14 +630,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// returns:
 /// (discardable) Boolean value that indicates whether the specified recordingId is valid.
 - (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
-@end
-
-
-@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
-/// The hash value of <code>DirectCall</code>.
-@property (nonatomic, readonly) NSUInteger hash;
-/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -1323,6 +1325,122 @@ SWIFT_CLASS_NAMED("DirectCallUser")
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
+enum SBCParticipantState : NSInteger;
+
+/// A class that provides information about a participant and methods to set a participant’s audio and video.
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("Participant")
+@interface SBCParticipant : NSObject
+/// A unique identifier for a participant in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSString * _Nonnull participantId;
+/// Indicates a user in Calls who corresponds to the participant.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, strong) SBCUser * _Nonnull user;
+/// The participant’s <code>SendBirdVideoView</code>.
+/// since:
+/// 1.6.0
+@property (nonatomic, weak) SBCVideoView * _Nullable videoView;
+/// The timestamp of when the participant enter the room, in Unix milliseconds.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t enteredAt;
+/// The timestamp of when the participant information was updated within the room, in Unix milliseconds.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t updatedAt;
+/// The timestamp of when the participant exited the room, in Unix milliseconds. If the value is 0, it means the participant is present in the room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t exitedAt;
+/// The period from the time when the participant entered the room to the time the participant left the room, measured in seconds. If the value is 0, it means the participant is present in the room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t duration;
+/// The state of the participant. Valid values are entered, exited, and connected.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) enum SBCParticipantState state;
+/// Indicates whether the participant has enabled their audio.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) BOOL isAudioEnabled;
+/// Indicates whether the participant has enabled their video.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) BOOL isVideoEnabled;
+/// The hash value of <code>Participant</code>.
+@property (nonatomic, readonly) NSUInteger hash;
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+/// A enum that provides information about the state of a participant.
+/// since:
+/// 1.6.0
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCParticipantState, "State", open) {
+/// Indicates that a participant entered the room.
+/// since:
+/// 1.6.0
+  SBCParticipantStateEntered = 0,
+/// Indicates that a participant is connected and streaming media.
+/// since:
+/// 1.6.0
+  SBCParticipantStateConnected = 1,
+/// Indicates that a participant exited the room.
+/// since:
+/// 1.6.0
+  SBCParticipantStateExited = 2,
+};
+
+
+/// A class that contains all operational methods of a local participant to handle their audio and video.
+/// note:
+/// LocalParticipant contains all properties of Participant
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("LocalParticipant")
+@interface SBCLocalParticipant : SBCParticipant
+/// Mutes the local user’s audio.
+/// since:
+/// 1.6.0
+- (void)muteMicrophone;
+/// Unmutes the local user’s audio.
+/// since:
+/// 1.6.0
+- (void)unmuteMicrophone;
+/// Starts the local user’s video.
+/// since:
+/// 1.6.0
+- (void)startVideo;
+/// Stops the local user’s video.
+/// since:
+/// 1.6.0
+- (void)stopVideo;
+/// Switches the local user’s front and back cameras.
+/// \code
+/// call.switchCamera { error in
+///    // handle error
+/// }
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param completionHandler Callback completion handler containing error.
+///
+- (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+@end
+
+
+
+
+
+
+
+
 
 
 
@@ -1383,6 +1501,240 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingStatus, "RecordingStatus", open)
   SBCRecordingStatusRecording = 0,
   SBCRecordingStatusNone = 1,
 };
+
+
+/// A class that contains all operational methods of a remote participant.
+/// since:
+/// 1.6.0
+/// note:
+/// RemoteParticipant contains all properties of Participant
+SWIFT_CLASS_NAMED("RemoteParticipant")
+@interface SBCRemoteParticipant : SBCParticipant
+@end
+
+enum SBCRoomState : NSInteger;
+@class SBCRoomEnterParams;
+@protocol SBCRoomDelegate;
+
+/// A class that provides the <code>enter()</code>, <code>exit()</code>, and other methods, which handle information about the room and operate with other types of objects such as a participant.
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("Room")
+@interface SBCRoom : NSObject
+/// Returns a room ID.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSString * _Nonnull roomId;
+/// The timestamp of when the room was created, in Unix milliseconds.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t createdAt;
+/// The ID of a user who created a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSString * _Nonnull createdBy;
+/// The local participant in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, strong) SBCLocalParticipant * _Nullable localParticipant;
+/// The list of all participants in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSArray<SBCParticipant *> * _Nonnull participants;
+/// The list of remote participants in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSArray<SBCRemoteParticipant *> * _Nonnull remoteParticipants;
+/// The state of a room. Valid values are <code>entered</code>, <code>exited</code>, and <code>connected</code>.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) enum SBCRoomState state;
+/// Enters a room. The participant’s audio or video can be configured with <code>RoomEnterParams</code> when entering.
+/// since:
+/// 1.6.0
+/// \param completionHandler Callback completionHandler to be called after entering the room.
+///
+- (void)enterWithParams:(SBCRoomEnterParams * _Nonnull)params completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+/// Exits a room.
+/// since:
+/// 1.6.0
+/// \param completionHandler Callback completionHandler to be called after exiting the room.
+///
+- (void)exitWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+/// Adds <code>RoomDelegate</code> to receive events about a room.
+/// \code
+/// room.addDelegate(self, identifier: UNIQUE_ID)
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param delegate <code>RoomDelegate</code> that listens to <code>Room</code> events.
+///
+/// \param identifier Identifier for the specific delegate.
+///
+- (void)addDelegate:(id <SBCRoomDelegate> _Nonnull)delegate identifier:(NSString * _Nonnull)identifier;
+/// Removes a delegate to stop receiving events about a room.
+/// \code
+/// room.removeDelegate(identifier: UNIQUE_ID)
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param identifier String identifier for the delegate. If the room doesn’t have the given identifier, it will be ignored.
+///
+- (void)removeDelegateWithIdentifier:(NSString * _Nonnull)identifier;
+/// Removes all delegate to stop receiving events about a room.
+/// since:
+/// 1.6.0
+- (void)removeAllDelegates;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+@interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
+@end
+
+
+/// A class that provides the methods to enable audio and video settings.
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("EnterParams")
+@interface SBCRoomEnterParams : NSObject
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+
+
+@interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
+@end
+
+/// A enum that provides information about the state of a room.
+/// since:
+/// 1.6.0
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCRoomState, "State", open) {
+/// Indicates a room is open and available for group calls.
+/// since:
+/// 1.6.0
+  SBCRoomStateOpen = 0,
+/// Indicates a room is deleted.
+/// since:
+/// 1.6.0
+  SBCRoomStateDeleted = 1,
+};
+
+
+
+
+
+
+
+
+/// RoomDelegate methods are invoked along the flow of the room. You <em>should</em> implement the delegate methods to adjust your app according to the changes to the states of the room.
+/// \code
+/// override func viewDidLoad() {
+///    // ...
+///    room.addDelegate(self, identifier: "identifier")
+/// }
+///
+/// // ...
+///
+/// \endcodesince:
+/// 1.6.0
+SWIFT_PROTOCOL_NAMED("RoomDelegate")
+@protocol SBCRoomDelegate
+@optional
+/// Called when a remote participant has entered a room.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteParticipantEnter:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote participant has exited a room.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteParticipantExit:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote participant has started media streaming
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteStreamStart:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote partcipant’s audio settings has changed.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteAudioSettingsChange:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote participant’s video settings has changed.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteVideoSettingsChange:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when an error occurs on Sendbird server while processing a request.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         error: <code>Error</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didReceiveError:(NSError * _Nonnull)error participant:(SBCParticipant * _Nullable)participant;
+@end
+
+
+SWIFT_CLASS_NAMED("RoomParams")
+@interface SBCRoomParams : NSObject
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
 
 enum SBCErrorCode : NSInteger;
 @class NSCoder;
@@ -1487,6 +1839,27 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.3.0
   SBCErrorCodeFailedToStopRecording = 1800615,
+/// since:
+/// 1.6.0
+  SBCErrorCodeClientAlreadyEntered = 1800700,
+/// since:
+/// 1.6.0
+  SBCErrorCodeEnteringRoomStillInProgress = 1800701,
+/// since:
+/// 1.6.0
+  SBCErrorCodeParticipantNotInRoom = 1800702,
+/// since:
+/// 1.6.0
+  SBCErrorCodeExitingRoomStillInProgress = 1800703,
+/// since:
+/// 1.6.0
+  SBCErrorCodeFailedToEstablishConnectionToSendStream = 1800704,
+/// since:
+/// 1.6.0
+  SBCErrorCodeFailedToEstablishConnectionToReceiveStream = 1800705,
+/// since:
+/// 1.6.0
+  SBCErrorCodeLocalParticipantLostConnection = 1800706,
 /// since:
 /// 1.0.6
   SBCErrorCodeServerInternalError = 1400999,
@@ -2153,6 +2526,39 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 + (void)removeDirectCallSoundForType:(enum SBCSoundType)type;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+@interface SBCSendBirdCall (SWIFT_EXTENSION(SendBirdCalls))
+/// Creates a room for group calls.
+/// \code
+/// SendBirdCall.createRoom { room, error in
+///    ...
+///    // Set up delegate to receive events
+/// }
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param completionHandler A callback function that receives information about a room or an error from Sendbird server.
+///
++ (void)createRoomWithParams:(SBCRoomParams * _Nonnull)params completionHandler:(void (^ _Nonnull)(SBCRoom * _Nullable, SBCError * _Nullable))completionHandler;
+/// Gets a locally-cached room instance by room ID.
+/// since:
+/// 1.6.0
+/// \param roomId room ID.
+///
+///
+/// returns:
+/// <code>Room</code> object with the corresponding roomId
++ (SBCRoom * _Nullable)cachedRoomByRoomId:(NSString * _Nonnull)roomId SWIFT_WARN_UNUSED_RESULT;
+/// Fetches a room instance from Sendbird server.
+/// since:
+/// 1.6.0
+/// \param roomId room ID.
+///
+/// \param completionHandler Callback to be called after get <code>Room</code> object corresponding the ID or an error
+///
++ (void)fetchRoomByRoomId:(NSString * _Nonnull)roomId completionHandler:(void (^ _Nonnull)(SBCRoom * _Nullable, SBCError * _Nullable))completionHandler;
 @end
 
 
@@ -2759,7 +3165,7 @@ enum SBCRecordingStatus : NSInteger;
 /// DirectCall class for a call between two participants. Every call is identified with a unique key.
 SWIFT_CLASS_NAMED("DirectCall")
 @interface SBCDirectCall : NSObject
-/// Call ID of the call. This value is generated from our SendBird server and is <code>String</code> representation of a UUID
+/// Call ID of the call. This value is generated from our Sendbird server and is <code>String</code> representation of a UUID
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly, copy) NSString * _Nonnull callId;
@@ -2949,6 +3355,8 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+
+
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
 /// Returns a copied instance of the <code>DirectCall</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
@@ -2957,6 +3365,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCall</code>.
+@property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@end
 
 @class SBCRecordingOptions;
 @class SBCError;
@@ -2992,14 +3408,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// returns:
 /// (discardable) Boolean value that indicates whether the specified recordingId is valid.
 - (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
-@end
-
-
-@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
-/// The hash value of <code>DirectCall</code>.
-@property (nonatomic, readonly) NSUInteger hash;
-/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -3695,6 +4103,122 @@ SWIFT_CLASS_NAMED("DirectCallUser")
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
+enum SBCParticipantState : NSInteger;
+
+/// A class that provides information about a participant and methods to set a participant’s audio and video.
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("Participant")
+@interface SBCParticipant : NSObject
+/// A unique identifier for a participant in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSString * _Nonnull participantId;
+/// Indicates a user in Calls who corresponds to the participant.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, strong) SBCUser * _Nonnull user;
+/// The participant’s <code>SendBirdVideoView</code>.
+/// since:
+/// 1.6.0
+@property (nonatomic, weak) SBCVideoView * _Nullable videoView;
+/// The timestamp of when the participant enter the room, in Unix milliseconds.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t enteredAt;
+/// The timestamp of when the participant information was updated within the room, in Unix milliseconds.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t updatedAt;
+/// The timestamp of when the participant exited the room, in Unix milliseconds. If the value is 0, it means the participant is present in the room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t exitedAt;
+/// The period from the time when the participant entered the room to the time the participant left the room, measured in seconds. If the value is 0, it means the participant is present in the room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t duration;
+/// The state of the participant. Valid values are entered, exited, and connected.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) enum SBCParticipantState state;
+/// Indicates whether the participant has enabled their audio.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) BOOL isAudioEnabled;
+/// Indicates whether the participant has enabled their video.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) BOOL isVideoEnabled;
+/// The hash value of <code>Participant</code>.
+@property (nonatomic, readonly) NSUInteger hash;
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+/// A enum that provides information about the state of a participant.
+/// since:
+/// 1.6.0
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCParticipantState, "State", open) {
+/// Indicates that a participant entered the room.
+/// since:
+/// 1.6.0
+  SBCParticipantStateEntered = 0,
+/// Indicates that a participant is connected and streaming media.
+/// since:
+/// 1.6.0
+  SBCParticipantStateConnected = 1,
+/// Indicates that a participant exited the room.
+/// since:
+/// 1.6.0
+  SBCParticipantStateExited = 2,
+};
+
+
+/// A class that contains all operational methods of a local participant to handle their audio and video.
+/// note:
+/// LocalParticipant contains all properties of Participant
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("LocalParticipant")
+@interface SBCLocalParticipant : SBCParticipant
+/// Mutes the local user’s audio.
+/// since:
+/// 1.6.0
+- (void)muteMicrophone;
+/// Unmutes the local user’s audio.
+/// since:
+/// 1.6.0
+- (void)unmuteMicrophone;
+/// Starts the local user’s video.
+/// since:
+/// 1.6.0
+- (void)startVideo;
+/// Stops the local user’s video.
+/// since:
+/// 1.6.0
+- (void)stopVideo;
+/// Switches the local user’s front and back cameras.
+/// \code
+/// call.switchCamera { error in
+///    // handle error
+/// }
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param completionHandler Callback completion handler containing error.
+///
+- (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+@end
+
+
+
+
+
+
+
+
 
 
 
@@ -3755,6 +4279,240 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingStatus, "RecordingStatus", open)
   SBCRecordingStatusRecording = 0,
   SBCRecordingStatusNone = 1,
 };
+
+
+/// A class that contains all operational methods of a remote participant.
+/// since:
+/// 1.6.0
+/// note:
+/// RemoteParticipant contains all properties of Participant
+SWIFT_CLASS_NAMED("RemoteParticipant")
+@interface SBCRemoteParticipant : SBCParticipant
+@end
+
+enum SBCRoomState : NSInteger;
+@class SBCRoomEnterParams;
+@protocol SBCRoomDelegate;
+
+/// A class that provides the <code>enter()</code>, <code>exit()</code>, and other methods, which handle information about the room and operate with other types of objects such as a participant.
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("Room")
+@interface SBCRoom : NSObject
+/// Returns a room ID.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSString * _Nonnull roomId;
+/// The timestamp of when the room was created, in Unix milliseconds.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t createdAt;
+/// The ID of a user who created a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSString * _Nonnull createdBy;
+/// The local participant in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, strong) SBCLocalParticipant * _Nullable localParticipant;
+/// The list of all participants in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSArray<SBCParticipant *> * _Nonnull participants;
+/// The list of remote participants in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSArray<SBCRemoteParticipant *> * _Nonnull remoteParticipants;
+/// The state of a room. Valid values are <code>entered</code>, <code>exited</code>, and <code>connected</code>.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) enum SBCRoomState state;
+/// Enters a room. The participant’s audio or video can be configured with <code>RoomEnterParams</code> when entering.
+/// since:
+/// 1.6.0
+/// \param completionHandler Callback completionHandler to be called after entering the room.
+///
+- (void)enterWithParams:(SBCRoomEnterParams * _Nonnull)params completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+/// Exits a room.
+/// since:
+/// 1.6.0
+/// \param completionHandler Callback completionHandler to be called after exiting the room.
+///
+- (void)exitWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+/// Adds <code>RoomDelegate</code> to receive events about a room.
+/// \code
+/// room.addDelegate(self, identifier: UNIQUE_ID)
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param delegate <code>RoomDelegate</code> that listens to <code>Room</code> events.
+///
+/// \param identifier Identifier for the specific delegate.
+///
+- (void)addDelegate:(id <SBCRoomDelegate> _Nonnull)delegate identifier:(NSString * _Nonnull)identifier;
+/// Removes a delegate to stop receiving events about a room.
+/// \code
+/// room.removeDelegate(identifier: UNIQUE_ID)
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param identifier String identifier for the delegate. If the room doesn’t have the given identifier, it will be ignored.
+///
+- (void)removeDelegateWithIdentifier:(NSString * _Nonnull)identifier;
+/// Removes all delegate to stop receiving events about a room.
+/// since:
+/// 1.6.0
+- (void)removeAllDelegates;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+@interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
+@end
+
+
+/// A class that provides the methods to enable audio and video settings.
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("EnterParams")
+@interface SBCRoomEnterParams : NSObject
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+
+
+@interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
+@end
+
+/// A enum that provides information about the state of a room.
+/// since:
+/// 1.6.0
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCRoomState, "State", open) {
+/// Indicates a room is open and available for group calls.
+/// since:
+/// 1.6.0
+  SBCRoomStateOpen = 0,
+/// Indicates a room is deleted.
+/// since:
+/// 1.6.0
+  SBCRoomStateDeleted = 1,
+};
+
+
+
+
+
+
+
+
+/// RoomDelegate methods are invoked along the flow of the room. You <em>should</em> implement the delegate methods to adjust your app according to the changes to the states of the room.
+/// \code
+/// override func viewDidLoad() {
+///    // ...
+///    room.addDelegate(self, identifier: "identifier")
+/// }
+///
+/// // ...
+///
+/// \endcodesince:
+/// 1.6.0
+SWIFT_PROTOCOL_NAMED("RoomDelegate")
+@protocol SBCRoomDelegate
+@optional
+/// Called when a remote participant has entered a room.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteParticipantEnter:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote participant has exited a room.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteParticipantExit:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote participant has started media streaming
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteStreamStart:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote partcipant’s audio settings has changed.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteAudioSettingsChange:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote participant’s video settings has changed.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteVideoSettingsChange:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when an error occurs on Sendbird server while processing a request.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         error: <code>Error</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didReceiveError:(NSError * _Nonnull)error participant:(SBCParticipant * _Nullable)participant;
+@end
+
+
+SWIFT_CLASS_NAMED("RoomParams")
+@interface SBCRoomParams : NSObject
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
 
 enum SBCErrorCode : NSInteger;
 @class NSCoder;
@@ -3859,6 +4617,27 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.3.0
   SBCErrorCodeFailedToStopRecording = 1800615,
+/// since:
+/// 1.6.0
+  SBCErrorCodeClientAlreadyEntered = 1800700,
+/// since:
+/// 1.6.0
+  SBCErrorCodeEnteringRoomStillInProgress = 1800701,
+/// since:
+/// 1.6.0
+  SBCErrorCodeParticipantNotInRoom = 1800702,
+/// since:
+/// 1.6.0
+  SBCErrorCodeExitingRoomStillInProgress = 1800703,
+/// since:
+/// 1.6.0
+  SBCErrorCodeFailedToEstablishConnectionToSendStream = 1800704,
+/// since:
+/// 1.6.0
+  SBCErrorCodeFailedToEstablishConnectionToReceiveStream = 1800705,
+/// since:
+/// 1.6.0
+  SBCErrorCodeLocalParticipantLostConnection = 1800706,
 /// since:
 /// 1.0.6
   SBCErrorCodeServerInternalError = 1400999,
@@ -4525,6 +5304,39 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 + (void)removeDirectCallSoundForType:(enum SBCSoundType)type;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+@interface SBCSendBirdCall (SWIFT_EXTENSION(SendBirdCalls))
+/// Creates a room for group calls.
+/// \code
+/// SendBirdCall.createRoom { room, error in
+///    ...
+///    // Set up delegate to receive events
+/// }
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param completionHandler A callback function that receives information about a room or an error from Sendbird server.
+///
++ (void)createRoomWithParams:(SBCRoomParams * _Nonnull)params completionHandler:(void (^ _Nonnull)(SBCRoom * _Nullable, SBCError * _Nullable))completionHandler;
+/// Gets a locally-cached room instance by room ID.
+/// since:
+/// 1.6.0
+/// \param roomId room ID.
+///
+///
+/// returns:
+/// <code>Room</code> object with the corresponding roomId
++ (SBCRoom * _Nullable)cachedRoomByRoomId:(NSString * _Nonnull)roomId SWIFT_WARN_UNUSED_RESULT;
+/// Fetches a room instance from Sendbird server.
+/// since:
+/// 1.6.0
+/// \param roomId room ID.
+///
+/// \param completionHandler Callback to be called after get <code>Room</code> object corresponding the ID or an error
+///
++ (void)fetchRoomByRoomId:(NSString * _Nonnull)roomId completionHandler:(void (^ _Nonnull)(SBCRoom * _Nullable, SBCError * _Nullable))completionHandler;
 @end
 
 
@@ -5135,7 +5947,7 @@ enum SBCRecordingStatus : NSInteger;
 /// DirectCall class for a call between two participants. Every call is identified with a unique key.
 SWIFT_CLASS_NAMED("DirectCall")
 @interface SBCDirectCall : NSObject
-/// Call ID of the call. This value is generated from our SendBird server and is <code>String</code> representation of a UUID
+/// Call ID of the call. This value is generated from our Sendbird server and is <code>String</code> representation of a UUID
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly, copy) NSString * _Nonnull callId;
@@ -5325,6 +6137,8 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+
+
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
 /// Returns a copied instance of the <code>DirectCall</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
@@ -5333,6 +6147,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCall</code>.
+@property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@end
 
 @class SBCRecordingOptions;
 @class SBCError;
@@ -5368,14 +6190,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// returns:
 /// (discardable) Boolean value that indicates whether the specified recordingId is valid.
 - (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
-@end
-
-
-@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
-/// The hash value of <code>DirectCall</code>.
-@property (nonatomic, readonly) NSUInteger hash;
-/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -6071,6 +6885,122 @@ SWIFT_CLASS_NAMED("DirectCallUser")
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
+enum SBCParticipantState : NSInteger;
+
+/// A class that provides information about a participant and methods to set a participant’s audio and video.
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("Participant")
+@interface SBCParticipant : NSObject
+/// A unique identifier for a participant in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSString * _Nonnull participantId;
+/// Indicates a user in Calls who corresponds to the participant.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, strong) SBCUser * _Nonnull user;
+/// The participant’s <code>SendBirdVideoView</code>.
+/// since:
+/// 1.6.0
+@property (nonatomic, weak) SBCVideoView * _Nullable videoView;
+/// The timestamp of when the participant enter the room, in Unix milliseconds.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t enteredAt;
+/// The timestamp of when the participant information was updated within the room, in Unix milliseconds.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t updatedAt;
+/// The timestamp of when the participant exited the room, in Unix milliseconds. If the value is 0, it means the participant is present in the room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t exitedAt;
+/// The period from the time when the participant entered the room to the time the participant left the room, measured in seconds. If the value is 0, it means the participant is present in the room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t duration;
+/// The state of the participant. Valid values are entered, exited, and connected.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) enum SBCParticipantState state;
+/// Indicates whether the participant has enabled their audio.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) BOOL isAudioEnabled;
+/// Indicates whether the participant has enabled their video.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) BOOL isVideoEnabled;
+/// The hash value of <code>Participant</code>.
+@property (nonatomic, readonly) NSUInteger hash;
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+/// A enum that provides information about the state of a participant.
+/// since:
+/// 1.6.0
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCParticipantState, "State", open) {
+/// Indicates that a participant entered the room.
+/// since:
+/// 1.6.0
+  SBCParticipantStateEntered = 0,
+/// Indicates that a participant is connected and streaming media.
+/// since:
+/// 1.6.0
+  SBCParticipantStateConnected = 1,
+/// Indicates that a participant exited the room.
+/// since:
+/// 1.6.0
+  SBCParticipantStateExited = 2,
+};
+
+
+/// A class that contains all operational methods of a local participant to handle their audio and video.
+/// note:
+/// LocalParticipant contains all properties of Participant
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("LocalParticipant")
+@interface SBCLocalParticipant : SBCParticipant
+/// Mutes the local user’s audio.
+/// since:
+/// 1.6.0
+- (void)muteMicrophone;
+/// Unmutes the local user’s audio.
+/// since:
+/// 1.6.0
+- (void)unmuteMicrophone;
+/// Starts the local user’s video.
+/// since:
+/// 1.6.0
+- (void)startVideo;
+/// Stops the local user’s video.
+/// since:
+/// 1.6.0
+- (void)stopVideo;
+/// Switches the local user’s front and back cameras.
+/// \code
+/// call.switchCamera { error in
+///    // handle error
+/// }
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param completionHandler Callback completion handler containing error.
+///
+- (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+@end
+
+
+
+
+
+
+
+
 
 
 
@@ -6131,6 +7061,240 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingStatus, "RecordingStatus", open)
   SBCRecordingStatusRecording = 0,
   SBCRecordingStatusNone = 1,
 };
+
+
+/// A class that contains all operational methods of a remote participant.
+/// since:
+/// 1.6.0
+/// note:
+/// RemoteParticipant contains all properties of Participant
+SWIFT_CLASS_NAMED("RemoteParticipant")
+@interface SBCRemoteParticipant : SBCParticipant
+@end
+
+enum SBCRoomState : NSInteger;
+@class SBCRoomEnterParams;
+@protocol SBCRoomDelegate;
+
+/// A class that provides the <code>enter()</code>, <code>exit()</code>, and other methods, which handle information about the room and operate with other types of objects such as a participant.
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("Room")
+@interface SBCRoom : NSObject
+/// Returns a room ID.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSString * _Nonnull roomId;
+/// The timestamp of when the room was created, in Unix milliseconds.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t createdAt;
+/// The ID of a user who created a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSString * _Nonnull createdBy;
+/// The local participant in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, strong) SBCLocalParticipant * _Nullable localParticipant;
+/// The list of all participants in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSArray<SBCParticipant *> * _Nonnull participants;
+/// The list of remote participants in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSArray<SBCRemoteParticipant *> * _Nonnull remoteParticipants;
+/// The state of a room. Valid values are <code>entered</code>, <code>exited</code>, and <code>connected</code>.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) enum SBCRoomState state;
+/// Enters a room. The participant’s audio or video can be configured with <code>RoomEnterParams</code> when entering.
+/// since:
+/// 1.6.0
+/// \param completionHandler Callback completionHandler to be called after entering the room.
+///
+- (void)enterWithParams:(SBCRoomEnterParams * _Nonnull)params completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+/// Exits a room.
+/// since:
+/// 1.6.0
+/// \param completionHandler Callback completionHandler to be called after exiting the room.
+///
+- (void)exitWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+/// Adds <code>RoomDelegate</code> to receive events about a room.
+/// \code
+/// room.addDelegate(self, identifier: UNIQUE_ID)
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param delegate <code>RoomDelegate</code> that listens to <code>Room</code> events.
+///
+/// \param identifier Identifier for the specific delegate.
+///
+- (void)addDelegate:(id <SBCRoomDelegate> _Nonnull)delegate identifier:(NSString * _Nonnull)identifier;
+/// Removes a delegate to stop receiving events about a room.
+/// \code
+/// room.removeDelegate(identifier: UNIQUE_ID)
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param identifier String identifier for the delegate. If the room doesn’t have the given identifier, it will be ignored.
+///
+- (void)removeDelegateWithIdentifier:(NSString * _Nonnull)identifier;
+/// Removes all delegate to stop receiving events about a room.
+/// since:
+/// 1.6.0
+- (void)removeAllDelegates;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+@interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
+@end
+
+
+/// A class that provides the methods to enable audio and video settings.
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("EnterParams")
+@interface SBCRoomEnterParams : NSObject
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+
+
+@interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
+@end
+
+/// A enum that provides information about the state of a room.
+/// since:
+/// 1.6.0
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCRoomState, "State", open) {
+/// Indicates a room is open and available for group calls.
+/// since:
+/// 1.6.0
+  SBCRoomStateOpen = 0,
+/// Indicates a room is deleted.
+/// since:
+/// 1.6.0
+  SBCRoomStateDeleted = 1,
+};
+
+
+
+
+
+
+
+
+/// RoomDelegate methods are invoked along the flow of the room. You <em>should</em> implement the delegate methods to adjust your app according to the changes to the states of the room.
+/// \code
+/// override func viewDidLoad() {
+///    // ...
+///    room.addDelegate(self, identifier: "identifier")
+/// }
+///
+/// // ...
+///
+/// \endcodesince:
+/// 1.6.0
+SWIFT_PROTOCOL_NAMED("RoomDelegate")
+@protocol SBCRoomDelegate
+@optional
+/// Called when a remote participant has entered a room.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteParticipantEnter:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote participant has exited a room.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteParticipantExit:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote participant has started media streaming
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteStreamStart:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote partcipant’s audio settings has changed.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteAudioSettingsChange:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote participant’s video settings has changed.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteVideoSettingsChange:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when an error occurs on Sendbird server while processing a request.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         error: <code>Error</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didReceiveError:(NSError * _Nonnull)error participant:(SBCParticipant * _Nullable)participant;
+@end
+
+
+SWIFT_CLASS_NAMED("RoomParams")
+@interface SBCRoomParams : NSObject
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
 
 enum SBCErrorCode : NSInteger;
 @class NSCoder;
@@ -6235,6 +7399,27 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.3.0
   SBCErrorCodeFailedToStopRecording = 1800615,
+/// since:
+/// 1.6.0
+  SBCErrorCodeClientAlreadyEntered = 1800700,
+/// since:
+/// 1.6.0
+  SBCErrorCodeEnteringRoomStillInProgress = 1800701,
+/// since:
+/// 1.6.0
+  SBCErrorCodeParticipantNotInRoom = 1800702,
+/// since:
+/// 1.6.0
+  SBCErrorCodeExitingRoomStillInProgress = 1800703,
+/// since:
+/// 1.6.0
+  SBCErrorCodeFailedToEstablishConnectionToSendStream = 1800704,
+/// since:
+/// 1.6.0
+  SBCErrorCodeFailedToEstablishConnectionToReceiveStream = 1800705,
+/// since:
+/// 1.6.0
+  SBCErrorCodeLocalParticipantLostConnection = 1800706,
 /// since:
 /// 1.0.6
   SBCErrorCodeServerInternalError = 1400999,
@@ -6901,6 +8086,39 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 + (void)removeDirectCallSoundForType:(enum SBCSoundType)type;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+@interface SBCSendBirdCall (SWIFT_EXTENSION(SendBirdCalls))
+/// Creates a room for group calls.
+/// \code
+/// SendBirdCall.createRoom { room, error in
+///    ...
+///    // Set up delegate to receive events
+/// }
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param completionHandler A callback function that receives information about a room or an error from Sendbird server.
+///
++ (void)createRoomWithParams:(SBCRoomParams * _Nonnull)params completionHandler:(void (^ _Nonnull)(SBCRoom * _Nullable, SBCError * _Nullable))completionHandler;
+/// Gets a locally-cached room instance by room ID.
+/// since:
+/// 1.6.0
+/// \param roomId room ID.
+///
+///
+/// returns:
+/// <code>Room</code> object with the corresponding roomId
++ (SBCRoom * _Nullable)cachedRoomByRoomId:(NSString * _Nonnull)roomId SWIFT_WARN_UNUSED_RESULT;
+/// Fetches a room instance from Sendbird server.
+/// since:
+/// 1.6.0
+/// \param roomId room ID.
+///
+/// \param completionHandler Callback to be called after get <code>Room</code> object corresponding the ID or an error
+///
++ (void)fetchRoomByRoomId:(NSString * _Nonnull)roomId completionHandler:(void (^ _Nonnull)(SBCRoom * _Nullable, SBCError * _Nullable))completionHandler;
 @end
 
 
@@ -7509,7 +8727,7 @@ enum SBCRecordingStatus : NSInteger;
 /// DirectCall class for a call between two participants. Every call is identified with a unique key.
 SWIFT_CLASS_NAMED("DirectCall")
 @interface SBCDirectCall : NSObject
-/// Call ID of the call. This value is generated from our SendBird server and is <code>String</code> representation of a UUID
+/// Call ID of the call. This value is generated from our Sendbird server and is <code>String</code> representation of a UUID
 /// since:
 /// 1.0.0
 @property (nonatomic, readonly, copy) NSString * _Nonnull callId;
@@ -7699,6 +8917,8 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+
+
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls)) <NSCopying>
 /// Returns a copied instance of the <code>DirectCall</code>.
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
@@ -7707,6 +8927,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// The hash value of <code>DirectCall</code>.
+@property (nonatomic, readonly) NSUInteger hash;
+/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@end
 
 @class SBCRecordingOptions;
 @class SBCError;
@@ -7742,14 +8970,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// returns:
 /// (discardable) Boolean value that indicates whether the specified recordingId is valid.
 - (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
-@end
-
-
-@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
-/// The hash value of <code>DirectCall</code>.
-@property (nonatomic, readonly) NSUInteger hash;
-/// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -8445,6 +9665,122 @@ SWIFT_CLASS_NAMED("DirectCallUser")
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT;
 @end
 
+enum SBCParticipantState : NSInteger;
+
+/// A class that provides information about a participant and methods to set a participant’s audio and video.
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("Participant")
+@interface SBCParticipant : NSObject
+/// A unique identifier for a participant in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSString * _Nonnull participantId;
+/// Indicates a user in Calls who corresponds to the participant.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, strong) SBCUser * _Nonnull user;
+/// The participant’s <code>SendBirdVideoView</code>.
+/// since:
+/// 1.6.0
+@property (nonatomic, weak) SBCVideoView * _Nullable videoView;
+/// The timestamp of when the participant enter the room, in Unix milliseconds.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t enteredAt;
+/// The timestamp of when the participant information was updated within the room, in Unix milliseconds.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t updatedAt;
+/// The timestamp of when the participant exited the room, in Unix milliseconds. If the value is 0, it means the participant is present in the room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t exitedAt;
+/// The period from the time when the participant entered the room to the time the participant left the room, measured in seconds. If the value is 0, it means the participant is present in the room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t duration;
+/// The state of the participant. Valid values are entered, exited, and connected.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) enum SBCParticipantState state;
+/// Indicates whether the participant has enabled their audio.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) BOOL isAudioEnabled;
+/// Indicates whether the participant has enabled their video.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) BOOL isVideoEnabled;
+/// The hash value of <code>Participant</code>.
+@property (nonatomic, readonly) NSUInteger hash;
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+/// A enum that provides information about the state of a participant.
+/// since:
+/// 1.6.0
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCParticipantState, "State", open) {
+/// Indicates that a participant entered the room.
+/// since:
+/// 1.6.0
+  SBCParticipantStateEntered = 0,
+/// Indicates that a participant is connected and streaming media.
+/// since:
+/// 1.6.0
+  SBCParticipantStateConnected = 1,
+/// Indicates that a participant exited the room.
+/// since:
+/// 1.6.0
+  SBCParticipantStateExited = 2,
+};
+
+
+/// A class that contains all operational methods of a local participant to handle their audio and video.
+/// note:
+/// LocalParticipant contains all properties of Participant
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("LocalParticipant")
+@interface SBCLocalParticipant : SBCParticipant
+/// Mutes the local user’s audio.
+/// since:
+/// 1.6.0
+- (void)muteMicrophone;
+/// Unmutes the local user’s audio.
+/// since:
+/// 1.6.0
+- (void)unmuteMicrophone;
+/// Starts the local user’s video.
+/// since:
+/// 1.6.0
+- (void)startVideo;
+/// Stops the local user’s video.
+/// since:
+/// 1.6.0
+- (void)stopVideo;
+/// Switches the local user’s front and back cameras.
+/// \code
+/// call.switchCamera { error in
+///    // handle error
+/// }
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param completionHandler Callback completion handler containing error.
+///
+- (void)switchCameraWithCompletionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+@end
+
+
+
+
+
+
+
+
 
 
 
@@ -8505,6 +9841,240 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRecordingStatus, "RecordingStatus", open)
   SBCRecordingStatusRecording = 0,
   SBCRecordingStatusNone = 1,
 };
+
+
+/// A class that contains all operational methods of a remote participant.
+/// since:
+/// 1.6.0
+/// note:
+/// RemoteParticipant contains all properties of Participant
+SWIFT_CLASS_NAMED("RemoteParticipant")
+@interface SBCRemoteParticipant : SBCParticipant
+@end
+
+enum SBCRoomState : NSInteger;
+@class SBCRoomEnterParams;
+@protocol SBCRoomDelegate;
+
+/// A class that provides the <code>enter()</code>, <code>exit()</code>, and other methods, which handle information about the room and operate with other types of objects such as a participant.
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("Room")
+@interface SBCRoom : NSObject
+/// Returns a room ID.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSString * _Nonnull roomId;
+/// The timestamp of when the room was created, in Unix milliseconds.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) int64_t createdAt;
+/// The ID of a user who created a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSString * _Nonnull createdBy;
+/// The local participant in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, strong) SBCLocalParticipant * _Nullable localParticipant;
+/// The list of all participants in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSArray<SBCParticipant *> * _Nonnull participants;
+/// The list of remote participants in a room.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly, copy) NSArray<SBCRemoteParticipant *> * _Nonnull remoteParticipants;
+/// The state of a room. Valid values are <code>entered</code>, <code>exited</code>, and <code>connected</code>.
+/// since:
+/// 1.6.0
+@property (nonatomic, readonly) enum SBCRoomState state;
+/// Enters a room. The participant’s audio or video can be configured with <code>RoomEnterParams</code> when entering.
+/// since:
+/// 1.6.0
+/// \param completionHandler Callback completionHandler to be called after entering the room.
+///
+- (void)enterWithParams:(SBCRoomEnterParams * _Nonnull)params completionHandler:(void (^ _Nonnull)(SBCError * _Nullable))completionHandler;
+/// Exits a room.
+/// since:
+/// 1.6.0
+/// \param completionHandler Callback completionHandler to be called after exiting the room.
+///
+- (void)exitWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+/// Adds <code>RoomDelegate</code> to receive events about a room.
+/// \code
+/// room.addDelegate(self, identifier: UNIQUE_ID)
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param delegate <code>RoomDelegate</code> that listens to <code>Room</code> events.
+///
+/// \param identifier Identifier for the specific delegate.
+///
+- (void)addDelegate:(id <SBCRoomDelegate> _Nonnull)delegate identifier:(NSString * _Nonnull)identifier;
+/// Removes a delegate to stop receiving events about a room.
+/// \code
+/// room.removeDelegate(identifier: UNIQUE_ID)
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param identifier String identifier for the delegate. If the room doesn’t have the given identifier, it will be ignored.
+///
+- (void)removeDelegateWithIdentifier:(NSString * _Nonnull)identifier;
+/// Removes all delegate to stop receiving events about a room.
+/// since:
+/// 1.6.0
+- (void)removeAllDelegates;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+@interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
+@end
+
+
+/// A class that provides the methods to enable audio and video settings.
+/// since:
+/// 1.6.0
+SWIFT_CLASS_NAMED("EnterParams")
+@interface SBCRoomEnterParams : NSObject
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+
+
+@interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
+@end
+
+/// A enum that provides information about the state of a room.
+/// since:
+/// 1.6.0
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCRoomState, "State", open) {
+/// Indicates a room is open and available for group calls.
+/// since:
+/// 1.6.0
+  SBCRoomStateOpen = 0,
+/// Indicates a room is deleted.
+/// since:
+/// 1.6.0
+  SBCRoomStateDeleted = 1,
+};
+
+
+
+
+
+
+
+
+/// RoomDelegate methods are invoked along the flow of the room. You <em>should</em> implement the delegate methods to adjust your app according to the changes to the states of the room.
+/// \code
+/// override func viewDidLoad() {
+///    // ...
+///    room.addDelegate(self, identifier: "identifier")
+/// }
+///
+/// // ...
+///
+/// \endcodesince:
+/// 1.6.0
+SWIFT_PROTOCOL_NAMED("RoomDelegate")
+@protocol SBCRoomDelegate
+@optional
+/// Called when a remote participant has entered a room.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteParticipantEnter:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote participant has exited a room.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteParticipantExit:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote participant has started media streaming
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteStreamStart:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote partcipant’s audio settings has changed.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteAudioSettingsChange:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when a remote participant’s video settings has changed.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         participant: <code>RemoteParticipant</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didRemoteVideoSettingsChange:(SBCRemoteParticipant * _Nonnull)participant;
+/// Called when an error occurs on Sendbird server while processing a request.
+/// since:
+/// 1.6.0
+/// <ul>
+///   <li>
+///     Parameters
+///     <ul>
+///       <li>
+///         error: <code>Error</code> object.
+///       </li>
+///     </ul>
+///   </li>
+/// </ul>
+- (void)didReceiveError:(NSError * _Nonnull)error participant:(SBCParticipant * _Nullable)participant;
+@end
+
+
+SWIFT_CLASS_NAMED("RoomParams")
+@interface SBCRoomParams : NSObject
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
 
 enum SBCErrorCode : NSInteger;
 @class NSCoder;
@@ -8609,6 +10179,27 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.3.0
   SBCErrorCodeFailedToStopRecording = 1800615,
+/// since:
+/// 1.6.0
+  SBCErrorCodeClientAlreadyEntered = 1800700,
+/// since:
+/// 1.6.0
+  SBCErrorCodeEnteringRoomStillInProgress = 1800701,
+/// since:
+/// 1.6.0
+  SBCErrorCodeParticipantNotInRoom = 1800702,
+/// since:
+/// 1.6.0
+  SBCErrorCodeExitingRoomStillInProgress = 1800703,
+/// since:
+/// 1.6.0
+  SBCErrorCodeFailedToEstablishConnectionToSendStream = 1800704,
+/// since:
+/// 1.6.0
+  SBCErrorCodeFailedToEstablishConnectionToReceiveStream = 1800705,
+/// since:
+/// 1.6.0
+  SBCErrorCodeLocalParticipantLostConnection = 1800706,
 /// since:
 /// 1.0.6
   SBCErrorCodeServerInternalError = 1400999,
@@ -9275,6 +10866,39 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 + (void)removeDirectCallSoundForType:(enum SBCSoundType)type;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+@interface SBCSendBirdCall (SWIFT_EXTENSION(SendBirdCalls))
+/// Creates a room for group calls.
+/// \code
+/// SendBirdCall.createRoom { room, error in
+///    ...
+///    // Set up delegate to receive events
+/// }
+///
+/// \endcodesince:
+/// 1.6.0
+/// \param completionHandler A callback function that receives information about a room or an error from Sendbird server.
+///
++ (void)createRoomWithParams:(SBCRoomParams * _Nonnull)params completionHandler:(void (^ _Nonnull)(SBCRoom * _Nullable, SBCError * _Nullable))completionHandler;
+/// Gets a locally-cached room instance by room ID.
+/// since:
+/// 1.6.0
+/// \param roomId room ID.
+///
+///
+/// returns:
+/// <code>Room</code> object with the corresponding roomId
++ (SBCRoom * _Nullable)cachedRoomByRoomId:(NSString * _Nonnull)roomId SWIFT_WARN_UNUSED_RESULT;
+/// Fetches a room instance from Sendbird server.
+/// since:
+/// 1.6.0
+/// \param roomId room ID.
+///
+/// \param completionHandler Callback to be called after get <code>Room</code> object corresponding the ID or an error
+///
++ (void)fetchRoomByRoomId:(NSString * _Nonnull)roomId completionHandler:(void (^ _Nonnull)(SBCRoom * _Nullable, SBCError * _Nullable))completionHandler;
 @end
 
 
