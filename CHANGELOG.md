@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.5.3 (Mar 3, 2021 UTC)
+* Improved stability.
+
 ### 1.6.0-beta (Feb 17, 2021 UTC)
 Supports the early access program for group calling. New concepts introduced in this version center around **rooms** and **participants**.
 * Added New methods to existing classes
