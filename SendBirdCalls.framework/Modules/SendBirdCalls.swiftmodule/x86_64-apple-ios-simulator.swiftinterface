@@ -3,8 +3,10 @@
 // swift-module-flags: -target x86_64-apple-ios9.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendBirdCalls
 import AVFoundation
 import AVKit
+import CoreMedia.CMSampleBuffer
 import CommonCrypto
 import CoreFoundation
+import CoreMedia
 import CoreTelephony
 import Foundation
 import MediaPlayer
@@ -99,6 +101,10 @@ extension VideoDevice {
       get
     }
   }
+}
+extension DirectCall {
+  @objc dynamic public func startScreenShare(completionHandler: @escaping ((((CoreMedia.CMSampleBuffer, Swift.Error?) -> Swift.Void)?, SendBirdCalls.SBCError?) -> Swift.Void))
+  @objc dynamic public func stopScreenShare(completionHandler: SendBirdCalls.ErrorHandler? = nil)
 }
 extension DirectCall {
   @objc(acceptWithParams:) dynamic public func accept(with params: SendBirdCalls.AcceptParams)
@@ -347,6 +353,10 @@ extension User : Foundation.NSCopying {
     case recordingAlreadyInProgress = 1800612
     case failedToStartRecording = 1800614
     case failedToStopRecording = 1800615
+    case screenShareRestrictedFromAudioCall = 1800620
+    case screenShareRequestBeforeCallIsConnected = 1800621
+    case screenShareAlreadyInProgress = 1800622
+    case noScreenShareExists = 1800623
     case serverInternalError = 1400999
     case invalidCallStatus = 1400101
     case callDoesNotExist = 1400102
@@ -483,6 +493,9 @@ extension User : Foundation.NSCopying {
   @objc public var remoteRecordingStatus: SendBirdCalls.RecordingStatus {
     get
     }
+  @objc public var isLocalScreenShareEnabled: Swift.Bool {
+    @objc get
+  }
   @objc override dynamic public init()
   @objc deinit
 }

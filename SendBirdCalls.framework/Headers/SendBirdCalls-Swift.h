@@ -185,6 +185,7 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 @import AVFoundation;
 @import CoreGraphics;
+@import CoreMedia;
 @import CoreTelephony;
 @import Dispatch;
 @import Foundation;
@@ -541,6 +542,10 @@ SWIFT_CLASS_NAMED("DirectCall")
 /// since:
 /// 1.4.0
 @property (nonatomic, readonly) enum SBCRecordingStatus remoteRecordingStatus;
+/// Indicates whether the local user’s screen is being shared.
+/// since:
+/// 1.5.4
+@property (nonatomic, readonly) BOOL isLocalScreenShareEnabled;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -584,10 +589,49 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+@class SBCError;
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// Starts screen share of the local user. Used with Apple’s ReplayKit.
+/// \code
+/// let recorder = RPScreenRecorder.shared()
+///
+/// call.startScreenShare { (bufferHandler, error) in
+///    guard error == nil else { return }
+///
+///    recorder.startCapture { (buffer, bufferType, error) in
+///        bufferHandler?(buffer, error)
+///    } completionHandler: { (error) in
+///        guard error == nil else { return } // Handle error
+///        // Successfully started screen share
+///    }
+/// }
+///
+///
+/// \endcodesince:
+/// 1.5.4
+/// \param completionHandler A handler that contains CMSampleBuffer Handler and an error depending on the result.  CMSampleBuffer Handler should be called inside the completionHandler of <code>RPScreenRecorder.startCapture</code>.
+///
+- (void)startScreenShareWithCompletionHandler:(void (^ _Nonnull)(void (^ _Nullable)(CMSampleBufferRef _Nonnull, NSError * _Nullable), SBCError * _Nullable))completionHandler;
+/// Stops screen share of the local user.
+/// <code>RPScreenRecorder.stopCapture</code> should be called before calling this method.
+/// \code
+/// let recorder = RPScreenRecorder.shared()
+/// ...
+/// recorder.stopCapture { (error) in
+///     self.call.stopScreenShare()
+/// }
+///
+/// \endcodesince:
+/// 1.5.4
+/// \param completionHandler A handler that contains an error depending on the result.
+///
+- (void)stopScreenShareWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+@end
+
 
 
 @class SBCRecordingOptions;
-@class SBCError;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
@@ -1487,6 +1531,18 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.3.0
   SBCErrorCodeFailedToStopRecording = 1800615,
+/// since:
+/// 1.5.4
+  SBCErrorCodeScreenShareRestrictedFromAudioCall = 1800620,
+/// since:
+/// 1.5.4
+  SBCErrorCodeScreenShareRequestBeforeCallIsConnected = 1800621,
+/// since:
+/// 1.5.4
+  SBCErrorCodeScreenShareAlreadyInProgress = 1800622,
+/// since:
+/// 1.5.4
+  SBCErrorCodeNoScreenShareExists = 1800623,
 /// since:
 /// 1.0.6
   SBCErrorCodeServerInternalError = 1400999,
@@ -2557,6 +2613,7 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 @import AVFoundation;
 @import CoreGraphics;
+@import CoreMedia;
 @import CoreTelephony;
 @import Dispatch;
 @import Foundation;
@@ -2913,6 +2970,10 @@ SWIFT_CLASS_NAMED("DirectCall")
 /// since:
 /// 1.4.0
 @property (nonatomic, readonly) enum SBCRecordingStatus remoteRecordingStatus;
+/// Indicates whether the local user’s screen is being shared.
+/// since:
+/// 1.5.4
+@property (nonatomic, readonly) BOOL isLocalScreenShareEnabled;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -2956,10 +3017,49 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+@class SBCError;
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// Starts screen share of the local user. Used with Apple’s ReplayKit.
+/// \code
+/// let recorder = RPScreenRecorder.shared()
+///
+/// call.startScreenShare { (bufferHandler, error) in
+///    guard error == nil else { return }
+///
+///    recorder.startCapture { (buffer, bufferType, error) in
+///        bufferHandler?(buffer, error)
+///    } completionHandler: { (error) in
+///        guard error == nil else { return } // Handle error
+///        // Successfully started screen share
+///    }
+/// }
+///
+///
+/// \endcodesince:
+/// 1.5.4
+/// \param completionHandler A handler that contains CMSampleBuffer Handler and an error depending on the result.  CMSampleBuffer Handler should be called inside the completionHandler of <code>RPScreenRecorder.startCapture</code>.
+///
+- (void)startScreenShareWithCompletionHandler:(void (^ _Nonnull)(void (^ _Nullable)(CMSampleBufferRef _Nonnull, NSError * _Nullable), SBCError * _Nullable))completionHandler;
+/// Stops screen share of the local user.
+/// <code>RPScreenRecorder.stopCapture</code> should be called before calling this method.
+/// \code
+/// let recorder = RPScreenRecorder.shared()
+/// ...
+/// recorder.stopCapture { (error) in
+///     self.call.stopScreenShare()
+/// }
+///
+/// \endcodesince:
+/// 1.5.4
+/// \param completionHandler A handler that contains an error depending on the result.
+///
+- (void)stopScreenShareWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+@end
+
 
 
 @class SBCRecordingOptions;
-@class SBCError;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
@@ -3859,6 +3959,18 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.3.0
   SBCErrorCodeFailedToStopRecording = 1800615,
+/// since:
+/// 1.5.4
+  SBCErrorCodeScreenShareRestrictedFromAudioCall = 1800620,
+/// since:
+/// 1.5.4
+  SBCErrorCodeScreenShareRequestBeforeCallIsConnected = 1800621,
+/// since:
+/// 1.5.4
+  SBCErrorCodeScreenShareAlreadyInProgress = 1800622,
+/// since:
+/// 1.5.4
+  SBCErrorCodeNoScreenShareExists = 1800623,
 /// since:
 /// 1.0.6
   SBCErrorCodeServerInternalError = 1400999,
@@ -4933,6 +5045,7 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 @import AVFoundation;
 @import CoreGraphics;
+@import CoreMedia;
 @import CoreTelephony;
 @import Dispatch;
 @import Foundation;
@@ -5289,6 +5402,10 @@ SWIFT_CLASS_NAMED("DirectCall")
 /// since:
 /// 1.4.0
 @property (nonatomic, readonly) enum SBCRecordingStatus remoteRecordingStatus;
+/// Indicates whether the local user’s screen is being shared.
+/// since:
+/// 1.5.4
+@property (nonatomic, readonly) BOOL isLocalScreenShareEnabled;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -5332,10 +5449,49 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+@class SBCError;
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// Starts screen share of the local user. Used with Apple’s ReplayKit.
+/// \code
+/// let recorder = RPScreenRecorder.shared()
+///
+/// call.startScreenShare { (bufferHandler, error) in
+///    guard error == nil else { return }
+///
+///    recorder.startCapture { (buffer, bufferType, error) in
+///        bufferHandler?(buffer, error)
+///    } completionHandler: { (error) in
+///        guard error == nil else { return } // Handle error
+///        // Successfully started screen share
+///    }
+/// }
+///
+///
+/// \endcodesince:
+/// 1.5.4
+/// \param completionHandler A handler that contains CMSampleBuffer Handler and an error depending on the result.  CMSampleBuffer Handler should be called inside the completionHandler of <code>RPScreenRecorder.startCapture</code>.
+///
+- (void)startScreenShareWithCompletionHandler:(void (^ _Nonnull)(void (^ _Nullable)(CMSampleBufferRef _Nonnull, NSError * _Nullable), SBCError * _Nullable))completionHandler;
+/// Stops screen share of the local user.
+/// <code>RPScreenRecorder.stopCapture</code> should be called before calling this method.
+/// \code
+/// let recorder = RPScreenRecorder.shared()
+/// ...
+/// recorder.stopCapture { (error) in
+///     self.call.stopScreenShare()
+/// }
+///
+/// \endcodesince:
+/// 1.5.4
+/// \param completionHandler A handler that contains an error depending on the result.
+///
+- (void)stopScreenShareWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+@end
+
 
 
 @class SBCRecordingOptions;
-@class SBCError;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
@@ -6235,6 +6391,18 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.3.0
   SBCErrorCodeFailedToStopRecording = 1800615,
+/// since:
+/// 1.5.4
+  SBCErrorCodeScreenShareRestrictedFromAudioCall = 1800620,
+/// since:
+/// 1.5.4
+  SBCErrorCodeScreenShareRequestBeforeCallIsConnected = 1800621,
+/// since:
+/// 1.5.4
+  SBCErrorCodeScreenShareAlreadyInProgress = 1800622,
+/// since:
+/// 1.5.4
+  SBCErrorCodeNoScreenShareExists = 1800623,
 /// since:
 /// 1.0.6
   SBCErrorCodeServerInternalError = 1400999,
@@ -7307,6 +7475,7 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 @import AVFoundation;
 @import CoreGraphics;
+@import CoreMedia;
 @import CoreTelephony;
 @import Dispatch;
 @import Foundation;
@@ -7663,6 +7832,10 @@ SWIFT_CLASS_NAMED("DirectCall")
 /// since:
 /// 1.4.0
 @property (nonatomic, readonly) enum SBCRecordingStatus remoteRecordingStatus;
+/// Indicates whether the local user’s screen is being shared.
+/// since:
+/// 1.5.4
+@property (nonatomic, readonly) BOOL isLocalScreenShareEnabled;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -7706,10 +7879,49 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 
 
 
+@class SBCError;
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// Starts screen share of the local user. Used with Apple’s ReplayKit.
+/// \code
+/// let recorder = RPScreenRecorder.shared()
+///
+/// call.startScreenShare { (bufferHandler, error) in
+///    guard error == nil else { return }
+///
+///    recorder.startCapture { (buffer, bufferType, error) in
+///        bufferHandler?(buffer, error)
+///    } completionHandler: { (error) in
+///        guard error == nil else { return } // Handle error
+///        // Successfully started screen share
+///    }
+/// }
+///
+///
+/// \endcodesince:
+/// 1.5.4
+/// \param completionHandler A handler that contains CMSampleBuffer Handler and an error depending on the result.  CMSampleBuffer Handler should be called inside the completionHandler of <code>RPScreenRecorder.startCapture</code>.
+///
+- (void)startScreenShareWithCompletionHandler:(void (^ _Nonnull)(void (^ _Nullable)(CMSampleBufferRef _Nonnull, NSError * _Nullable), SBCError * _Nullable))completionHandler;
+/// Stops screen share of the local user.
+/// <code>RPScreenRecorder.stopCapture</code> should be called before calling this method.
+/// \code
+/// let recorder = RPScreenRecorder.shared()
+/// ...
+/// recorder.stopCapture { (error) in
+///     self.call.stopScreenShare()
+/// }
+///
+/// \endcodesince:
+/// 1.5.4
+/// \param completionHandler A handler that contains an error depending on the result.
+///
+- (void)stopScreenShareWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+@end
+
 
 
 @class SBCRecordingOptions;
-@class SBCError;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// Starts a media recording session of a direct call. Only one ongoing recording session is allowed.
@@ -8609,6 +8821,18 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.3.0
   SBCErrorCodeFailedToStopRecording = 1800615,
+/// since:
+/// 1.5.4
+  SBCErrorCodeScreenShareRestrictedFromAudioCall = 1800620,
+/// since:
+/// 1.5.4
+  SBCErrorCodeScreenShareRequestBeforeCallIsConnected = 1800621,
+/// since:
+/// 1.5.4
+  SBCErrorCodeScreenShareAlreadyInProgress = 1800622,
+/// since:
+/// 1.5.4
+  SBCErrorCodeNoScreenShareExists = 1800623,
 /// since:
 /// 1.0.6
   SBCErrorCodeServerInternalError = 1400999,

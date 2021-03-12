@@ -1,5 +1,11 @@
 # Change Log
 
+### 1.5.4 (Mar 12, 2021 UTC)
+* Added support for screen share in `DirectCall`.
+    * Added `startScreenShare(completionHandler:)` in `DirectCall`.
+    * Added `stopScreenShare(completionHandler:)` in `DirectCall`.
+    * Added `isLocalScreenShareEnabled` in `DirectCall`.
+
 ### 1.5.3 (Mar 3, 2021 UTC)
 * Improved stability.
 
