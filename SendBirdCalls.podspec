@@ -12,5 +12,5 @@ Pod::Spec.new do |s|
   s.ios.vendored_frameworks = "SendBirdCalls.framework"
   s.ios.frameworks = ["UIKit", "Foundation", "PushKit", "WebRTC", "AVKit", "MediaPlayer", "Network", "CoreTelephony", "VideoToolbox"]
   s.requires_arc = true
-  s.dependency "SendBirdWebRTC"
+  s.dependency "SendBirdWebRTC", "~> 1.2.0"
 end
