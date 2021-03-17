@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.5.5 (Mar 17, 2021 UTC)
+* Fixed issue where `DirectCall.startedAt` would return incorrect value. 
+
 ### 1.5.4 (Mar 12, 2021 UTC)
 * Added support for screen share in `DirectCall`.
     * Added `startScreenShare(completionHandler:)` in `DirectCall`.
