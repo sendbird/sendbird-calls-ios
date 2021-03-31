@@ -66,7 +66,7 @@ To use Sendbird Calls, first add our custom-built `WebRTC` framework to the proj
 
 1. Install `CocoaPods` into the project by running `pod init` in the project directory.
 2. Run `open Podfile`
-3. In the opened Podfile, include `pod ‘SendBirdCalls’` to the configuration under the project target.
+3. In the opened Podfile, include `pod 'SendBirdCalls'` to the configuration under the project target.
 4. Install the `SendBirdCalls` framework by running `pod install` in the project directory. 
 
 For further details on the  usage and installation of `CocoaPods` instructions, refer to CocoaPods’ [website](https://cocoapods.org/). 
