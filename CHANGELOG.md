@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.5.6 (Apr 7, 2021 UTC)
+* Improved stability.
+
 ### 1.5.5 (Mar 17, 2021 UTC)
 * Fixed issue where `DirectCall.startedAt` would return incorrect value. 
 
