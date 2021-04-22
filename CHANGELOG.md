@@ -1,5 +1,20 @@
 # Change Log
 
+### 1.6.0 (Apr 22, 2021 UTC)
+* Sendbird Calls now supports making group calls in a room.
+    * Added `Room`.
+        * Added `createRoom(with:completionHandler:)` in `SendBirdCall`.
+        * Added `fetchRoom(by:completionHandler:)` in `SendBirdCall`.
+        * Added `getCachedRoom(by:completionHandler:)` in `SendBirdCall`. 
+        * Added `RoomType`.
+        * Added `RoomParams`.
+        * Added `State` in `Room`.
+        * Added `EnterParams` in `Room`.
+        * Added `RoomDelegate`.
+    * Added `Participant`, `LocalParticipant` and `RemoteParticipant`.
+        * Added `Participant.State`.
+* Improved stability.
+
 ### 1.5.7 (Apr 8, 2021 UTC)
 * Improved stability.
 
