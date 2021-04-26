@@ -84,8 +84,8 @@ For further details on the  usage and installation of `CocoaPods` instructions, 
 2. Create a [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) in the same directory `.xcodeproj` or `.xcworkspace` is.
 3. List the desired dependencies in the [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) as show below.
 ```bash
-github "sendbird/sendbird-calls-ios" ~> 1.5.7
-github "sendbird/sendbird-webrtc-ios" ~> 1.2.0
+github "sendbird/sendbird-calls-ios" ~> 1.6.0
+github "sendbird/sendbird-webrtc-ios" ~> 1.3.0
 ```
 4. Run `carthage update`.
 5. A `Cartfile.resolved` file and a `Carthage` directory will appear in the same directory as  `.xcodeproj` or `.xcworkspace` .
