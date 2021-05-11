@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.6.1 (May 11, 2021 UTC)
+* Improved stability. 
+
 ### 1.6.0 (Apr 22, 2021 UTC)
 * Sendbird Calls now supports making group calls in a room.
     * Added `Room`.
