@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.6.2 (May 13, 2021 UTC)
+* Improved stability. 
+
 ### 1.6.1 (May 11, 2021 UTC)
 * Improved stability. 
 
