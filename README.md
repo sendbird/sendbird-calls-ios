@@ -669,6 +669,8 @@ Above error is caused by the lack of `Git Large File Storage`. The size of `Send
 ```bash
 // in the project directory
 brew install git-lfs
+
+git lfs install
 ```
 2. Remove all caches
 ```bash
