@@ -1,5 +1,15 @@
 # Change Log
 
+### 1.7.0 (June 4, 2021 UTC) 
+* Added capability to query rooms. 
+    * Added `RoomListQuery`.
+    * Added `RoomListQueryParams`.
+    * Added `createRoomListQuery(with:)` in `SendBirdCall`.
+* Added `SendBirdRange`.
+* Added `embed(in:)` to `SendBirdVideoView`.
+* Xcode 12 is now required to build SendBirdCalls.
+* Improved stability. 
+
 ### 1.6.2 (May 13, 2021 UTC)
 * Improved stability. 
 
