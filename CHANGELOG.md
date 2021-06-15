@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.7.1 (June 15, 2021 UTC)
+* Fixed Invalid Bundle error from enabled LLVM instrumentation.
+
 ### 1.7.0 (June 4, 2021 UTC) 
 * Added capability to query rooms. 
     * Added `RoomListQuery`.
