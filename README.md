@@ -643,12 +643,12 @@ extension AppDelegate: DirectCallDelegate {
 
 | File       | Raw Files | Compiled Size |
 |------------|-----------|---------------|
-| Calls SDK  | 98.4 MB   | 3.75 MB       |
-| WebRTC SDK | 1.07 GB   | 6.37 MB       |
+| Calls SDK  | 77.1 MB   | 2.32 MB       |
+| WebRTC SDK | 1.18 GB   | 6.32 MB       |
 
-(Xcode 12.4, Any iOS Device (arm64))
+(Xcode 12.3, Any iOS Device (arm64))
 
-*- Last Updated: Feb 18th, 2021*
+*- Last Updated: June 18th, 2021*
 
 <br />
 
