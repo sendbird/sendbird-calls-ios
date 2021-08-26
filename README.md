@@ -58,7 +58,12 @@ This section gives you information you need to get started with Sendbird Calls S
 
 To use Sendbird Calls, first add our custom-built `WebRTC` framework to the project. [Git Large File Storage](https://git-lfs.github.com) must be installed to use the `WebRTC ` framework along with the `SendBirdCalls` framework.
 
-- Run `brew install git-lfs` in the project directory. 
+In the project directory, run: 
+```
+$ brew install git-lfs
+
+$ git lfs install
+```
 
 ### CocoaPods
 
