@@ -57,7 +57,7 @@ This section gives you information you need to get started with Sendbird Calls S
 
 Go to your Swift Package Manager's `File` tab and select `Swift Packages`. Then choose `Add package dependency`.
 
-Add SendBirdCalls into your Package Repository with the following URL: `https://github.com/sendbird/sendbird-calls-ios`.
+Add the `SendBirdCalls` framework into your Package Repository with the following URL: `https://github.com/sendbird/sendbird-calls-ios`.
 
 To add the package, select appropriate dependency rule and click `Add Package`.
 
@@ -94,7 +94,7 @@ For an in-depth guide, read on from [Carthage’s ReadMe](https://github.com/Car
 
 ### Manual set-up
 
-If you do not prefer to use `CocoaPods` or `Carthage` to install Calls SDK, here is an alternative. You can choose to manually integrate `SendBirdCalls` directly into your project. The `SendBirdCalls` framework is provided as a `.xcframework` file.
+If you do not prefer to use `CocoaPods` or `Carthage` to install the Calls SDK, here is an alternative: you can manually integrate the `SendBirdCalls` directly into your project. The `SendBirdCalls` framework is provided as a `.xcframework` file.
 
 1. Download the framework file by one of the following.
     - Direct download from git releases
