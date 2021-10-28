@@ -40,13 +40,10 @@ This section shows the prerequisites you need to check to use Sendbird Calls SDK
 * iOS 9.0 or later
 * Swift 4 or later, Objective-C
 * Xcode 9 or later, macOS Sierra or later.
-* Installation of **[Git Large File Storage](https://git-lfs.github.com)**
-
-> **IMPORTANT**: **MAKE sure to install Git LFS before installing the pod**. The size of `WebRTC.framework` in **SendBirdWebRTC** folder must be over 800 MB. If the size of the loaded `SendBirdWebRTC` framework is smaller than 800 MB, check the **Git Large File Storage** settings and download again. For further details, refer to SDK’s [troubleshooting section](#library-not-loaded-webrtcframework).
 
 ### SDK dependencies
 
-* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios), which can be integrated by `CocoaPods`, `Carthage`, or manual set-up.
+* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios), which can be integrated by `Swift Package Manager`, `CocoaPods`, `Carthage`, or manual set-up.
 
 <br />
 
@@ -56,14 +53,13 @@ This section gives you information you need to get started with Sendbird Calls S
 
 ### Install Calls SDK
 
-To use Sendbird Calls, first add our custom-built `WebRTC` framework to the project. [Git Large File Storage](https://git-lfs.github.com) must be installed to use the `WebRTC ` framework along with the `SendBirdCalls` framework.
+### Swift Package Manager
 
-In the project directory, run: 
-```
-$ brew install git-lfs
+Go to your Swift Package Manager's `File` tab and select `Swift Packages`. Then choose `Add package dependency`.
 
-$ git lfs install
-```
+Add the `SendBirdCalls` framework into your Package Repository with the following URL: `https://github.com/sendbird/sendbird-calls-ios`.
+
+To add the package, select appropriate dependency rule and click `Add Package`.
 
 ### CocoaPods
 
@@ -78,8 +74,6 @@ For further details on the  usage and installation of `CocoaPods` instructions, 
 
 > **Note**: The Sendbird Calls SDK for iOS relies on the` SendBirdWebRTC` framework. `SendBirdWebRTC` is based on `GoogleWebRTC` and is recompiled with `bitcode` enabled. Since `SendBirdWebRTC` is included in `SendBirdCalls` as a dependency, it doesn't need to be explicitly downloaded.
 
-> **IMPORTANT**: After installing the framework, there **MUST** be a 800+MB `SendBirdWebRTC` binary inside `Pods/SendBirdWebRTC.framework`. If not, follow [this troubleshooting](#library-not-loaded-webrtcframework) guide.
-
 
 ### Carthage
 
@@ -89,34 +83,18 @@ For further details on the  usage and installation of `CocoaPods` instructions, 
 2. Create a [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) in the same directory `.xcodeproj` or `.xcworkspace` is.
 3. List the desired dependencies in the [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) as show below.
 ```bash
-github "sendbird/sendbird-calls-ios" ~> 1.6.0
-github "sendbird/sendbird-webrtc-ios" ~> 1.3.0
+github "sendbird/sendbird-calls-ios" ~> 1.8.0
+github "sendbird/sendbird-webrtc-ios" ~> 1.4.0
 ```
-4. Run `carthage update`.
+4. Run `carthage update --use-xcframeworks`.
 5. A `Cartfile.resolved` file and a `Carthage` directory will appear in the same directory as  `.xcodeproj` or `.xcworkspace` .
 6. Drag the built `.framework` binaries from `Carthage/Build/iOS` into the application’s Xcode project.
-7. On the application targets’ `Build Phases` settings tab, click the **+** icon and choose **New Run Script Phase**. Create a **Run Script** that specifies the desired shell (e.g. `/bin/sh`), then add the following contents to the script area below the shell:
-```bash
-/usr/local/bin/carthage copy-frameworks
-```
-8. Add the paths to the desired frameworks under **Input Files**. For example:
-```bash
-$(SRCROOT)/Carthage/Build/iOS/SendBirdCalls.framework
-$(SRCROOT)/Carthage/Build/iOS/WebRTC.framework
-```
-9. Add the paths to the copied frameworks to the **Output Files**. For example:
-```bash
-$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SendBirdCalls.framework
-$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/WebRTC.framework
-```
-
-Another approach when having multiple dependencies is to use `.xcfilelists`. This is covered when building for `iOS`
 
 For an in-depth guide, read on from [Carthage’s ReadMe](https://github.com/Carthage/Carthage#quick-start). If you encounter any issues when using `Carthage` to install the `SendBirdCalls`, make sure that you are using the latest version of `Carthage`.
 
 ### Manual set-up
 
-If you do not prefer to use `CocoaPods` or `Carthage` to install Calls SDK, here is an alternative. You can choose to manually integrate `SendBirdCalls` directly into your project. The `SendBirdCalls` framework is provided as a fat `.framework` file and a `.xcframework` file.
+If you do not prefer to use `CocoaPods` or `Carthage` to install the Calls SDK, here is an alternative: you can manually integrate the `SendBirdCalls` directly into your project. The `SendBirdCalls` framework is provided as a `.xcframework` file.
 
 1. Download the framework file by one of the following.
     - Direct download from git releases
@@ -670,51 +648,3 @@ Sendbird Calls first try to make a P2P connection directly using the Calls SDK. 
 *- Last Updated: June 18th, 2021*
 
 <br />
-
-## Troubleshooting 
-
-### Library not loaded WebRTC.framework
-
-This is an example of an error message you may face.
-
-```bash
-dyld: Library not loaded: @rpath/WebRTC.framework/WebRTC
-  Referenced from: /private/var/containers/Bundle/Application/{UUID}/{APPLICATION_NAME}.app/Frameworks/SendBirdCalls.framework/SendBirdCalls
-Reason: image not found
-```
-Above error is caused by the lack of `Git Large File Storage`. The size of `SendBirdWebRTC.framework` is over 800MB. The size of `WebRTC` binary is about 849MB. However, `Git` cannot normally download a file that large. To install the entire framework file, installing `git-lfs` is required. However, because `Cocoapods` has already cached the faulty `SendBirdWebRTC.framework` binary, simply installing git-lfs will not solve the problem. All caches associated with `SendBirdWebRTC.framework` must be cleared. Follow the steps below to clear the caches. 
-
-1. Install `git-lfs`
-```bash
-// in the project directory
-brew install git-lfs
-
-git lfs install
-```
-2. Remove all caches
-```bash
-pod cache clean --all
-
-rm -rf ~/Library/Caches/CocoaPods/*
-rm -rf ~/Library/Developer/Xcode/DerivedData/*
-```
-Or, to avoid removing all of the caches not related to `SendBirdWebRTC.framework`, simply remove caches related to `SendBirdWebRTC.framework`.
-```bash
-pod cache clean 'SendBirdWebRTC' --all
-
-rm -rf ~/Library/Caches/CocoaPods/Pods/Release/SendBirdWebRTC
-rm -rf ~/Library/Caches/CocoaPods/Pods/Specs/Release/SendBirdWebRTC
-rm -rf ~/Library/Developer/Xcode/DerivedData/{PROJECT-NAME}-{UUID}
-```
-3. Setup Cocoapods again
-```bash
-pod deintegrate
-pod setup
-```
-
-> Note: `[!] A valid Xcode project file is required.` This error message will appear if you have multiple `.xcodeproject` or `.xcworkspace` files in the directory. Make sure to have only 1 copy of each file. If the same error message appears again, check if your current directory is the folder that contains your `.xcodeproject`: `$ ls`.
-
-4. Re-install Cocoapods dependencies
-```bash
-pod install
-```
