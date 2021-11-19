@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.8.2 (Nov 19, 2021 UTC)
+* Improved stability.
+
 ### 1.8.1 (Nov 19, 2021 UTC)
 * Improved stability.
 

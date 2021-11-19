@@ -13594,8 +13594,6 @@ removeDelegate
 addDelegate
 application
 $s13SendBirdCalls6LoggerV10remotePushACvau
-dictionary.get
-SendBirdCalls/Client/Commands/CommandFactory.swift
 $sSDyxq_Gs23CustomStringConvertiblessABP11descriptionSSvgTWSS_ypTi5
 $ss17_NativeDictionaryV7_valuesSpyq_Gvgs11AnyHashableV_ypTg5
 _convertToAnyHashable
@@ -15884,8 +15882,8 @@ typeValue.get
 decodeCommand
 SendBirdCalls/Client/Commands/CommandType/CallCommandType.swift
 SendBirdCalls/Client/Commands/CommandType/UtilCommandType.swift
-isMyCommand
 command
+dictionary.get
 _$sSay13SendBirdCalls9CandidateCGSayxGSEsSERzlWl
 _$s13SendBirdCalls9CandidateCACSEAAWl
 _$s13SendBirdCalls22RemoveCandidateRequestVAA21DirectCallRequestableA2aDP4typeAA12CommandTypesO0gH0OvgTW
