@@ -805,9 +805,7 @@ extension DialParams : Foundation.NSCopying {
   }
   @objc @discardableResult
   public static func configure(appId: Swift.String) -> Swift.Bool
-  @objc public static var sdkVersion: Swift.String {
-    @objc get
-  }
+  @objc public static let sdkVersion: Swift.String
   @objc public static func routePickerView(frame: CoreGraphics.CGRect) -> UIKit.UIView
   @objc public static func executeOn(queue: Dispatch.DispatchQueue)
   @objc public static func addDelegate(_ delegate: SendBirdCalls.SendBirdCallDelegate, identifier: Swift.String)

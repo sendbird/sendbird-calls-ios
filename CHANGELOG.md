@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.8.1 (Nov 19, 2021 UTC)
+* Improved stability.
+
 ### 1.8.0 (Oct 27, 2021 UTC)
 For 1.8.0, a new feature is released for both Group call and Direct call features respectively.
 For the Group call feature, you can now add and manage custom items to store additional information for a room.
