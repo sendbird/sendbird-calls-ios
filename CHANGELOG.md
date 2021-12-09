@@ -1,5 +1,11 @@
 # Change Log
 
+### 1.9.0 (Dec 9, 2021 UTC)
+For 1.9.0, a new feature to delete a room in Group call is released.
+
+Here is what's been updated:
+*  Added `didDelete()` in `RoomDelegate` which is invoked when the room has been deleted by the Platform API.
+
 ### 1.8.2 (Nov 19, 2021 UTC)
 * Improved stability.
 

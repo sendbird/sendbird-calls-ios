@@ -472,6 +472,7 @@ extension SendBirdVideoView {
   @objc optional func didCustomItemsUpdate(updatedKeys: [Swift.String])
   @objc optional func didCustomItemsDelete(deletedKeys: [Swift.String])
   @objc optional func didReceiveError(_ error: SendBirdCalls.SBCError, participant: SendBirdCalls.Participant?)
+  @objc optional func didDelete()
   @objc optional func didAudioDeviceChange(_ room: SendBirdCalls.Room, session: AVFoundation.AVAudioSession, previousRoute: AVFoundation.AVAudioSessionRouteDescription, reason: AVFoundation.AVAudioSession.RouteChangeReason)
 }
 @_inheritsConvenienceInitializers @objcMembers @objc(SBCRoomParams) public class RoomParams : ObjectiveC.NSObject, Swift.Encodable {
@@ -594,6 +595,7 @@ extension User : Foundation.NSCopying {
     case clientIdAlreadyExists = 1400122
     case invalidRequest = 1400123
     case endpointToSendStreamAlreadyExists = 1400124
+    case roomDeleted = 1400126
     case unknownError = 500999
     public var rawValue: Swift.Int {
       get
