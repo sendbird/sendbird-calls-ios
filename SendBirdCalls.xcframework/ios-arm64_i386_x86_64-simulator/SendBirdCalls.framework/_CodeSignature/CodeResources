@@ -14,7 +14,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		J7FkEdHos5c7WloHh3Vj+h5oZpQ=
+		/MYlMWEGP8lWb/cGJcThMwJkPQ4=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -74,7 +74,7 @@
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		i6sxMnqIKxTxVWOJpJNWMmE13MA=
+		3osVkPGwnrxmPoJnCF5nOOJk/6s=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64.swiftdoc</key>
 		<data>
@@ -86,7 +86,7 @@
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64.swiftmodule</key>
 		<data>
-		i6sxMnqIKxTxVWOJpJNWMmE13MA=
+		3osVkPGwnrxmPoJnCF5nOOJk/6s=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -275,11 +275,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			i6sxMnqIKxTxVWOJpJNWMmE13MA=
+			3osVkPGwnrxmPoJnCF5nOOJk/6s=
 			</data>
 			<key>hash2</key>
 			<data>
-			xFS6f9+aV79m64gOGU+xhufNrIfY7Y8J/pHFzW6xOvs=
+			tGiNLG3hDZDlfPOsBXPspkEITiLioZtMpbcofBNZQDE=
 			</data>
 		</dict>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64.swiftdoc</key>
@@ -308,11 +308,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			i6sxMnqIKxTxVWOJpJNWMmE13MA=
+			3osVkPGwnrxmPoJnCF5nOOJk/6s=
 			</data>
 			<key>hash2</key>
 			<data>
-			xFS6f9+aV79m64gOGU+xhufNrIfY7Y8J/pHFzW6xOvs=
+			tGiNLG3hDZDlfPOsBXPspkEITiLioZtMpbcofBNZQDE=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

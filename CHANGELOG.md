@@ -1,6 +1,6 @@
 # Change Log
 
-### 1.9.1 (Dec 15, 2021 UTC)
+### 1.9.2 (Dec 15, 2021 UTC)
 * Improved stability.
 
 ### 1.9.0 (Dec 9, 2021 UTC)
