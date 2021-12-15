@@ -1854,7 +1854,7 @@ SWIFT_PROTOCOL_NAMED("RoomDelegate")
 - (void)didReceiveError:(SBCError * _Nonnull)error participant:(SBCParticipant * _Nullable)participant;
 /// Called when the room has been deleted
 /// since:
-/// [NEXT_VERSION]
+/// 1.9.0
 - (void)didDelete;
 - (void)didAudioDeviceChange:(SBCRoom * _Nonnull)room session:(AVAudioSession * _Nonnull)session previousRoute:(AVAudioSessionRouteDescription * _Nonnull)previousRoute reason:(AVAudioSessionRouteChangeReason)reason;
 @end
@@ -2179,7 +2179,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// 1.6.0
   SBCErrorCodeEndpointToSendStreamAlreadyExists = 1400124,
 /// since:
-/// [NEXT_VERSION]
+/// 1.9.0
   SBCErrorCodeRoomDeleted = 1400126,
 /// since:
 /// 1.6.0
@@ -4979,7 +4979,7 @@ SWIFT_PROTOCOL_NAMED("RoomDelegate")
 - (void)didReceiveError:(SBCError * _Nonnull)error participant:(SBCParticipant * _Nullable)participant;
 /// Called when the room has been deleted
 /// since:
-/// [NEXT_VERSION]
+/// 1.9.0
 - (void)didDelete;
 - (void)didAudioDeviceChange:(SBCRoom * _Nonnull)room session:(AVAudioSession * _Nonnull)session previousRoute:(AVAudioSessionRouteDescription * _Nonnull)previousRoute reason:(AVAudioSessionRouteChangeReason)reason;
 @end
@@ -5304,7 +5304,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// 1.6.0
   SBCErrorCodeEndpointToSendStreamAlreadyExists = 1400124,
 /// since:
-/// [NEXT_VERSION]
+/// 1.9.0
   SBCErrorCodeRoomDeleted = 1400126,
 /// since:
 /// 1.6.0

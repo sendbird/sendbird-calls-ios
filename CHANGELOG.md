@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.9.1 (Dec 15, 2021 UTC)
+* Improved stability.
+
 ### 1.9.0 (Dec 9, 2021 UTC)
 For 1.9.0, a new feature to delete a room in Group call is released.
 
