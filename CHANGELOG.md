@@ -1,5 +1,10 @@
 # Change Log
 
+### 1.9.3 (Apr 20, 2022 UTC)
+* Fixed a bug where isAudioEnabled and isVideoEnabled in CallOptions didn't work properly. 
+* Removed i386 architecture from the framework.
+* Updated SendBirdWebRTC dependency version to 1.5.0.
+
 ### 1.9.2 (Dec 15, 2021 UTC)
 * Improved stability.
 
