@@ -11,7 +11,7 @@ let package = Package(
             targets: ["SendBirdCallsTarget"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/sendbird/sendbird-webrtc-ios", from: "1.5.0")
+        .package(url: "https://github.com/sendbird/sendbird-webrtc-ios", from: "1.6.0")
     ],
     targets: [
         .binaryTarget(name: "SendBirdCalls", path: "SendBirdCalls.xcframework"),
