@@ -669,6 +669,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
+
 @class SBCRecordingOptions;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
@@ -703,7 +704,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// (discardable) Boolean value that indicates whether the specified recordingId is valid.
 - (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
 @end
-
 
 
 
@@ -1525,6 +1525,7 @@ SWIFT_CLASS_NAMED("LocalParticipant")
 
 
 
+
 enum SBCRecordingType : NSInteger;
 @class NSURL;
 
@@ -1728,6 +1729,7 @@ SWIFT_CLASS_NAMED("EnterParams")
 @end
 
 
+
 @interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
 @end
 
@@ -1744,7 +1746,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRoomState, "State", open) {
 /// 1.6.0
   SBCRoomStateDeleted = 1,
 };
-
 
 
 
@@ -3105,6 +3106,7 @@ SWIFT_CLASS_NAMED("VideoDevice")
 @end
 
 
+
 @interface SBCVideoDevice (SWIFT_EXTENSION(SendBirdCalls))
 @end
 
@@ -3125,7 +3127,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCVideoDevicePosition, "Position", open) {
 /// 1.0.0
   SBCVideoDevicePositionUnspecified = 2,
 };
-
 
 
 #if __has_attribute(external_source_symbol)
@@ -3804,6 +3805,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
+
 @class SBCRecordingOptions;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
@@ -3838,7 +3840,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// (discardable) Boolean value that indicates whether the specified recordingId is valid.
 - (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
 @end
-
 
 
 
@@ -4660,6 +4661,7 @@ SWIFT_CLASS_NAMED("LocalParticipant")
 
 
 
+
 enum SBCRecordingType : NSInteger;
 @class NSURL;
 
@@ -4863,6 +4865,7 @@ SWIFT_CLASS_NAMED("EnterParams")
 @end
 
 
+
 @interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
 @end
 
@@ -4879,7 +4882,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRoomState, "State", open) {
 /// 1.6.0
   SBCRoomStateDeleted = 1,
 };
-
 
 
 
@@ -6243,6 +6245,7 @@ SWIFT_CLASS_NAMED("VideoDevice")
 @end
 
 
+
 @interface SBCVideoDevice (SWIFT_EXTENSION(SendBirdCalls))
 @end
 
@@ -6263,7 +6266,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCVideoDevicePosition, "Position", open) {
 /// 1.0.0
   SBCVideoDevicePositionUnspecified = 2,
 };
-
 
 
 #if __has_attribute(external_source_symbol)

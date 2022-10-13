@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.9.6 (Oct 13, 2022 UTC)
+* Improve stability.
+ 
 ### 1.9.5 (Aug 3, 2022 UTC)
 * Fixed an issue where dial tone will play randomly either from earpiece rather than speaker.
 * Updated SendBirdWebRTC dependency to 1.6.0.
