@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.9.7 (Nov 14, 2022 UTC)
+* Fixed an error where audio recording would stop when the audio is put on mute. 
+
 ### 1.9.6 (Oct 13, 2022 UTC)
 * Improve stability.
  
