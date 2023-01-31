@@ -620,6 +620,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 @end
 
 
+
 @class SBCError;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
@@ -661,14 +662,12 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 @end
 
 
-
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// The hash value of <code>DirectCall</code>.
 @property (nonatomic, readonly) NSUInteger hash;
 /// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
-
 
 @class SBCRecordingOptions;
 
@@ -704,6 +703,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// (discardable) Boolean value that indicates whether the specified recordingId is valid.
 - (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
 @end
+
 
 
 
@@ -1595,6 +1595,7 @@ enum SBCRoomState : NSInteger;
 enum RoomType : NSInteger;
 @class SBCRoomEnterParams;
 @protocol SBCRoomDelegate;
+@class RoomInvitation;
 
 /// A class that provides the <code>enter()</code>, <code>exit()</code>, and other methods, which handle information about the room and operate with other types of objects such as a participant.
 /// since:
@@ -1698,9 +1699,36 @@ SWIFT_CLASS_NAMED("Room")
 /// since:
 /// 1.6.0
 - (void)removeAllDelegates;
+/// Send an invitation to the specified user to enter the room.
+/// since:
+/// 1.10.0
+- (void)sendInvitationWithInvitee:(NSString * _Nonnull)invitee completionHandler:(void (^ _Nullable)(RoomInvitation * _Nullable, SBCError * _Nullable))completionHandler;
+/// Deletes the room. All participants in the room will be exited and the room can’t be restored.
+/// since:
+/// 1.10.0
+- (void)deleteWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
+
+
+
+@interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
+@end
+
+/// A enum that provides information about the state of a room.
+/// since:
+/// 1.6.0
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCRoomState, "State", open) {
+/// Indicates a room is open and available for group calls.
+/// since:
+/// 1.6.0
+  SBCRoomStateOpen = 0,
+/// Indicates a room is deleted.
+/// since:
+/// 1.6.0
+  SBCRoomStateDeleted = 1,
+};
 
 
 @interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
@@ -1727,25 +1755,6 @@ SWIFT_CLASS_NAMED("EnterParams")
 /// Initializes <code>RoomEnterParams</code>.
 - (nonnull instancetype)init;
 @end
-
-
-
-@interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
-@end
-
-/// A enum that provides information about the state of a room.
-/// since:
-/// 1.6.0
-typedef SWIFT_ENUM_NAMED(NSInteger, SBCRoomState, "State", open) {
-/// Indicates a room is open and available for group calls.
-/// since:
-/// 1.6.0
-  SBCRoomStateOpen = 0,
-/// Indicates a room is deleted.
-/// since:
-/// 1.6.0
-  SBCRoomStateDeleted = 1,
-};
 
 
 
@@ -1867,6 +1876,48 @@ SWIFT_PROTOCOL_NAMED("RoomDelegate")
 /// 1.9.0
 - (void)didDelete;
 - (void)didAudioDeviceChange:(SBCRoom * _Nonnull)room session:(AVAudioSession * _Nonnull)session previousRoute:(AVAudioSessionRouteDescription * _Nonnull)previousRoute reason:(AVAudioSessionRouteChangeReason)reason;
+/// Invoked when the inviter cancels the invitation.
+/// since:
+///
+- (void)wasInvitationCanceled:(RoomInvitation * _Nonnull)invitation;
+/// Invoked when the invitee accepts the invitation to enter the room.
+/// since:
+///
+- (void)wasInvitationAccepted:(RoomInvitation * _Nonnull)invitation;
+/// Invoked when the invitee declines the invitation to enter the room.
+/// since:
+///
+- (void)wasInvitationDeclined:(RoomInvitation * _Nonnull)invitation;
+@end
+
+
+/// A class that provides information about an invitation.
+/// since:
+/// 1.10.0
+SWIFT_CLASS("_TtC13SendBirdCalls14RoomInvitation")
+@interface RoomInvitation : NSObject
+/// The user who sent the invitation.
+/// since:
+/// 1.10.0
+@property (nonatomic, readonly, strong) SBCUser * _Nonnull inviter;
+/// The user to whom the invitation is sent.
+/// since:
+/// 1.10.0
+@property (nonatomic, readonly, strong) SBCUser * _Nonnull invitee;
+/// Accepts an invitation to enter the room.
+/// since:
+/// 1.10.0
+- (void)acceptWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+/// Declines an invitation to enter the room.
+/// since:
+/// 1.10.0
+- (void)declineWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+/// Cancels an invitation sent to the specified user.
+/// since:
+/// 1.10.0
+- (void)cancelWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 
@@ -2888,6 +2939,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// 1.0.0
 SWIFT_PROTOCOL_NAMED("SendBirdCallDelegate")
 @protocol SBCSendBirdCallDelegate
+@optional
 /// Called when incoming calls are received.
 /// \code
 /// class MyClass: SendBirdCallDelegate {
@@ -2901,6 +2953,23 @@ SWIFT_PROTOCOL_NAMED("SendBirdCallDelegate")
 /// \param call <code>DirectCall</code> object.
 ///
 - (void)didStartRinging:(SBCDirectCall * _Nonnull)call;
+/// Called when the specified user receives the invitation to enter the room.
+/// \code
+/// class MyClass: SendBirdCallDelegate {
+///     func didReceiveInvitation(_ invitation: RoomInvitation) {
+///        // Accept invitation
+///        invitation.accept { error in }
+///
+///        // Decline invitation
+///        invitation.decline { error in }
+///     }
+/// }
+///
+/// \endcodesince:
+/// 1.10.0
+/// \param invitation <code>RoomInvitation</code> object.
+///
+- (void)didReceiveInvitation:(RoomInvitation * _Nonnull)invitation;
 @end
 
 
@@ -3756,6 +3825,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 @end
 
 
+
 @class SBCError;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
@@ -3797,14 +3867,12 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 @end
 
 
-
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
 /// The hash value of <code>DirectCall</code>.
 @property (nonatomic, readonly) NSUInteger hash;
 /// Returns a Boolean value that indicates whether the <code>DirectCall</code> and a given object are equal.
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
-
 
 @class SBCRecordingOptions;
 
@@ -3840,6 +3908,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// (discardable) Boolean value that indicates whether the specified recordingId is valid.
 - (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
 @end
+
 
 
 
@@ -4731,6 +4800,7 @@ enum SBCRoomState : NSInteger;
 enum RoomType : NSInteger;
 @class SBCRoomEnterParams;
 @protocol SBCRoomDelegate;
+@class RoomInvitation;
 
 /// A class that provides the <code>enter()</code>, <code>exit()</code>, and other methods, which handle information about the room and operate with other types of objects such as a participant.
 /// since:
@@ -4834,9 +4904,36 @@ SWIFT_CLASS_NAMED("Room")
 /// since:
 /// 1.6.0
 - (void)removeAllDelegates;
+/// Send an invitation to the specified user to enter the room.
+/// since:
+/// 1.10.0
+- (void)sendInvitationWithInvitee:(NSString * _Nonnull)invitee completionHandler:(void (^ _Nullable)(RoomInvitation * _Nullable, SBCError * _Nullable))completionHandler;
+/// Deletes the room. All participants in the room will be exited and the room can’t be restored.
+/// since:
+/// 1.10.0
+- (void)deleteWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
+
+
+
+@interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
+@end
+
+/// A enum that provides information about the state of a room.
+/// since:
+/// 1.6.0
+typedef SWIFT_ENUM_NAMED(NSInteger, SBCRoomState, "State", open) {
+/// Indicates a room is open and available for group calls.
+/// since:
+/// 1.6.0
+  SBCRoomStateOpen = 0,
+/// Indicates a room is deleted.
+/// since:
+/// 1.6.0
+  SBCRoomStateDeleted = 1,
+};
 
 
 @interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
@@ -4863,25 +4960,6 @@ SWIFT_CLASS_NAMED("EnterParams")
 /// Initializes <code>RoomEnterParams</code>.
 - (nonnull instancetype)init;
 @end
-
-
-
-@interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
-@end
-
-/// A enum that provides information about the state of a room.
-/// since:
-/// 1.6.0
-typedef SWIFT_ENUM_NAMED(NSInteger, SBCRoomState, "State", open) {
-/// Indicates a room is open and available for group calls.
-/// since:
-/// 1.6.0
-  SBCRoomStateOpen = 0,
-/// Indicates a room is deleted.
-/// since:
-/// 1.6.0
-  SBCRoomStateDeleted = 1,
-};
 
 
 
@@ -5003,6 +5081,48 @@ SWIFT_PROTOCOL_NAMED("RoomDelegate")
 /// 1.9.0
 - (void)didDelete;
 - (void)didAudioDeviceChange:(SBCRoom * _Nonnull)room session:(AVAudioSession * _Nonnull)session previousRoute:(AVAudioSessionRouteDescription * _Nonnull)previousRoute reason:(AVAudioSessionRouteChangeReason)reason;
+/// Invoked when the inviter cancels the invitation.
+/// since:
+///
+- (void)wasInvitationCanceled:(RoomInvitation * _Nonnull)invitation;
+/// Invoked when the invitee accepts the invitation to enter the room.
+/// since:
+///
+- (void)wasInvitationAccepted:(RoomInvitation * _Nonnull)invitation;
+/// Invoked when the invitee declines the invitation to enter the room.
+/// since:
+///
+- (void)wasInvitationDeclined:(RoomInvitation * _Nonnull)invitation;
+@end
+
+
+/// A class that provides information about an invitation.
+/// since:
+/// 1.10.0
+SWIFT_CLASS("_TtC13SendBirdCalls14RoomInvitation")
+@interface RoomInvitation : NSObject
+/// The user who sent the invitation.
+/// since:
+/// 1.10.0
+@property (nonatomic, readonly, strong) SBCUser * _Nonnull inviter;
+/// The user to whom the invitation is sent.
+/// since:
+/// 1.10.0
+@property (nonatomic, readonly, strong) SBCUser * _Nonnull invitee;
+/// Accepts an invitation to enter the room.
+/// since:
+/// 1.10.0
+- (void)acceptWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+/// Declines an invitation to enter the room.
+/// since:
+/// 1.10.0
+- (void)declineWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+/// Cancels an invitation sent to the specified user.
+/// since:
+/// 1.10.0
+- (void)cancelWithCompletionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 
@@ -6024,6 +6144,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// 1.0.0
 SWIFT_PROTOCOL_NAMED("SendBirdCallDelegate")
 @protocol SBCSendBirdCallDelegate
+@optional
 /// Called when incoming calls are received.
 /// \code
 /// class MyClass: SendBirdCallDelegate {
@@ -6037,6 +6158,23 @@ SWIFT_PROTOCOL_NAMED("SendBirdCallDelegate")
 /// \param call <code>DirectCall</code> object.
 ///
 - (void)didStartRinging:(SBCDirectCall * _Nonnull)call;
+/// Called when the specified user receives the invitation to enter the room.
+/// \code
+/// class MyClass: SendBirdCallDelegate {
+///     func didReceiveInvitation(_ invitation: RoomInvitation) {
+///        // Accept invitation
+///        invitation.accept { error in }
+///
+///        // Decline invitation
+///        invitation.decline { error in }
+///     }
+/// }
+///
+/// \endcodesince:
+/// 1.10.0
+/// \param invitation <code>RoomInvitation</code> object.
+///
+- (void)didReceiveInvitation:(RoomInvitation * _Nonnull)invitation;
 @end
 
 

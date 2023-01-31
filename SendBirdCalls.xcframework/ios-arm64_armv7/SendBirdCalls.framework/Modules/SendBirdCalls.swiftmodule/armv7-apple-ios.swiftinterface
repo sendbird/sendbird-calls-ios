@@ -362,6 +362,8 @@ extension SendBirdCalls.DirectCallLog {
   @objc public func addDelegate(_ delegate: SendBirdCalls.RoomDelegate, identifier: Swift.String)
   @objc public func removeDelegate(identifier: Swift.String)
   @objc public func removeAllDelegates()
+  @objc public func sendInvitation(invitee: Swift.String, completionHandler: ((SendBirdCalls.RoomInvitation?, SendBirdCalls.SBCError?) -> Swift.Void)?)
+  @objc public func delete(completionHandler: SendBirdCalls.ErrorHandler?)
   @objc deinit
 }
 @_hasMissingDesignatedInitializers @objcMembers @objc(SBCDirectCallLogListQuery) public class DirectCallLogListQuery : ObjectiveC.NSObject {
@@ -466,6 +468,9 @@ extension SendBirdCalls.SendBirdVideoView {
   @objc optional func didReceiveError(_ error: SendBirdCalls.SBCError, participant: SendBirdCalls.Participant?)
   @objc optional func didDelete()
   @objc optional func didAudioDeviceChange(_ room: SendBirdCalls.Room, session: AVFAudio.AVAudioSession, previousRoute: AVFAudio.AVAudioSessionRouteDescription, reason: AVFAudio.AVAudioSession.RouteChangeReason)
+  @objc optional func wasInvitationCanceled(_ invitation: SendBirdCalls.RoomInvitation)
+  @objc optional func wasInvitationAccepted(_ invitation: SendBirdCalls.RoomInvitation)
+  @objc optional func wasInvitationDeclined(_ invitation: SendBirdCalls.RoomInvitation)
 }
 @_inheritsConvenienceInitializers @objcMembers @objc(SBCRoomParams) public class RoomParams : ObjectiveC.NSObject, Swift.Encodable {
   @objc public var roomType: SendBirdCalls.RoomType
@@ -600,7 +605,8 @@ extension SendBirdCalls.User : Foundation.NSCopying {
   @objc deinit
 }
 @objc(SBCSendBirdCallDelegate) public protocol SendBirdCallDelegate {
-  @objc func didStartRinging(_ call: SendBirdCalls.DirectCall)
+  @objc optional func didStartRinging(_ call: SendBirdCalls.DirectCall)
+  @objc optional func didReceiveInvitation(_ invitation: SendBirdCalls.RoomInvitation)
 }
 @objc(SBCDirectCallDelegate) public protocol DirectCallDelegate {
   @objc optional func didEstablish(_ call: SendBirdCalls.DirectCall)
@@ -851,6 +857,15 @@ extension SendBirdCalls.DirectCall {
   @objc public init(callOptions: SendBirdCalls.CallOptions, holdActiveCall: Swift.Bool)
   @objc convenience public init(callOptions: SendBirdCalls.CallOptions)
   @objc override convenience dynamic public init()
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objc public class RoomInvitation : ObjectiveC.NSObject {
+  final public let room: SendBirdCalls.Room
+  @objc final public let inviter: SendBirdCalls.User
+  @objc final public let invitee: SendBirdCalls.User
+  @objc public func accept(completionHandler: SendBirdCalls.ErrorHandler?)
+  @objc public func decline(completionHandler: SendBirdCalls.ErrorHandler?)
+  @objc public func cancel(completionHandler: SendBirdCalls.ErrorHandler?)
   @objc deinit
 }
 extension SendBirdCalls.RecordingOptions.RecordingType : Swift.Equatable {}
