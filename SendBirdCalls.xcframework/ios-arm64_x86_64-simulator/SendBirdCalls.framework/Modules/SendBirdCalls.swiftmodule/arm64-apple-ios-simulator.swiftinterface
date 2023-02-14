@@ -463,6 +463,8 @@ extension SendBirdCalls.SendBirdVideoView {
   @objc optional func didRemoteParticipantStreamStart(_ participant: SendBirdCalls.RemoteParticipant)
   @objc optional func didRemoteAudioSettingsChange(_ participant: SendBirdCalls.RemoteParticipant)
   @objc optional func didRemoteVideoSettingsChange(_ participant: SendBirdCalls.RemoteParticipant)
+  @objc optional func didLocalParticipantDisconnect(_ participant: SendBirdCalls.LocalParticipant)
+  @objc optional func didLocalParticipantReconnect(_ participant: SendBirdCalls.LocalParticipant)
   @objc optional func didCustomItemsUpdate(updatedKeys: [Swift.String])
   @objc optional func didCustomItemsDelete(deletedKeys: [Swift.String])
   @objc optional func didReceiveError(_ error: SendBirdCalls.SBCError, participant: SendBirdCalls.Participant?)

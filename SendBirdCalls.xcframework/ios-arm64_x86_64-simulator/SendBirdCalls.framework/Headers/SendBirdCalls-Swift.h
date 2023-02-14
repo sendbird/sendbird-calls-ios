@@ -1712,7 +1712,6 @@ SWIFT_CLASS_NAMED("Room")
 @end
 
 
-
 @interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
 @end
 
@@ -1729,6 +1728,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRoomState, "State", open) {
 /// 1.6.0
   SBCRoomStateDeleted = 1,
 };
+
 
 
 @interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
@@ -1845,6 +1845,18 @@ SWIFT_PROTOCOL_NAMED("RoomDelegate")
 ///   </li>
 /// </ul>
 - (void)didRemoteVideoSettingsChange:(SBCRemoteParticipant * _Nonnull)participant;
+/// Invoked when the local participant’s connection with the server has been interrupted.
+/// since:
+/// 1.10.1
+/// \param participant <code>LocalParticipant</code> object
+///
+- (void)didLocalParticipantDisconnect:(SBCLocalParticipant * _Nonnull)participant;
+/// Invoked when the local participant’s connection with the server has been established.
+/// since:
+/// 1.10.1
+/// \param participant <code>LocalParticipant</code> object
+///
+- (void)didLocalParticipantReconnect:(SBCLocalParticipant * _Nonnull)participant;
 /// Called when the custom items of the room are updated.
 /// since:
 /// 1.8.0
@@ -4917,7 +4929,6 @@ SWIFT_CLASS_NAMED("Room")
 @end
 
 
-
 @interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
 @end
 
@@ -4934,6 +4945,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCRoomState, "State", open) {
 /// 1.6.0
   SBCRoomStateDeleted = 1,
 };
+
 
 
 @interface SBCRoom (SWIFT_EXTENSION(SendBirdCalls))
@@ -5050,6 +5062,18 @@ SWIFT_PROTOCOL_NAMED("RoomDelegate")
 ///   </li>
 /// </ul>
 - (void)didRemoteVideoSettingsChange:(SBCRemoteParticipant * _Nonnull)participant;
+/// Invoked when the local participant’s connection with the server has been interrupted.
+/// since:
+/// 1.10.1
+/// \param participant <code>LocalParticipant</code> object
+///
+- (void)didLocalParticipantDisconnect:(SBCLocalParticipant * _Nonnull)participant;
+/// Invoked when the local participant’s connection with the server has been established.
+/// since:
+/// 1.10.1
+/// \param participant <code>LocalParticipant</code> object
+///
+- (void)didLocalParticipantReconnect:(SBCLocalParticipant * _Nonnull)participant;
 /// Called when the custom items of the room are updated.
 /// since:
 /// 1.8.0

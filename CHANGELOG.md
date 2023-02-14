@@ -1,7 +1,12 @@
 # Change Log
 
+### 1.10.1 (Feb 14, 2023 UTC)
+* Added room delegates methods to detect local participant's connection with the server.
+    * Added `RoomDelegate.didLocalParticipantDisconnect`
+    * Added `RoomDelegate.didLocalParticipantReconnect`
+
 ### 1.10.0 (Jan 31, 2023 UTC)
-*Added a feature to invite users to enter a room.
+* Added a feature to invite users to enter a room.
     * Added `room.sendInvitation(inviteeId:completionHandler:)`.
     * Added `RoomInvitation` class to manage invitation.
     * Added `roomInvitation.accept`, `roomInvitation.decline`, `roomInvitation.cancel`. 
