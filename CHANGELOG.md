@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.10.2 (Feb 17, 2023 UTC)
+* Fix a bug in Direct Call where the audio output would automatically changes back to earpiece after the call connects. 
+
 ### 1.10.1 (Feb 14, 2023 UTC)
 * Added room delegates methods to detect local participant's connection with the server.
     * Added `RoomDelegate.didLocalParticipantDisconnect`
