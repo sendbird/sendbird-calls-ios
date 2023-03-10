@@ -1746,12 +1746,15 @@ SWIFT_CLASS_NAMED("EnterParams")
 @property (nonatomic) BOOL isVideoEnabled;
 /// Enables a participant’s audio settings when entering a room.
 @property (nonatomic) BOOL isAudioEnabled;
+/// since:
+/// 1.10.3
+@property (nonatomic) BOOL kickSiblings;
 /// Initializes <code>RoomEnterParams</code>.
 /// \param isVideoEnabled if <code>true</code>, enables a participant’s video settings when entering a room.
 ///
 /// \param isAudioEnabled if <code>true</code>, enables a participant’s audio settings when entering a room.
 ///
-- (nonnull instancetype)initWithIsVideoEnabled:(BOOL)isVideoEnabled isAudioEnabled:(BOOL)isAudioEnabled OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithIsVideoEnabled:(BOOL)isVideoEnabled isAudioEnabled:(BOOL)isAudioEnabled kickSiblings:(BOOL)kickSiblings OBJC_DESIGNATED_INITIALIZER;
 /// Initializes <code>RoomEnterParams</code>.
 - (nonnull instancetype)init;
 @end
@@ -2185,6 +2188,9 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.6.0
   SBCErrorCodeLocalParticipantLostConnection = 1800706,
+/// since:
+/// 1.10.3
+  SBCErrorCodeLocalParticipantKickedOut = 1800707,
 /// since:
 /// 1.8.0
   SBCErrorCodeCallAlreadyOnHold = 1800801,
@@ -4963,12 +4969,15 @@ SWIFT_CLASS_NAMED("EnterParams")
 @property (nonatomic) BOOL isVideoEnabled;
 /// Enables a participant’s audio settings when entering a room.
 @property (nonatomic) BOOL isAudioEnabled;
+/// since:
+/// 1.10.3
+@property (nonatomic) BOOL kickSiblings;
 /// Initializes <code>RoomEnterParams</code>.
 /// \param isVideoEnabled if <code>true</code>, enables a participant’s video settings when entering a room.
 ///
 /// \param isAudioEnabled if <code>true</code>, enables a participant’s audio settings when entering a room.
 ///
-- (nonnull instancetype)initWithIsVideoEnabled:(BOOL)isVideoEnabled isAudioEnabled:(BOOL)isAudioEnabled OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithIsVideoEnabled:(BOOL)isVideoEnabled isAudioEnabled:(BOOL)isAudioEnabled kickSiblings:(BOOL)kickSiblings OBJC_DESIGNATED_INITIALIZER;
 /// Initializes <code>RoomEnterParams</code>.
 - (nonnull instancetype)init;
 @end
@@ -5402,6 +5411,9 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCErrorCode, "ErrorCode", open) {
 /// since:
 /// 1.6.0
   SBCErrorCodeLocalParticipantLostConnection = 1800706,
+/// since:
+/// 1.10.3
+  SBCErrorCodeLocalParticipantKickedOut = 1800707,
 /// since:
 /// 1.8.0
   SBCErrorCodeCallAlreadyOnHold = 1800801,

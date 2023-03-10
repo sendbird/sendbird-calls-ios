@@ -417,7 +417,8 @@ extension SendBirdCalls.Room {
   @_inheritsConvenienceInitializers @objcMembers @objc(SBCRoomEnterParams) public class EnterParams : ObjectiveC.NSObject {
     @objc public var isVideoEnabled: Swift.Bool
     @objc public var isAudioEnabled: Swift.Bool
-    @objc public init(isVideoEnabled: Swift.Bool = true, isAudioEnabled: Swift.Bool = true)
+    @objc public var kickSiblings: Swift.Bool
+    @objc public init(isVideoEnabled: Swift.Bool = true, isAudioEnabled: Swift.Bool = true, kickSiblings: Swift.Bool = false)
     @objc override convenience dynamic public init()
     @objc deinit
   }
@@ -571,6 +572,7 @@ extension SendBirdCalls.User : Foundation.NSCopying {
     case enteringRoomStillInProgress = 1800701
     case participantNotInRoom = 1800702
     case localParticipantLostConnection = 1800706
+    case localParticipantKickedOut = 1800707
     case callAlreadyOnHold = 1800801
     case callNotPutOnHoldByLocalUser = 1800802
     case anotherCallInProgress = 1800803

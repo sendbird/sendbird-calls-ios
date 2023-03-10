@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.10.3 (Mar 10, 2023 UTC)
+* Added a feature to kick other participants in a room with the same user id as the current user.
+    * Added `Room.EnterParams.kickSiblings`
+
 ### 1.10.2 (Feb 17, 2023 UTC)
 * Fix a bug in Direct Call where the audio output would automatically changes back to earpiece after the call connects. 
 
