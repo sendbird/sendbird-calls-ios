@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.10.4 (Mar 22, 2023 UTC)
+* Fixed a "virtual filesystem overlay file not found" bug on Xcode. 
+    
 ### 1.10.3 (Mar 10, 2023 UTC)
 * Added a feature to kick other participants in a room with the same user id as the current user.
     * Added `Room.EnterParams.kickSiblings`
