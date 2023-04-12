@@ -620,7 +620,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 @end
 
 
-
 @class SBCError;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
@@ -669,6 +668,15 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// Removes the listener for connection quality and its monitoring modes.
+/// since:
+/// 1.10.5
+- (void)removeConnectionQualityDelegate;
+@end
+
+
 @class SBCRecordingOptions;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
@@ -703,7 +711,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// (discardable) Boolean value that indicates whether the specified recordingId is valid.
 - (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
 @end
-
 
 
 
@@ -3843,7 +3850,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 @end
 
 
-
 @class SBCError;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
@@ -3892,6 +3898,15 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
+
+@interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
+/// Removes the listener for connection quality and its monitoring modes.
+/// since:
+/// 1.10.5
+- (void)removeConnectionQualityDelegate;
+@end
+
+
 @class SBCRecordingOptions;
 
 @interface SBCDirectCall (SWIFT_EXTENSION(SendBirdCalls))
@@ -3926,7 +3941,6 @@ typedef SWIFT_ENUM_NAMED(NSInteger, SBCDirectCallUserRole, "UserRole", open) {
 /// (discardable) Boolean value that indicates whether the specified recordingId is valid.
 - (BOOL)stopRecordingWithRecordingId:(NSString * _Nonnull)recordingId;
 @end
-
 
 
 

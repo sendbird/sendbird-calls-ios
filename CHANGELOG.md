@@ -1,5 +1,10 @@
 # Change Log
 
+### 1.10.5 (Apr 12, 2023)
+- Added a feature to detect connection qualities in ongoing Direct Calls.
+  - Added `ConnectionQualityDelegate`
+  - Added `ConnectionMetrics`
+  
 ### 1.10.4 (Mar 22, 2023 UTC)
 * Fixed a "virtual filesystem overlay file not found" bug on Xcode. 
     

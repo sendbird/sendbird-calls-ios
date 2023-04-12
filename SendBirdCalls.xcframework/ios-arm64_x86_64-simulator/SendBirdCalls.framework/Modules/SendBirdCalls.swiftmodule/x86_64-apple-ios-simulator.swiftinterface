@@ -475,6 +475,10 @@ extension SendBirdCalls.SendBirdVideoView {
   @objc optional func wasInvitationAccepted(_ invitation: SendBirdCalls.RoomInvitation)
   @objc optional func wasInvitationDeclined(_ invitation: SendBirdCalls.RoomInvitation)
 }
+extension SendBirdCalls.DirectCall {
+  public func setConnectionQualityDelegate(_ delegate: SendBirdCalls.ConnectionQualityDelegate, monitoringMode: SendBirdCalls.ConnectionQualityMonitoringModes)
+  @objc dynamic public func removeConnectionQualityDelegate()
+}
 @_inheritsConvenienceInitializers @objcMembers @objc(SBCRoomParams) public class RoomParams : ObjectiveC.NSObject, Swift.Encodable {
   @objc public var roomType: SendBirdCalls.RoomType
   @objc public var customItems: [Swift.String : Swift.String]?
@@ -528,6 +532,32 @@ extension SendBirdCalls.User {
 }
 extension SendBirdCalls.User : Foundation.NSCopying {
   @objc dynamic public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
+}
+public enum ConnectionQuality {
+  case poor, fair, average, good, excellent
+  public static func == (a: SendBirdCalls.ConnectionQuality, b: SendBirdCalls.ConnectionQuality) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum ConnectionQualityMonitoringModes {
+  case frequency
+  case connectionQualityChange
+  public static func == (a: SendBirdCalls.ConnectionQualityMonitoringModes, b: SendBirdCalls.ConnectionQualityMonitoringModes) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class ConnectionMetrics {
+  public var connectionQuality: SendBirdCalls.ConnectionQuality {
+    get
+  }
+  @objc deinit
+}
+public protocol ConnectionQualityDelegate : AnyObject {
+  func didConnectionQualityUpdate(metrics: SendBirdCalls.ConnectionMetrics)
 }
 @objc(SBCSendBirdRecordingDelegate) public protocol SendBirdRecordingDelegate {
   @objc func didSaveRecording(call: SendBirdCalls.DirectCall, recordingId: Swift.String, options: SendBirdCalls.RecordingOptions, outputURL: Foundation.URL)
@@ -886,6 +916,10 @@ extension SendBirdCalls.Participant.State : Swift.Equatable {}
 extension SendBirdCalls.Participant.State : Swift.Hashable {}
 extension SendBirdCalls.DirectCallLogListQuery.UserRoleFilter : Swift.Equatable {}
 extension SendBirdCalls.DirectCallLogListQuery.UserRoleFilter : Swift.Hashable {}
+extension SendBirdCalls.ConnectionQuality : Swift.Equatable {}
+extension SendBirdCalls.ConnectionQuality : Swift.Hashable {}
+extension SendBirdCalls.ConnectionQualityMonitoringModes : Swift.Equatable {}
+extension SendBirdCalls.ConnectionQualityMonitoringModes : Swift.Hashable {}
 extension SendBirdCalls.SBCError.ErrorCode : Swift.Equatable {}
 extension SendBirdCalls.SBCError.ErrorCode : Swift.Hashable {}
 extension SendBirdCalls.SoundType : Swift.Equatable {}
