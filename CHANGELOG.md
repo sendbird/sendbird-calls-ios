@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.10.6 (Apr 21, 2023)
+* Improved connection quality delegate in Direct Calls.
+
 ### 1.10.5 (Apr 12, 2023)
 - Added a feature to detect connection qualities in ongoing Direct Calls.
   - Added `ConnectionQualityDelegate`

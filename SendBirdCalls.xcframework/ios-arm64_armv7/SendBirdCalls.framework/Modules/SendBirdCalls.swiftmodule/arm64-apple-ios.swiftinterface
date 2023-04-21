@@ -534,7 +534,7 @@ extension SendBirdCalls.User : Foundation.NSCopying {
   @objc dynamic public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
 }
 public enum ConnectionQuality {
-  case poor, fair, average, good, excellent
+  case unavailable, poor, fair, average, good, excellent
   public static func == (a: SendBirdCalls.ConnectionQuality, b: SendBirdCalls.ConnectionQuality) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
   public var hashValue: Swift.Int {
@@ -551,6 +551,10 @@ public enum ConnectionQualityMonitoringModes {
   }
 }
 @_hasMissingDesignatedInitializers public class ConnectionMetrics {
+  public var mos: Swift.Double?
+  public var packetLostRate: Swift.Double?
+  public var rtt: Swift.Double?
+  public var jitter: Swift.Double?
   public var connectionQuality: SendBirdCalls.ConnectionQuality {
     get
   }
