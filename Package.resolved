@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/sendbird/sendbird-webrtc-ios",
         "state": {
           "branch": null,
-          "revision": "227e831ecd4a5c35490a1357cad738aad620c698",
-          "version": "1.6.0"
+          "revision": "a92c5e8137242b404ffb9cffc087f4afbcaf7eed",
+          "version": "1.7.0"
         }
       }
     ]

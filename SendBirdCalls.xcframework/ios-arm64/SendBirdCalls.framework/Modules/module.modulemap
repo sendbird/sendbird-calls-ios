@@ -1,0 +1,11 @@
+framework module SendBirdCalls {
+  umbrella header "SendBirdCalls.h"
+
+  export *
+  module * { export * }
+}
+
+module SendBirdCalls.Swift {
+  header "SendBirdCalls-Swift.h"
+  requires objc
+}

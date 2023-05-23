@@ -1,6 +1,7 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.6.1 (swiftlang-5.6.0.323.66 clang-1316.0.20.12)
-// swift-module-flags: -target x86_64-apple-ios9.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendBirdCalls
+// swift-compiler-version: Apple Swift version 5.7.1 (swiftlang-5.7.1.135.3 clang-1400.0.29.51)
+// swift-module-flags: -target x86_64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendBirdCalls
+// swift-module-flags-ignorable: -enable-bare-slash-regex
 import AVFoundation
 import AVKit
 import AudioToolbox
@@ -23,6 +24,7 @@ import UIKit
 import VideoToolbox
 import WebRTC
 import _Concurrency
+import _StringProcessing
 import zlib
 @_inheritsConvenienceInitializers @objcMembers @objc(SBCRecordingOptions) public class RecordingOptions : ObjectiveC.NSObject {
   @objc final public let recordingType: SendBirdCalls.RecordingOptions.RecordingType
@@ -444,10 +446,10 @@ public typealias CallLogsResultHandler = (_ callLogs: [SendBirdCalls.DirectCallL
 public typealias PushRegistryHandler = (_ callUUID: Foundation.UUID?) -> Swift.Void
 public typealias RecordingStartedHandler = (_ recorderId: Swift.String?, _ error: SendBirdCalls.SBCError?) -> Swift.Void
 @objcMembers @objc(SBCVideoView) @_Concurrency.MainActor(unsafe) public class SendBirdVideoView : WebRTC.RTCEAGLVideoView {
-  @objc @_Concurrency.MainActor(unsafe) public init(frame: CoreGraphics.CGRect, contentMode: UIKit.UIView.ContentMode)
-  @_Concurrency.MainActor(unsafe) @objc dynamic public init(frame: CoreGraphics.CGRect)
+  @objc @_Concurrency.MainActor(unsafe) public init(frame: CoreFoundation.CGRect, contentMode: UIKit.UIView.ContentMode)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public init(frame: CoreFoundation.CGRect)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @objc dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc dynamic public init()
   @objc @_Concurrency.MainActor(unsafe) public var videoContentMode: UIKit.UIView.ContentMode {
     @objc get
     @objc set
@@ -644,6 +646,7 @@ public protocol ConnectionQualityDelegate : AnyObject {
 }
 @objc(SBCSendBirdCallDelegate) public protocol SendBirdCallDelegate {
   @objc optional func didStartRinging(_ call: SendBirdCalls.DirectCall)
+  @objc optional func didReceiveVoIPException(_ ongoingCall: SendBirdCalls.DirectCall)
   @objc optional func didReceiveInvitation(_ invitation: SendBirdCalls.RoomInvitation)
 }
 @objc(SBCDirectCallDelegate) public protocol DirectCallDelegate {
@@ -840,7 +843,7 @@ extension SendBirdCalls.DialParams : Foundation.NSCopying {
   @objc @discardableResult
   public static func configure(appId: Swift.String) -> Swift.Bool
   @objc public static let sdkVersion: Swift.String
-  @objc public static func routePickerView(frame: CoreGraphics.CGRect) -> UIKit.UIView
+  @objc public static func routePickerView(frame: CoreFoundation.CGRect) -> UIKit.UIView
   @objc public static func executeOn(queue: Dispatch.DispatchQueue)
   @objc public static func addDelegate(_ delegate: SendBirdCalls.SendBirdCallDelegate, identifier: Swift.String)
   @objc public static func removeDelegate(identifier: Swift.String)
@@ -880,6 +883,7 @@ extension SendBirdCalls.DialParams : Foundation.NSCopying {
   @objc(setDirectCallDialingSoundOnWhenSilentMode:) public static func setDirectCallDialingSoundOnWhenSilentMode(isEnabled: Swift.Bool)
   @objc public static func addDirectCallSound(_ url: Foundation.URL, forType type: SendBirdCalls.SoundType)
   @objc public static func removeDirectCallSound(forType type: SendBirdCalls.SoundType)
+  @objc public static func retrieveMissedDirectCalls(completionHandler: SendBirdCalls.ErrorHandler?)
   @available(*, unavailable)
   @objc override dynamic public init()
   @objc deinit

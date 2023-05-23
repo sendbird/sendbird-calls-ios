@@ -6,6 +6,6 @@ framework module SendBirdCalls {
 }
 
 module SendBirdCalls.Swift {
-    header "SendBirdCalls-Swift.h"
-    requires objc
+  header "SendBirdCalls-Swift.h"
+  requires objc
 }

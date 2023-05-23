@@ -37,9 +37,9 @@ This section shows the prerequisites you need to check to use Sendbird Calls SDK
 
 ### Requirements
 
-* iOS 9.0 or later
-* Swift 4 or later, Objective-C
-* Xcode 9 or later, macOS Sierra or later.
+* iOS 11.0 or later
+* Swift 5 or later, Objective-C
+* Xcode 14.1 or later, macOS Sierra or later.
 
 ### SDK dependencies
 
@@ -83,8 +83,8 @@ For further details on the  usage and installation of `CocoaPods` instructions, 
 2. Create a [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) in the same directory `.xcodeproj` or `.xcworkspace` is.
 3. List the desired dependencies in the [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) as show below.
 ```bash
-github "sendbird/sendbird-calls-ios" ~> 1.9.0
-github "sendbird/sendbird-webrtc-ios" ~> 1.4.0
+github "sendbird/sendbird-calls-ios" ~> 1.10.7
+github "sendbird/sendbird-webrtc-ios" ~> 1.7.0
 ```
 4. Run `carthage update --use-xcframeworks`.
 5. A `Cartfile.resolved` file and a `Carthage` directory will appear in the same directory as  `.xcodeproj` or `.xcworkspace` .

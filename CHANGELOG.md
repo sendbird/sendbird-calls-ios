@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.10.7 (May 23, 2023)
+* Added `SendBirdCall.retrieveMissedDirectCalls` to get incoming direct calls that were not received via push notifications. 
+* Added `SendBirdCallDelegate.didReceiveVoIPException` to handle any incorrectly received voip push notifications. 
+
 ### 1.10.6 (Apr 21, 2023)
 * Improved connection quality delegate in Direct Calls.
 

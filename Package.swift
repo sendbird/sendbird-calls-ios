@@ -4,14 +4,14 @@ import PackageDescription
 
 let package = Package(
     name: "SendBirdCalls",
-    platforms: [.iOS(.v9)],
+    platforms: [.iOS(.v11)],
     products: [
         .library(
             name: "SendBirdCalls",
             targets: ["SendBirdCallsTarget"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/sendbird/sendbird-webrtc-ios", from: "1.6.0")
+        .package(url: "https://github.com/sendbird/sendbird-webrtc-ios", from: "1.7.0")
     ],
     targets: [
         .binaryTarget(name: "SendBirdCalls", path: "SendBirdCalls.xcframework"),
