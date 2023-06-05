@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: sendbird-calls-ios
+  description: Public repo used for releasing Calls iOS SDK
+  annotations:
+    github.com/project-slug: sendbird/sendbird-calls-ios
+spec:
+  type: library
+  lifecycle: production
+  owner: dep-client-platform
+  system: sendbird-calls
