@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.10.8 (Jun 16, 2023)
+* Added `DirectCallDelegate.didCalleeReceiveDial` to notify the caller when the calle has received the call. This delegate method will be called when the callee has received the `SendBirdCallDelegate.didStartRinging` event. 
+
 ### 1.10.7 (May 23, 2023)
 * Added `SendBirdCall.retrieveMissedDirectCalls` to get incoming direct calls that were not received via push notifications. 
 * Added `SendBirdCallDelegate.didReceiveVoIPException` to handle any incorrectly received voip push notifications. 

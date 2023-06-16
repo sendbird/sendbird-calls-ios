@@ -1154,6 +1154,10 @@ SWIFT_PROTOCOL_NAMED("DirectCallDelegate")
 /// \param isUserOnHold Returns true if the user’s hold status is changed to on hold
 ///
 - (void)didUserHoldStatusChange:(SBCDirectCall * _Nonnull)call isLocalUser:(BOOL)isLocalUser isUserOnHold:(BOOL)isUserOnHold;
+/// Called when the callee has received the <code>SendBirdCallDelegate.didStartRinging</code>  delegate method. This indicates that the calle has received the call notification.
+/// \param call DirectCall that the callee received
+///
+- (void)didCalleeReceiveDial:(SBCDirectCall * _Nonnull)call;
 @end
 
 /// End results for DirectCall. Indicates reasons for failure or completion. Value for an ongoing call is <code>none</code>.
@@ -4433,6 +4437,10 @@ SWIFT_PROTOCOL_NAMED("DirectCallDelegate")
 /// \param isUserOnHold Returns true if the user’s hold status is changed to on hold
 ///
 - (void)didUserHoldStatusChange:(SBCDirectCall * _Nonnull)call isLocalUser:(BOOL)isLocalUser isUserOnHold:(BOOL)isUserOnHold;
+/// Called when the callee has received the <code>SendBirdCallDelegate.didStartRinging</code>  delegate method. This indicates that the calle has received the call notification.
+/// \param call DirectCall that the callee received
+///
+- (void)didCalleeReceiveDial:(SBCDirectCall * _Nonnull)call;
 @end
 
 /// End results for DirectCall. Indicates reasons for failure or completion. Value for an ongoing call is <code>none</code>.

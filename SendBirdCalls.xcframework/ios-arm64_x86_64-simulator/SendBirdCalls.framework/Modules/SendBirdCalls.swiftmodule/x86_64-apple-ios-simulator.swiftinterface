@@ -662,6 +662,7 @@ public protocol ConnectionQualityDelegate : AnyObject {
   @objc optional func didDeleteCustomItems(call: SendBirdCalls.DirectCall, deletedKeys: [Swift.String])
   @objc optional func didRemoteRecordingStatusChange(_ call: SendBirdCalls.DirectCall)
   @objc optional func didUserHoldStatusChange(_ call: SendBirdCalls.DirectCall, isLocalUser: Swift.Bool, isUserOnHold: Swift.Bool)
+  @objc optional func didCalleeReceiveDial(_ call: SendBirdCalls.DirectCall)
 }
 @objc(SBCSoundType) public enum SoundType : Swift.Int {
   case dialing
