@@ -2607,6 +2607,10 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 /// since:
 /// 1.8.0
 + (NSArray<SBCDirectCall *> * _Nonnull)getOngoingCalls SWIFT_WARN_UNUSED_RESULT;
+/// Returns all incoming calls by the current user.
+/// since:
+/// 1.10.9
++ (NSArray<SBCDirectCall *> * _Nonnull)getIncomingCalls SWIFT_WARN_UNUSED_RESULT;
 /// Returns the currently authenticated user.
 /// since:
 /// 1.0.0
@@ -5890,6 +5894,10 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 /// since:
 /// 1.8.0
 + (NSArray<SBCDirectCall *> * _Nonnull)getOngoingCalls SWIFT_WARN_UNUSED_RESULT;
+/// Returns all incoming calls by the current user.
+/// since:
+/// 1.10.9
++ (NSArray<SBCDirectCall *> * _Nonnull)getIncomingCalls SWIFT_WARN_UNUSED_RESULT;
 /// Returns the currently authenticated user.
 /// since:
 /// 1.0.0

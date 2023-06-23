@@ -772,6 +772,17 @@ public protocol ConnectionQualityDelegate : AnyObject {
   @objc public var isLocalScreenShareEnabled: Swift.Bool {
     @objc get
   }
+  public enum RingingSource {
+    case websocket
+    case retrieval
+    case push
+    public static func == (a: SendBirdCalls.DirectCall.RingingSource, b: SendBirdCalls.DirectCall.RingingSource) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public var ringingSource: SendBirdCalls.DirectCall.RingingSource?
   @objc deinit
 }
 @objc public enum RoomType : Swift.Int, Swift.RawRepresentable, Swift.Codable {
@@ -856,6 +867,7 @@ extension SendBirdCalls.DialParams : Foundation.NSCopying {
   @objc(callForUUID:) public static func getCall(forUUID callUUID: Foundation.UUID) -> SendBirdCalls.DirectCall?
   @objc public static func getOngoingCallCount() -> Swift.Int
   @objc public static func getOngoingCalls() -> [SendBirdCalls.DirectCall]
+  @objc public static func getIncomingCalls() -> [SendBirdCalls.DirectCall]
   @objc public static var currentUser: SendBirdCalls.User? {
     @objc get
   }
@@ -936,6 +948,8 @@ extension SendBirdCalls.SoundType : Swift.Hashable {}
 extension SendBirdCalls.SoundType : Swift.RawRepresentable {}
 extension SendBirdCalls.DirectCall.UserRole : Swift.Equatable {}
 extension SendBirdCalls.DirectCall.UserRole : Swift.Hashable {}
+extension SendBirdCalls.DirectCall.RingingSource : Swift.Equatable {}
+extension SendBirdCalls.DirectCall.RingingSource : Swift.Hashable {}
 extension SendBirdCalls.RoomType : Swift.Equatable {}
 extension SendBirdCalls.RoomType : Swift.Hashable {}
 extension SendBirdCalls.Room.State : Swift.Equatable {}

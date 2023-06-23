@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.10.9 (Jun 23, 2023)
+* Added `DirectCall.ringingSource`, which indicates the source of the dial event in DirectCall.
+* Added `SendbirdCall.incomingCalls`, which returns a list of incoming calls to the current user.
+
 ### 1.10.8 (Jun 16, 2023)
 * Added `DirectCallDelegate.didCalleeReceiveDial` to notify the caller when the calle has received the call. This delegate method will be called when the callee has received the `SendBirdCallDelegate.didStartRinging` event. 
 
