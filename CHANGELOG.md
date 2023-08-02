@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.10.11 (Aug 2, 2023)
+* Fix an issue where Direct Call's Connection Quality would report 'Unavailable' for a few seconds after connecting the call.
+ 
 ### 1.10.10 (Jul 31, 2023)
 * Added support for Direct Call quality monitoring in Sendbird Dashboard.
 
