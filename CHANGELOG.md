@@ -1,5 +1,11 @@
 # Change Log
 
+### 1.10.12 (Aug 10, 2023)
+* Fix an issue where Direct Call quality statistics won't be collected when the call is being reconnected. 
+* Fix an issue where camera would be incorrectly mirrored in Direct Calls. 
+* Added a feature to track push notification delivery status within the SDK. 
+    * Added `SendBirdCall.markPushNotificationAsDelivered`
+    
 ### 1.10.11 (Aug 2, 2023)
 * Fix an issue where Direct Call's Connection Quality would report 'Unavailable' for a few seconds after connecting the call.
  
