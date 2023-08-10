@@ -21,6 +21,7 @@ import Swift
 import UIKit.UIApplication
 import UIKit.UIDevice
 import UIKit
+import UserNotifications
 import VideoToolbox
 import WebRTC
 import _Concurrency
@@ -857,6 +858,7 @@ extension SendBirdCalls.DialParams : Foundation.NSCopying {
   @objc public static let sdkVersion: Swift.String
   @objc public static func routePickerView(frame: CoreFoundation.CGRect) -> UIKit.UIView
   @objc public static func executeOn(queue: Dispatch.DispatchQueue)
+  @objc public static func setAppGroup(_ appGroup: Swift.String)
   @objc public static func addDelegate(_ delegate: SendBirdCalls.SendBirdCallDelegate, identifier: Swift.String)
   @objc public static func removeDelegate(identifier: Swift.String)
   @objc public static func removeAllDelegates()
@@ -882,6 +884,7 @@ extension SendBirdCalls.DialParams : Foundation.NSCopying {
   @objc public static func unregisterVoIPPush(token: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
   @objc public static func unregisterAllVoIPPushTokens(completionHandler: SendBirdCalls.ErrorHandler?)
   @objc public static func application(_ application: UIKit.UIApplication, didReceiveRemoteNotification userInfo: [Swift.AnyHashable : Any])
+  @objc public static func markPushNotificationAsDelivered(remoteNotificationPayload: [Swift.AnyHashable : Any], completionHandler: SendBirdCalls.ErrorHandler? = nil)
   @objc public static func registerRemotePush(token: Foundation.Data?, unique: Swift.Bool = false, completionHandler: SendBirdCalls.ErrorHandler?)
   @objc public static func unregisterRemotePush(token: Foundation.Data?, completionHandler: SendBirdCalls.ErrorHandler?)
   @objc public static func unregisterAllRemotePushTokens(completionHandler: SendBirdCalls.ErrorHandler?)

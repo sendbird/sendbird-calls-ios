@@ -2525,6 +2525,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 /// \param queue DispatchQueue that will be used when callbacks and delegates are called.
 ///
 + (void)executeOnQueue:(dispatch_queue_t _Nonnull)queue;
+/// Sets the app group.
+/// since:
+/// 1.10.10
+/// \param appGroup The app group.
+///
++ (void)setAppGroup:(NSString * _Nonnull)appGroup;
 /// Registers a device-specific <code>SendBirdCallDelegate </code>event handler. Responding to device-wide events (e.g. incoming calls) is then managed as shown below:
 /// \code
 /// SendBirdCall.addDelegate(self, identifier: UNIQUE_HANDLER_ID)
@@ -2800,6 +2806,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBCUser * _N
 /// \param userInfo A dictionary that contains information about incoming SendBird Calls.
 ///
 + (void)application:(UIApplication * _Nonnull)application didReceiveRemoteNotification:(NSDictionary * _Nonnull)userInfo;
+/// Mark push notification as delivered for push delivery tracking purpose only.
+/// It is only work for <code>Notification Service Extension</code>.
+/// This does not mark the message as delivered.
+/// since:
+/// 1.10.12
+/// \param remoteNotificationPayload The remote notification payload
+///
+/// \param completionHandler The handler block to execute
+///
++ (void)markPushNotificationAsDeliveredWithRemoteNotificationPayload:(NSDictionary * _Nonnull)remoteNotificationPayload completionHandler:(void (^ _Nullable)(SBCError * _Nullable))completionHandler;
 /// To receive remote notifications while an app is in the background or closed, a device registration token must be registered to the server. Register a remote push token during by using the <code>SendBirdCall.registerRemotePushToken()</code> method.
 /// \code
 /// func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
