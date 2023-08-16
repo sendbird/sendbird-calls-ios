@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.10.13 (Aug 16, 2023)
+* Fixed an issue where call will not be properly reconnected after network connection has been lost.
+
 ### 1.10.12 (Aug 10, 2023)
 * Fix an issue where Direct Call quality statistics won't be collected when the call is being reconnected. 
 * Fix an issue where camera would be incorrectly mirrored in Direct Calls. 
