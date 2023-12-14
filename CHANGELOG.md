@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.10.14 (Dec 14, 2023)
+* When a direct call is ended before connecting, the call will have an end result of `DirectCallEndResult.notConnected`
+ 
 ### 1.10.13 (Aug 16, 2023)
 * Fixed an issue where call will not be properly reconnected after network connection has been lost.
 

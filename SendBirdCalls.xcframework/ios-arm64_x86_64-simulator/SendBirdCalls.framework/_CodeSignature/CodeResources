@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/SendBirdCalls-Swift.h</key>
 		<data>
-		hnkO92/fcZCfPkRtli5Kbzo5zTw=
+		/HOG0oOqQAoWeNylMHj9kSV5weU=
 		</data>
 		<key>Headers/SendBirdCalls.h</key>
 		<data>
@@ -14,47 +14,47 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		V038AN+dSrOKc7WTDDK0Jec6zrA=
+		x23m/cbnTlaSmkeVEOo6ETl9AW8=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		+3l0kvWe2Ld25iKH3T+5AbmrymU=
+		2wcDLsDyD5xyEw6CeZ0ftWpCAq0=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		3KkduAc4ZY4zQhWesUHSb/S+OcM=
+		6YFxAgeljDfva6xHdRdZyKDmhRU=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		9tsFlSp079Y+3hz5QCcK6kf9wvE=
+		2NxLHod7vS2ikj/IARbo/b0jPHY=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		3KkduAc4ZY4zQhWesUHSb/S+OcM=
+		6YFxAgeljDfva6xHdRdZyKDmhRU=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		WlHwrrC/xHiLVtJBz+NXPnowRg0=
+		GfUjchPlOtUc79BvrSoQlI/JUHg=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		JBtRfyV/m57PxlrlXsTWBheD9Jg=
+		dt751Poy/tiMfG4jScbWuUIoFEs=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		4LYlTHYxIE9EH73AHo0z27Fbcvg=
+		+u9UjKfHtv9TOLMRq+31e92cu8s=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		Q6NUFcg4OOYs6QYvtQ6NIdOYcEA=
+		1VyUS3sPS5o1GrSPrOLn9A9n2tg=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		4LYlTHYxIE9EH73AHo0z27Fbcvg=
+		+u9UjKfHtv9TOLMRq+31e92cu8s=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		Sl+PzvKsq0VptRVw0wG62JEpxww=
+		pkrd+CZCWcsLGFeZox9kRiZiEo8=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -67,7 +67,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			ancRsuaHeCXNA6qRiYAFCOhlQze+ZWIK0tSOinBQfu8=
+			zzO4Pfvoa2QKF9YnYHxa2Gn7+XL2YNEtX2wTiIpGq8c=
 			</data>
 		</dict>
 		<key>Headers/SendBirdCalls.h</key>
@@ -81,70 +81,70 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			yM5cIlGl8mxr4pNnXUhrBZrW6e3wPwEC9QZhAe/Wm5c=
+			liUejIZ4h1h57kbkK2AU509esL3+Tn8g5iaRskdiq9s=
 			</data>
 		</dict>
 		<key>Modules/SendBirdCalls.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			zS1xQEnaITdIY5HJpuewC1zXk35I1ZEbWCwaLLIYBt4=
+			S0fLykbvpAnk4pjN3GVRBI3bNQt0a2S9BUW44gNTNcY=
 			</data>
 		</dict>
 		<key>Modules/SendBirdCalls.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			SWI6Rv5XWrpjOMqcLYLulZulDEwAeuClggTmBZkV8ag=
+			dxx/BDqBHtVeXgh2J9g8nKOkQJfXsvCzgz/4wmYTiIM=
 			</data>
 		</dict>
 		<key>Modules/SendBirdCalls.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			zS1xQEnaITdIY5HJpuewC1zXk35I1ZEbWCwaLLIYBt4=
+			S0fLykbvpAnk4pjN3GVRBI3bNQt0a2S9BUW44gNTNcY=
 			</data>
 		</dict>
 		<key>Modules/SendBirdCalls.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			zQywQV9Ou2Zxh1Z/lRjF37ppnjH8yDZFmCA2zeAz9HM=
+			qwW6IZCgUATnxmRcTdHYZSpkqdcljw8z1aH03HrlmuI=
 			</data>
 		</dict>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ZyOtc1WF91070nuAPqUEze55Gg0DDHoI3u6KtQV6tcA=
+			UDhNiQ/Lu9ysHv4MzzeNboWllnGOlInUAzOuMIwcCxA=
 			</data>
 		</dict>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			FPCj2h/m8Dqzpz2C7DsUXvNtSq65Cr6KihVLVDC9rB0=
+			VOTKQj2xAaZJXg2+jjGz70pUPMz0lZQnbz+Tugvj3VU=
 			</data>
 		</dict>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			32ONzx6gvxdF8a6bAfCbgT5au4Xr/jn8RcTELK4iBYk=
+			lLwYre3PEabMWzxfsbu8658ExZ7VB9JKaow45b9vv9g=
 			</data>
 		</dict>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			FPCj2h/m8Dqzpz2C7DsUXvNtSq65Cr6KihVLVDC9rB0=
+			VOTKQj2xAaZJXg2+jjGz70pUPMz0lZQnbz+Tugvj3VU=
 			</data>
 		</dict>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			4/eiQBfrRG5YMRPhKiQTWaB1Y6rZfDTtzSd+oP2rhk4=
+			n+JUURJRYLKJUYKkQQffza0+VvPhemc4hrxQ+yR51Pw=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
