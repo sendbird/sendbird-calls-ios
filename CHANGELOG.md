@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.10.15 (Feb 8, 2024)
+* Stability improvements.
+
 ### 1.10.14 (Dec 14, 2023)
 * When a direct call is ended before connecting, the call will have an end result of `DirectCallEndResult.notConnected`
  
