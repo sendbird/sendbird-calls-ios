@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.10.16 (Feb 27, 2024)
+* Fix an issue where Push Notifications won't arrive for Rooms Invitations.
+
 ### 1.10.15 (Feb 8, 2024)
 * Stability improvements.
 
