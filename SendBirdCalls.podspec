@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "SendBirdCalls"
-  s.version      = "1.10.16"
+  s.version      = "1.10.17"
   s.summary      = "real-time calls based on Sendbird Calls SDK"
   s.description  = "Sendbird Calls enables real-time calls between users registered within a Sendbird application"
   s.homepage     = "https://sendbird.com"
@@ -12,6 +12,6 @@ Pod::Spec.new do |s|
   s.ios.vendored_frameworks = "SendBirdCalls.xcframework"
   s.ios.frameworks = ["UIKit", "Foundation", "PushKit", "WebRTC", "AVKit", "MediaPlayer", "Network", "CoreTelephony", "VideoToolbox"]
   s.requires_arc = true
-  s.dependency "SendBirdWebRTC", "~> 1.7.0"
+  s.dependency "SendBirdWebRTC", "~> 1.8.1"
   s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
 end
