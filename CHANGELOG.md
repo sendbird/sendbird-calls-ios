@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.10.17 (Mar 14, 2024)
+* Updated WebRTC dependency version to M118.
+* Improved WebRTC internal logging.
+
 ### 1.10.16 (Feb 27, 2024)
 * Fix an issue where Push Notifications won't arrive for Rooms Invitations.
 
