@@ -1,5 +1,10 @@
 # Change Log
 
+### 1.10.18 (Apr 4, 2024)
+* Updated iOS deployment target to 12.0
+* Updated Xcode version to 15.0
+* Added PrivacyInfo.xcprivacy for Apple Privacy Manifest
+
 ### 1.10.17 (Mar 14, 2024)
 * Updated WebRTC dependency version to M118.
 * Improved WebRTC internal logging.
