@@ -1,6 +1,6 @@
 # [Sendbird](https://sendbird.com) Calls SDK for iOS
 
-![iOS 9.0+](https://img.shields.io/badge/iOS-9.0+-lightgray.svg) [![Languages](https://img.shields.io/badge/language-swift-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Languages](https://img.shields.io/badge/language-objc-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Coverage](https://img.shields.io/badge/coverage-88.70%25-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios) [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SendBirdCalls.svg)](https://img.shields.io/cocoapods/v/SendBirdCalls.svg) [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios/blob/master/LICENSE.md) 
+![iOS 12.0+](https://img.shields.io/badge/iOS-12.0+-lightgray.svg) [![Languages](https://img.shields.io/badge/language-swift-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Languages](https://img.shields.io/badge/language-objc-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Coverage](https://img.shields.io/badge/coverage-88.70%25-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios) [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SendBirdCalls.svg)](https://img.shields.io/cocoapods/v/SendBirdCalls.svg) [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios/blob/master/LICENSE.md) 
 
 ## Table of contents
 
@@ -37,9 +37,9 @@ This section shows the prerequisites you need to check to use Sendbird Calls SDK
 
 ### Requirements
 
-* iOS 11.0 or later
+* iOS 12.0 or later
 * Swift 5 or later, Objective-C
-* Xcode 14.1 or later, macOS Sierra or later.
+* Xcode 15.0 or later, macOS Sierra or later.
 
 ### SDK dependencies
 
@@ -83,8 +83,8 @@ For further details on the  usage and installation of `CocoaPods` instructions, 
 2. Create a [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) in the same directory `.xcodeproj` or `.xcworkspace` is.
 3. List the desired dependencies in the [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) as show below.
 ```bash
-github "sendbird/sendbird-calls-ios" ~> 1.10.7
-github "sendbird/sendbird-webrtc-ios" ~> 1.7.0
+github "sendbird/sendbird-calls-ios" ~> 1.10.18
+github "sendbird/sendbird-webrtc-ios" ~> 1.8.1
 ```
 4. Run `carthage update --use-xcframeworks`.
 5. A `Cartfile.resolved` file and a `Carthage` directory will appear in the same directory as  `.xcodeproj` or `.xcworkspace` .
