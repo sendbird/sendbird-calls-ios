@@ -1,6 +1,6 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.7.1 (swiftlang-5.7.1.135.3 clang-1400.0.29.51)
-// swift-module-flags: -target arm64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendBirdCalls
+// swift-compiler-version: Apple Swift version 5.9.2 (swiftlang-5.9.2.2.56 clang-1500.1.0.2.5)
+// swift-module-flags: -target arm64-apple-ios12.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendBirdCalls
 // swift-module-flags-ignorable: -enable-bare-slash-regex
 import AVFoundation
 import AVKit
@@ -26,6 +26,7 @@ import VideoToolbox
 import WebRTC
 import _Concurrency
 import _StringProcessing
+import _SwiftConcurrencyShims
 import zlib
 @_inheritsConvenienceInitializers @objcMembers @objc(SBCRecordingOptions) public class RecordingOptions : ObjectiveC.NSObject {
   @objc final public let recordingType: SendBirdCalls.RecordingOptions.RecordingType
@@ -59,7 +60,7 @@ import zlib
 }
 @_hasMissingDesignatedInitializers @objc(SBCDirectCallUser) public class DirectCallUser : SendBirdCalls.User {
   @objc final public let role: SendBirdCalls.DirectCall.UserRole
-  override public func encode(to encoder: Swift.Encoder) throws
+  override public func encode(to encoder: any Swift.Encoder) throws
   @objc deinit
 }
 extension SendBirdCalls.DirectCallUser {
@@ -107,7 +108,7 @@ extension SendBirdCalls.VideoDevice {
   }
 }
 extension SendBirdCalls.DirectCall {
-  @objc dynamic public func startScreenShare(completionHandler: @escaping ((((CoreMedia.CMSampleBuffer, Swift.Error?) -> Swift.Void)?, SendBirdCalls.SBCError?) -> Swift.Void))
+  @objc dynamic public func startScreenShare(completionHandler: @escaping ((((CoreMedia.CMSampleBuffer, (any Swift.Error)?) -> Swift.Void)?, SendBirdCalls.SBCError?) -> Swift.Void))
   @objc dynamic public func stopScreenShare(completionHandler: SendBirdCalls.ErrorHandler? = nil)
 }
 extension SendBirdCalls.DirectCall {
@@ -126,8 +127,8 @@ extension SendBirdCalls.DirectCall {
   @objc(logMessage:) func log(message: Swift.String)
 }
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class SBCLogger : ObjectiveC.NSObject {
-  @objc(addLogReceiver:) public static func add(receiver: SendBirdCalls.SBCLogReceiver)
-  @objc(removeLogReceiver:) public static func remove(receiver: SendBirdCalls.SBCLogReceiver)
+  @objc(addLogReceiver:) public static func add(receiver: any SendBirdCalls.SBCLogReceiver)
+  @objc(removeLogReceiver:) public static func remove(receiver: any SendBirdCalls.SBCLogReceiver)
   @objc public static func setLoggerLevel(_ level: SendBirdCalls.SBCLogger.Level)
   @objc deinit
 }
@@ -145,15 +146,15 @@ extension SendBirdCalls.SBCLogger {
   }
 }
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc(SBCRemoteParticipant) public class RemoteParticipant : SendBirdCalls.Participant {
-  required public init(from decoder: Swift.Decoder) throws
+  required public init(from decoder: any Swift.Decoder) throws
   @objc deinit
 }
 @objcMembers @objc(SBCChatOptions) public class SendBirdChatOptions : ObjectiveC.NSObject, Swift.Codable {
   @objc public var channelURL: Swift.String
   @objc public init(channelURL: Swift.String)
   @objc deinit
-  public func encode(to encoder: Swift.Encoder) throws
-  required public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: any Swift.Encoder) throws
+  required public init(from decoder: any Swift.Decoder) throws
 }
 extension SendBirdCalls.SendBirdCall {
   @objc(createRoomWithParams:completionHandler:) public static func createRoom(with params: SendBirdCalls.RoomParams, completionHandler: @escaping SendBirdCalls.RoomHandler)
@@ -191,7 +192,7 @@ extension SendBirdCalls.DirectCall {
   @objc public func startVideo()
   @objc public func stopVideo()
   @objc public func switchCamera(completionHandler: @escaping SendBirdCalls.ErrorHandler)
-  required public init(from decoder: Swift.Decoder) throws
+  required public init(from decoder: any Swift.Decoder) throws
   @objc deinit
 }
 @_hasMissingDesignatedInitializers @objcMembers @objc(SBCDirectCallLog) public class DirectCallLog : ObjectiveC.NSObject, Swift.Codable {
@@ -227,8 +228,8 @@ extension SendBirdCalls.DirectCall {
   @objc public var customItems: [Swift.String : Swift.String] {
     get
   }
-  required public init(from decoder: Swift.Decoder) throws
-  public func encode(to encoder: Swift.Encoder) throws
+  required public init(from decoder: any Swift.Decoder) throws
+  public func encode(to encoder: any Swift.Encoder) throws
   @objc deinit
 }
 extension SendBirdCalls.DirectCallLog {
@@ -316,16 +317,16 @@ extension SendBirdCalls.DirectCallLog {
     case connected
     case exited
     public init(stringValue: Swift.String)
-    public init(from decoder: Swift.Decoder) throws
-    public func encode(to encoder: Swift.Encoder) throws
+    public init(from decoder: any Swift.Decoder) throws
+    public func encode(to encoder: any Swift.Encoder) throws
     public init?(rawValue: Swift.Int)
     public typealias RawValue = Swift.Int
     public var rawValue: Swift.Int {
       get
     }
   }
-  required public init(from decoder: Swift.Decoder) throws
-  public func encode(to encoder: Swift.Encoder) throws
+  required public init(from decoder: any Swift.Decoder) throws
+  public func encode(to encoder: any Swift.Encoder) throws
   @objc override dynamic public var hash: Swift.Int {
     @objc get
   }
@@ -363,7 +364,7 @@ extension SendBirdCalls.DirectCallLog {
   @objc public func updateCustomItems(customItems: [Swift.String : Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
   @objc public func deleteCustomItems(customItemKeys: [Swift.String], completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
   @objc public func deleteAllCustomItems(completionHandler: @escaping SendBirdCalls.CustomItemsHandler)
-  @objc public func addDelegate(_ delegate: SendBirdCalls.RoomDelegate, identifier: Swift.String)
+  @objc public func addDelegate(_ delegate: any SendBirdCalls.RoomDelegate, identifier: Swift.String)
   @objc public func removeDelegate(identifier: Swift.String)
   @objc public func removeAllDelegates()
   @objc public func sendInvitation(invitee: Swift.String, completionHandler: ((SendBirdCalls.RoomInvitation?, SendBirdCalls.SBCError?) -> Swift.Void)?)
@@ -480,7 +481,7 @@ extension SendBirdCalls.SendBirdVideoView {
   @objc optional func wasInvitationDeclined(_ invitation: SendBirdCalls.RoomInvitation)
 }
 extension SendBirdCalls.DirectCall {
-  public func setConnectionQualityDelegate(_ delegate: SendBirdCalls.ConnectionQualityDelegate, monitoringMode: SendBirdCalls.ConnectionQualityMonitoringModes)
+  public func setConnectionQualityDelegate(_ delegate: any SendBirdCalls.ConnectionQualityDelegate, monitoringMode: SendBirdCalls.ConnectionQualityMonitoringModes)
   @objc dynamic public func removeConnectionQualityDelegate()
 }
 @_inheritsConvenienceInitializers @objcMembers @objc(SBCRoomParams) public class RoomParams : ObjectiveC.NSObject, Swift.Encodable {
@@ -490,7 +491,7 @@ extension SendBirdCalls.DirectCall {
   @objc public init(roomType: SendBirdCalls.RoomType, customItems: [Swift.String : Swift.String])
   @available(*, unavailable, message: "Use `init(roomType:)` instead.")
   @objc override dynamic public init()
-  public func encode(to encoder: Swift.Encoder) throws
+  public func encode(to encoder: any Swift.Encoder) throws
   @objc deinit
 }
 @_inheritsConvenienceInitializers @objcMembers @objc(SBCRange) public class SendBirdRange : ObjectiveC.NSObject {
@@ -524,9 +525,9 @@ extension SendBirdCalls.DirectCall {
   @objc public var isActive: Swift.Bool {
     get
   }
-  required public init(from decoder: Swift.Decoder) throws
+  required public init(from decoder: any Swift.Decoder) throws
   @objc deinit
-  public func encode(to encoder: Swift.Encoder) throws
+  public func encode(to encoder: any Swift.Encoder) throws
 }
 extension SendBirdCalls.User {
   @objc override dynamic public var hash: Swift.Int {
@@ -760,7 +761,7 @@ public protocol ConnectionQualityDelegate : AnyObject {
   @objc public var isVideoCall: Swift.Bool {
     get
   }
-  @objc weak public var delegate: SendBirdCalls.DirectCallDelegate?
+  @objc weak public var delegate: (any SendBirdCalls.DirectCallDelegate)?
   @objc @available(*, deprecated, message: "isRecording has been changed to `localRecordingStatus`. ")
   public var isRecording: Swift.Bool {
     @objc get
@@ -791,8 +792,8 @@ public protocol ConnectionQualityDelegate : AnyObject {
   case smallRoomForVideo
   case largeRoomForAudioOnly
   public init(stringValue: Swift.String)
-  public init(from decoder: Swift.Decoder) throws
-  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+  public func encode(to encoder: any Swift.Encoder) throws
   public init?(rawValue: Swift.Int)
   public typealias RawValue = Swift.Int
   public var rawValue: Swift.Int {
@@ -804,8 +805,8 @@ extension SendBirdCalls.Room {
     case open
     case deleted
     public init(stringValue: Swift.String)
-    public init(from decoder: Swift.Decoder) throws
-    public func encode(to encoder: Swift.Encoder) throws
+    public init(from decoder: any Swift.Decoder) throws
+    public func encode(to encoder: any Swift.Encoder) throws
     public init?(rawValue: Swift.Int)
     public typealias RawValue = Swift.Int
     public var rawValue: Swift.Int {
@@ -860,10 +861,10 @@ extension SendBirdCalls.DialParams : Foundation.NSCopying {
   @objc public static func routePickerView(frame: CoreFoundation.CGRect) -> UIKit.UIView
   @objc public static func executeOn(queue: Dispatch.DispatchQueue)
   @objc public static func setAppGroup(_ appGroup: Swift.String)
-  @objc public static func addDelegate(_ delegate: SendBirdCalls.SendBirdCallDelegate, identifier: Swift.String)
+  @objc public static func addDelegate(_ delegate: any SendBirdCalls.SendBirdCallDelegate, identifier: Swift.String)
   @objc public static func removeDelegate(identifier: Swift.String)
   @objc public static func removeAllDelegates()
-  @objc public static func addRecordingDelegate(_ delegate: SendBirdCalls.SendBirdRecordingDelegate, identifier: Swift.String)
+  @objc public static func addRecordingDelegate(_ delegate: any SendBirdCalls.SendBirdRecordingDelegate, identifier: Swift.String)
   @objc public static func removeRecordingDelegate(identifier: Swift.String)
   @objc public static func removeAllRecordingDelegates()
   @objc(callForCallId:) public static func getCall(forCallId callId: Swift.String) -> SendBirdCalls.DirectCall?
