@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.10.19 (Jun 3, 2024)
+* Fixed an issue where using local recording would sometimes result in a crash. 
+* Fixed an issue where incoming Room invitation would not get canceled. 
+
 ### 1.10.18 (Apr 4, 2024)
 * Updated iOS deployment target to 12.0
 * Updated Xcode version to 15.0
