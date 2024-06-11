@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.10.20 (Jun 11, 2024)
+* Fixed an issue where Room Invitation wouldn't be canceled after 10 seconds. Now, updates to room invitation will be available for 60 seconds before the SDK disconnects from the websocket. 
+
 ### 1.10.19 (Jun 3, 2024)
 * Fixed an issue where using local recording would sometimes result in a crash. 
 * Fixed an issue where incoming Room invitation would not get canceled. 
