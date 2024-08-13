@@ -413,6 +413,8 @@ extension SendBirdCalls.DirectCallLog {
       @objc get
       @objc set
     }
+    public var startedAt: Swift.Int64?
+    public var endedAt: Swift.Int64?
     @objc override dynamic public init()
     @objc deinit
   }
