@@ -1,5 +1,13 @@
 # Change Log
 
+### 1.10.21 (Aug 13, 2024)
+* Added `DirectCallLogListQuery.Params.startedAt` and `DirectCallLogListQuery.Params.endedAt`, which filter the list of direct call logs by the start and end date of the call.
+  * If `startedAt` is set and `endedAt` is not set, the range of the query will be `start_ts <= callLog.startedAt <= min(now, start_ts + 90 days)`.
+  * If `startedAt` is not set and `endedAt` is set, the range of the query will be `end_ts - 90 days <= callLog.startedAt <= end_ts`.
+  * If both `startedAt` and `endedAt` are set, the range of the query will be `start_ts <= callLog.startedAt <= end_ts`.
+  * If both are not set, the range is `90 days ago <= callLog.startedAt <= now`.
+
+
 ### 1.10.20 (Jun 11, 2024)
 * Fixed an issue where Room Invitation wouldn't be canceled after 10 seconds. Now, updates to room invitation will be available for 60 seconds before the SDK disconnects from the websocket. 
 
