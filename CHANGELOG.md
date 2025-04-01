@@ -1,4 +1,6 @@
 # Change Log
+### 1.10.22 (Apr 1, 2025)
+* Fixed a bug where audio recording speed changes on input source change
 
 ### 1.10.21 (Aug 13, 2024)
 * Added `DirectCallLogListQuery.Params.startedAt` and `DirectCallLogListQuery.Params.endedAt`, which filter the list of direct call logs by the start and end date of the call.
