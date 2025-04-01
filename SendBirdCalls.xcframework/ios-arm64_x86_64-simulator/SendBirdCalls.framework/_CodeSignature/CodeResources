@@ -14,11 +14,11 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		6S/foNR/m1aVgzWTfviUa+ihjQ8=
+		t4yDJHk7zLUPU80FeNry74OppZs=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		dDjcnuLE66L6S53gGmdr/dNhqtE=
+		JrLc2tAkqSHyj4mdTmwICB0R/uc=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
@@ -34,11 +34,11 @@
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		814Prno5esN7vquPeuRTbrjQKz0=
+		2h25QhlEnSON/4BczYA5VANmLn0=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		WnIsjykal4m4Ne1/2G/nwCQA0FI=
+		ulW+l7nHxDAebFLZzTEs03A5aa8=
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
@@ -54,7 +54,7 @@
 		</data>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		rP0J5VoT8C3aVoa7z/9ZB88eyzo=
+		MOhKEQj/RRQT5MqV/NB8HKyrfBI=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -85,7 +85,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			IRS3n5/XFBgB9yIOANZJEi1U534E84K6gxGKp7J1Rqs=
+			ODT5XG76ieXDWinBXHbgRfBspaGwKULiTyhwO0VCGiA=
 			</data>
 		</dict>
 		<key>Modules/SendBirdCalls.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
@@ -113,14 +113,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			pPqk5EEreYRZO7XBnvuUTqNsj9I2lmTtdH1tB/GXpRY=
+			bXWaNIMnuqZjgwcwlhIVAPCcoM56hcvOGG7r/vpP3oE=
 			</data>
 		</dict>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			5JrWC5jTee7p81CsrIl0FD/Pnju8/ENjwrSqtwIYrpk=
+			RVpUTevI3YE77GZDwsd0ylX+R4k70oMTG8T3JnfsWxY=
 			</data>
 		</dict>
 		<key>Modules/SendBirdCalls.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
@@ -148,7 +148,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			tnIAWlvaFMARISlFBgGSBw8hkw/ywVMgSvFdc5zSPhM=
+			uZyh7yhFGiVrbnLimjcgyoBwka7Mdg+GyhpcG+914ik=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
