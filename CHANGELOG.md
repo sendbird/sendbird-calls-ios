@@ -1,4 +1,7 @@
 # Change Log
+### 1.11.0 (Jul 8, 2025)
+* Updated minimum iOS version to iOS 14
+
 ### 1.10.22 (Apr 1, 2025)
 * Fixed a bug where audio recording speed changes on input source change
 
