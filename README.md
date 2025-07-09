@@ -65,7 +65,7 @@ To add the package, select appropriate dependency rule and click `Add Package`.
 
 ### Manual set-up
 
-If you do not prefer to use `CocoaPods` or `Carthage` to install the Calls SDK, here is an alternative: you can manually integrate the `SendBirdCalls` directly into your project. The `SendBirdCalls` framework is provided as a `.xcframework` file.
+If you do not prefer to use `Swift Packages` to install the Calls SDK, here is an alternative: you can manually integrate the `SendBirdCalls` directly into your project. The `SendBirdCalls` framework is provided as a `.xcframework` file.
 
 1. Download the framework file by one of the following.
     - Direct download from git releases
