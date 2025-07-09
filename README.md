@@ -1,6 +1,6 @@
 # [Sendbird](https://sendbird.com) Calls SDK for iOS
 
-![iOS 12.0+](https://img.shields.io/badge/iOS-12.0+-lightgray.svg) [![Languages](https://img.shields.io/badge/language-swift-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Languages](https://img.shields.io/badge/language-objc-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Coverage](https://img.shields.io/badge/coverage-88.70%25-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios) [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SendBirdCalls.svg)](https://img.shields.io/cocoapods/v/SendBirdCalls.svg) [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios/blob/master/LICENSE.md) 
+![iOS 14.0+](https://img.shields.io/badge/iOS-14.0+-lightgray.svg) [![Languages](https://img.shields.io/badge/language-swift-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Languages](https://img.shields.io/badge/language-objc-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Coverage](https://img.shields.io/badge/coverage-88.70%25-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios/blob/master/LICENSE.md) 
 
 ## Table of contents
 
@@ -37,13 +37,13 @@ This section shows the prerequisites you need to check to use Sendbird Calls SDK
 
 ### Requirements
 
-* iOS 12.0 or later
+* iOS 14.0 or later
 * Swift 5 or later, Objective-C
 * Xcode 15.0 or later, macOS Sierra or later.
 
 ### SDK dependencies
 
-* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios), which can be integrated by `Swift Package Manager`, `CocoaPods`, `Carthage`, or manual set-up.
+* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios), which can be integrated by `Swift Package Manager`, or manual set-up.
 
 <br />
 
@@ -53,6 +53,8 @@ This section gives you information you need to get started with Sendbird Calls S
 
 ### Install Calls SDK
 
+*Installation via CocoaPods and Carthage is no longer supported.*
+
 ### Swift Package Manager
 
 Go to your Swift Package Manager's `File` tab and select `Swift Packages`. Then choose `Add package dependency`.
@@ -61,40 +63,9 @@ Add the `SendBirdCalls` framework into your Package Repository with the followin
 
 To add the package, select appropriate dependency rule and click `Add Package`.
 
-### CocoaPods
-
-[CocoaPods](https://cocoapods.org/) is a dependency manager for Cocoa projects. The `SendBirdCalls` framework can be integrated into the Xcode project using `CocoaPods` by doing the following.
-
-1. Install `CocoaPods` into the project by running `pod init` in the project directory.
-2. Run `open Podfile`
-3. In the opened Podfile, include `pod 'SendBirdCalls'` to the configuration under the project target.
-4. Install the `SendBirdCalls` framework by running `pod install` in the project directory. 
-
-For further details on the  usage and installation of `CocoaPods` instructions, refer to CocoaPods’ [website](https://cocoapods.org/). 
-
-> **Note**: The Sendbird Calls SDK for iOS relies on the` SendBirdWebRTC` framework. `SendBirdWebRTC` is based on `GoogleWebRTC` and is recompiled with `bitcode` enabled. Since `SendBirdWebRTC` is included in `SendBirdCalls` as a dependency, it doesn't need to be explicitly downloaded.
-
-
-### Carthage
-
-[Carthage](https://github.com/Carthage/Carthage#quick-start) is another dependency manager for Xcode projects. The `SendBirdCalls` framework can be integrated into your Xcode project with `Carthage` by following these steps:
-
-1. Get Carthage by running `brew install carthage`, or choose [another installation method](https://github.com/Carthage/Carthage#installing-carthage).
-2. Create a [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) in the same directory `.xcodeproj` or `.xcworkspace` is.
-3. List the desired dependencies in the [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) as show below.
-```bash
-github "sendbird/sendbird-calls-ios" ~> 1.10.18
-github "sendbird/sendbird-webrtc-ios" ~> 1.8.1
-```
-4. Run `carthage update --use-xcframeworks`.
-5. A `Cartfile.resolved` file and a `Carthage` directory will appear in the same directory as  `.xcodeproj` or `.xcworkspace` .
-6. Drag the built `.framework` binaries from `Carthage/Build/iOS` into the application’s Xcode project.
-
-For an in-depth guide, read on from [Carthage’s ReadMe](https://github.com/Carthage/Carthage#quick-start). If you encounter any issues when using `Carthage` to install the `SendBirdCalls`, make sure that you are using the latest version of `Carthage`.
-
 ### Manual set-up
 
-If you do not prefer to use `CocoaPods` or `Carthage` to install the Calls SDK, here is an alternative: you can manually integrate the `SendBirdCalls` directly into your project. The `SendBirdCalls` framework is provided as a `.xcframework` file.
+If you do not prefer to use `Swift Packages` to install the Calls SDK, here is an alternative: you can manually integrate the `SendBirdCalls` directly into your project. The `SendBirdCalls` framework is provided as a `.xcframework` file.
 
 1. Download the framework file by one of the following.
     - Direct download from git releases
