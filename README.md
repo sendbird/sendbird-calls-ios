@@ -43,7 +43,7 @@ This section shows the prerequisites you need to check to use Sendbird Calls SDK
 
 ### SDK dependencies
 
-* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios), which can be integrated by `Swift Package Manager`, `CocoaPods`, or manual set-up.
+* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios), which can be integrated by `Swift Package Manager`, or manual set-up.
 
 <br />
 
