@@ -1,6 +1,6 @@
 # [Sendbird](https://sendbird.com) Calls SDK for iOS
 
-![iOS 14.0+](https://img.shields.io/badge/iOS-14.0+-lightgray.svg) [![Languages](https://img.shields.io/badge/language-swift-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Languages](https://img.shields.io/badge/language-objc-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Coverage](https://img.shields.io/badge/coverage-88.70%25-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios) [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SendBirdCalls.svg)](https://img.shields.io/cocoapods/v/SendBirdCalls.svg) [![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios/blob/master/LICENSE.md) 
+![iOS 14.0+](https://img.shields.io/badge/iOS-14.0+-lightgray.svg) [![Languages](https://img.shields.io/badge/language-swift-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Languages](https://img.shields.io/badge/language-objc-blue.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Coverage](https://img.shields.io/badge/coverage-88.70%25-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios) [![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/sendbird/sendbird-calls-ios/blob/master/LICENSE.md) 
 
 ## Table of contents
 
@@ -43,7 +43,7 @@ This section shows the prerequisites you need to check to use Sendbird Calls SDK
 
 ### SDK dependencies
 
-* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios), which can be integrated by `Swift Package Manager`, `CocoaPods`, `Carthage`, or manual set-up.
+* [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios), which can be integrated by `Swift Package Manager`, `CocoaPods`, or manual set-up.
 
 <br />
 
@@ -53,6 +53,8 @@ This section gives you information you need to get started with Sendbird Calls S
 
 ### Install Calls SDK
 
+*Installation via CocoaPods and Carthage is no longer supported.*
+
 ### Swift Package Manager
 
 Go to your Swift Package Manager's `File` tab and select `Swift Packages`. Then choose `Add package dependency`.
@@ -60,19 +62,6 @@ Go to your Swift Package Manager's `File` tab and select `Swift Packages`. Then 
 Add the `SendBirdCalls` framework into your Package Repository with the following URL: `https://github.com/sendbird/sendbird-calls-ios`.
 
 To add the package, select appropriate dependency rule and click `Add Package`.
-
-### CocoaPods
-
-[CocoaPods](https://cocoapods.org/) is a dependency manager for Cocoa projects. The `SendBirdCalls` framework can be integrated into the Xcode project using `CocoaPods` by doing the following.
-
-1. Install `CocoaPods` into the project by running `pod init` in the project directory.
-2. Run `open Podfile`
-3. In the opened Podfile, include `pod 'SendBirdCalls'` to the configuration under the project target.
-4. Install the `SendBirdCalls` framework by running `pod install` in the project directory. 
-
-For further details on the  usage and installation of `CocoaPods` instructions, refer to CocoaPods’ [website](https://cocoapods.org/). 
-
-> **Note**: The Sendbird Calls SDK for iOS relies on the` SendBirdWebRTC` framework. `SendBirdWebRTC` is based on `GoogleWebRTC` and is recompiled with `bitcode` enabled. Since `SendBirdWebRTC` is included in `SendBirdCalls` as a dependency, it doesn't need to be explicitly downloaded.
 
 ### Manual set-up
 
