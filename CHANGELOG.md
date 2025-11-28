@@ -1,4 +1,8 @@
 # Change Log
+
+### 1.11.1 (Nov 28, 2025)
+* Fixed a crash that occurred when starting recording during an active call
+
 ### 1.11.0 (Jul 8, 2025)
 * Updated minimum iOS version to iOS 14
 
