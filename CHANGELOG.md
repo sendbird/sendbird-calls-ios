@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.11.2 (Mar 19, 2026)
+* Fixed a thread safety crash in `DirectCall` when `callLog` is accessed concurrently during call termination.  
+
 ### 1.11.1 (Nov 28, 2025)
 * Fixed a crash that occurred when starting recording during an active call
 
