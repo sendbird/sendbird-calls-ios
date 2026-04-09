@@ -11,13 +11,13 @@ let package = Package(
             targets: ["SendBirdCallsTarget"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/sendbird/sendbird-webrtc-ios", "1.9.0"..<"1.10.0")
+        .package(url: "https://github.com/sendbird/sendbird-webrtc-ios", "1.10.0"..<"1.11.0")
     ],
     targets: [
         .binaryTarget(
             name: "SendBirdCalls",
-            url: "https://github.com/sendbird/sendbird-calls-ios/releases/download/1.11.2/SendBirdCalls.xcframework.zip",
-            checksum: "efd0e4f90f3c91f0e26d60bc68ef21d19dc49f6483f87b414f61d3593c5ca1dd"
+            url: "https://github.com/sendbird/sendbird-calls-ios/releases/download/1.12.0/SendBirdCalls.xcframework.zip",
+            checksum: "852de54fa23473d2b4fb68e8fc4b23749c5152347abbd528f1f0672c36dd6a94"
         ),
         .target(name: "SendBirdCallsTarget",
                 dependencies: [
