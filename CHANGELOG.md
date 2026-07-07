@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.12.1 (Jul 7, 2026)
+* Fixed a thread-safety crash that could occur during a VoIP push cold launch when incoming call events were processed before authentication completed.
+
 ### 1.12.0 (Apr 9, 2026)
 - Rebuilt with **Xcode 26** to comply with Apple's App Store submission requirement,
   effective late April 2026, which mandates that all apps be built using Xcode 26 or later.
