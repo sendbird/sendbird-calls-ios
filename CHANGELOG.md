@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.12.2 (Jul 16, 2026)
+* Fixed an issue in Group Calls where a remote participant could remain stuck in the ENTERED state when two users called `room.enter()` almost simultaneously, resulting in missing audio/video.
+
 ### 1.12.1 (Jul 7, 2026)
 * Fixed a thread-safety crash that could occur during a VoIP push cold launch when incoming call events were processed before authentication completed.
 
