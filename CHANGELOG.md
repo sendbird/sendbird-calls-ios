@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.12.3 (Sep 28, 2026)
+* Improved WebSocket connection stability by switching from a bundled third-party WebSocket library to Apple's native `URLSessionWebSocketTask`. This also resolves a crash (`_inputStreamCallbackFunc`) that could occur when the connection was closed.
+* Fixed an issue where an outgoing direct call kept ringing until timeout instead of ending immediately when the callee was already on another call.
+
 ### 1.12.2 (Jul 16, 2026)
 * Fixed an issue in Group Calls where a remote participant could remain stuck in the ENTERED state when two users called `room.enter()` almost simultaneously, resulting in missing audio/video.
 
