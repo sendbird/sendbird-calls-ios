@@ -6,6 +6,7 @@
 
   1. [Introduction](#introduction)
   1. [Before getting started](#before-getting-started)
+  1. [Build with Claude Code or Codex](#build-with-claude-code-or-codex)
   1. [Getting started](#getting-started)
   1. [Configuring the application for the SDK](#configuring-the-application-for-the-sdk)
   1. [Making your first call](#making-your-first-call)
@@ -44,6 +45,37 @@ This section shows the prerequisites you need to check to use Sendbird Calls SDK
 ### SDK dependencies
 
 * [WebRTC framework](https://github.com/sendbird/sendbird-webrtc-ios), which can be integrated by `Swift Package Manager`, or manual set-up.
+
+<br />
+
+## Build with Claude Code or Codex
+
+Two Sendbird plugins for Claude Code and Codex help you add this SDK to your iOS app:
+
+- The [Sendbird Client Plugin](https://tools.docs.sendbird.com/plugins/client) writes setup and feature code from verified Sendbird documentation and the Sendbird SDK you have installed.
+- The [Sendbird CLI plugin](https://tools.docs.sendbird.com/plugins/cli) signs you in to Sendbird and manages your apps, users, and channels with the Sendbird CLI. The client plugin can take the App ID from the app you choose there.
+
+In Claude Code:
+
+```bash
+claude plugin marketplace add sendbird/sendbird-plugins
+claude plugin install sendbird-client@sendbird
+claude plugin install sendbird-cli@sendbird
+```
+
+Start a new session, run `/sendbird-cli:sendbird-setup` to sign in and choose your app, and then run `/sendbird-client:setup --product calls` in your project.
+
+In Codex:
+
+```bash
+codex plugin marketplace add sendbird/sendbird-plugins
+codex plugin add sendbird-client@sendbird
+codex plugin add sendbird-cli@sendbird
+```
+
+Then call `$sendbird-cli:sendbird-setup` and `$sendbird-client:setup`.
+
+The client plugin runs local shell scripts as hooks. Review [What runs on your machine](https://github.com/sendbird/sendbird-client-plugin#what-runs-on-your-machine) before installing.
 
 <br />
 
